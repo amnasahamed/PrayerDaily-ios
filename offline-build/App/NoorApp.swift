@@ -16,7 +16,7 @@ struct NoorApp: App {
                 SalahDashboard()
                     .tabItem { Label(AppTab.salah.rawValue, systemImage: AppTab.salah.icon) }
                     .tag(AppTab.salah)
-                LibraryPlaceholderView()
+                LibraryView()
                     .tabItem { Label(AppTab.library.rawValue, systemImage: AppTab.library.icon) }
                     .tag(AppTab.library)
                 MorePlaceholderView()

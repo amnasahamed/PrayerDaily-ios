@@ -3,29 +3,29 @@ import Foundation
 
 // MARK: - Aleha Brand Palette
 extension Color {
-    // Primary brand colors from logo
-    static let alehaGreen = Color(red: 0.18, green: 0.55, blue: 0.30)
-    static let alehaAmber = Color(red: 0.92, green: 0.65, blue: 0.22)
-    static let alehaDarkGreen = Color(red: 0.10, green: 0.38, blue: 0.22)
+    static let alehaGreen      = Color(red: 0.176, green: 0.710, blue: 0.400)
+    static let alehaAmber      = Color(red: 0.961, green: 0.651, blue: 0.133)
+    static let alehaDarkGreen  = Color(red: 0.063, green: 0.239, blue: 0.137)
     static let alehaLightGreen = Color(red: 0.40, green: 0.72, blue: 0.45)
-    static let alehaCream = Color(red: 0.98, green: 0.97, blue: 0.94)
-    static let alehaSage = Color(red: 0.88, green: 0.92, blue: 0.87)
+    static let alehaCream      = Color(red: 0.984, green: 0.976, blue: 0.961)
+    static let alehaSage       = Color(red: 0.882, green: 0.957, blue: 0.902)
+    static let alehaDeepTeal   = Color(red: 0.051, green: 0.188, blue: 0.137)
 
     // Semantic aliases
-    static let noorPrimary = Color("NoorPrimary")
+    static let noorPrimary  = Color("NoorPrimary")
     static let noorSecondary = Color("NoorSecondary")
-    static let noorAccent = Color("NoorAccent")
-    static let noorGold = Color("NoorGold")
-    static let noorSurface = Color("NoorSurface")
-    static let noorCardBg = Color("NoorCardBg")
+    static let noorAccent   = Color("NoorAccent")
+    static let noorGold     = Color("NoorGold")
+    static let noorSurface  = Color("NoorSurface")
+    static let noorCardBg   = Color("NoorCardBg")
 }
 
 // MARK: - Theme Constants
 struct AppTheme {
-    static let cornerRadius: CGFloat = 24
-    static let smallRadius: CGFloat = 16
-    static let cardPadding: CGFloat = 18
-    static let screenPadding: CGFloat = 20
+    static let cornerRadius: CGFloat   = 24
+    static let smallRadius: CGFloat    = 16
+    static let cardPadding: CGFloat    = 20
+    static let screenPadding: CGFloat  = 20
 }
 
 // MARK: - Frosted Glass Card
@@ -40,24 +40,42 @@ struct AlehaCardStyle: ViewModifier {
                 RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
                     .stroke(borderColor, lineWidth: 0.5)
             )
-            .shadow(color: .black.opacity(colorScheme == .dark ? 0.3 : 0.04), radius: 16, y: 6)
+            .shadow(color: .black.opacity(colorScheme == .dark ? 0.25 : 0.06), radius: 20, y: 8)
     }
     private var cardFill: some ShapeStyle {
         colorScheme == .dark
-            ? AnyShapeStyle(Color.white.opacity(0.06))
-            : AnyShapeStyle(Color.white.opacity(0.75))
+            ? AnyShapeStyle(Color.white.opacity(0.07))
+            : AnyShapeStyle(Color.white.opacity(0.82))
     }
     private var borderColor: Color {
-        colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.6)
+        colorScheme == .dark ? Color.white.opacity(0.10) : Color.white.opacity(0.70)
     }
 }
 
 extension View {
-    func noorCard() -> some View { modifier(AlehaCardStyle()) }
+    func noorCard() -> some View  { modifier(AlehaCardStyle()) }
     func alehaCard() -> some View { modifier(AlehaCardStyle()) }
 }
 
-// MARK: - Calming Background with Soft Orbs
+// MARK: - Spring Press Button Style
+struct SpringPressStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.spring(response: 0.25, dampingFraction: 0.6), value: configuration.isPressed)
+    }
+}
+
+// MARK: - Bounce Press Button Style
+struct BouncePressStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.88 : 1.0)
+            .animation(.spring(response: 0.3, dampingFraction: 0.5), value: configuration.isPressed)
+    }
+}
+
+// MARK: - Calming Layered Background
 struct CalmingBackground: View {
     @Environment(\.colorScheme) var cs
     var body: some View {
@@ -73,45 +91,35 @@ struct CalmingBackground: View {
     private var baseGradient: some View {
         LinearGradient(
             colors: cs == .dark
-                ? [Color(red: 0.06, green: 0.07, blue: 0.08),
-                   Color(red: 0.07, green: 0.09, blue: 0.10)]
-                : [Color(red: 0.97, green: 0.97, blue: 0.95),
-                   Color(red: 0.94, green: 0.96, blue: 0.93),
-                   Color(red: 0.96, green: 0.96, blue: 0.97)],
+                ? [Color(red: 0.05, green: 0.07, blue: 0.06),
+                   Color(red: 0.06, green: 0.09, blue: 0.08),
+                   Color(red: 0.04, green: 0.06, blue: 0.05)]
+                : [Color(red: 0.96, green: 0.98, blue: 0.96),
+                   Color(red: 0.94, green: 0.97, blue: 0.94),
+                   Color(red: 0.97, green: 0.97, blue: 0.95)],
             startPoint: .top, endPoint: .bottom
         )
     }
-
     private var topOrb: some View {
         Circle()
-            .fill(Color.alehaGreen.opacity(cs == .dark ? 0.04 : 0.06))
-            .frame(width: 500, height: 500)
-            .blur(radius: 140)
-            .offset(x: -100, y: -280)
+            .fill(Color.alehaGreen.opacity(cs == .dark ? 0.08 : 0.09))
+            .frame(width: 460, height: 460)
+            .blur(radius: 130)
+            .offset(x: -80, y: -260)
     }
-
     private var midOrb: some View {
         Circle()
-            .fill(Color.alehaAmber.opacity(cs == .dark ? 0.025 : 0.04))
-            .frame(width: 350, height: 350)
-            .blur(radius: 100)
-            .offset(x: 150, y: 80)
+            .fill(Color.alehaAmber.opacity(cs == .dark ? 0.04 : 0.055))
+            .frame(width: 320, height: 320)
+            .blur(radius: 90)
+            .offset(x: 160, y: 100)
     }
-
     private var bottomOrb: some View {
         Circle()
-            .fill(Color.alehaGreen.opacity(cs == .dark ? 0.025 : 0.035))
-            .frame(width: 420, height: 420)
-            .blur(radius: 110)
-            .offset(x: -40, y: 420)
-    }
-}
-
-// MARK: - Section Background (for tabs needing it)
-struct SectionBackground: View {
-    @Environment(\.colorScheme) var cs
-    var body: some View {
-        CalmingBackground()
+            .fill(Color.alehaGreen.opacity(cs == .dark ? 0.04 : 0.05))
+            .frame(width: 380, height: 380)
+            .blur(radius: 100)
+            .offset(x: -30, y: 440)
     }
 }
 
@@ -151,12 +159,42 @@ struct IslamicPatternOverlay: View {
         for i in 0..<8 {
             let angle = Double(i) * .pi / 4
             let r: CGFloat = i.isMultiple(of: 2) ? radius : radius * 0.4
-            let cosA = Foundation.cos(angle)
-            let sinA = Foundation.sin(angle)
-            let pt = CGPoint(x: center.x + r * cosA, y: center.y + r * sinA)
+            let pt = CGPoint(x: center.x + r * Foundation.cos(angle),
+                             y: center.y + r * Foundation.sin(angle))
             if i == 0 { path.move(to: pt) } else { path.addLine(to: pt) }
         }
         path.closeSubpath()
         return path
     }
+}
+
+// MARK: - Shimmer Modifier
+struct ShimmerModifier: ViewModifier {
+    @State private var phase: CGFloat = -1
+    let active: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .overlay(
+                Group {
+                    if active {
+                        LinearGradient(
+                            colors: [.clear, .white.opacity(0.3), .clear],
+                            startPoint: UnitPoint(x: phase, y: 0.5),
+                            endPoint:   UnitPoint(x: phase + 0.5, y: 0.5)
+                        )
+                        .onAppear {
+                            withAnimation(.linear(duration: 1.3).repeatForever(autoreverses: false)) {
+                                phase = 1.5
+                            }
+                        }
+                    }
+                }
+            )
+            .clipped()
+    }
+}
+
+extension View {
+    func shimmer(_ active: Bool = true) -> some View { modifier(ShimmerModifier(active: active)) }
 }

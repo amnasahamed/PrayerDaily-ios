@@ -3,6 +3,7 @@ import SwiftUI
 struct LibraryView: View {
     @State private var searchText = ""
     @State private var selectedCategory = 0
+    @State private var appeared = false
     private let categories = ["All", "Hadith", "Duas", "Tools"]
 
     var body: some View {
@@ -23,12 +24,16 @@ struct LibraryView: View {
                         }
                     }
                     .padding(.horizontal, AppTheme.screenPadding)
-                    .padding(.bottom, 30)
+                    .padding(.bottom, 120)
+                    .padding(.top, 8)
                 }
             }
             .navigationTitle("Library")
             .modifier(AlehaNavStyle())
             .searchable(text: $searchText, prompt: "Search hadith, duas...")
+            .onAppear {
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1)) { appeared = true }
+            }
         }
     }
 
@@ -37,7 +42,9 @@ struct LibraryView: View {
             HStack(spacing: 10) {
                 ForEach(0..<categories.count, id: \.self) { idx in
                     CategoryChip(title: categories[idx], isSelected: selectedCategory == idx) {
-                        withAnimation(.easeInOut(duration: 0.2)) { selectedCategory = idx }
+                        let gen = UIImpactFeedbackGenerator(style: .light)
+                        gen.impactOccurred()
+                        withAnimation(.easeInOut(duration: 0.25)) { selectedCategory = idx }
                     }
                 }
             }
@@ -47,11 +54,14 @@ struct LibraryView: View {
     private var hadithCollectionsSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             sectionHeader(title: "Hadith Collections", icon: "book.closed.fill")
-            ForEach(filteredCollections) { collection in
+            ForEach(Array(filteredCollections.enumerated()), id: \.element.id) { i, collection in
                 NavigationLink(destination: HadithCollectionDetailView(collection: collection)) {
                     HadithCollectionCard(collection: collection)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(SpringPressStyle())
+                .opacity(appeared ? 1 : 0)
+                .offset(y: appeared ? 0 : 16)
+                .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(Double(i) * 0.08), value: appeared)
             }
         }
     }
@@ -68,31 +78,36 @@ struct LibraryView: View {
         VStack(alignment: .leading, spacing: 14) {
             sectionHeader(title: "Dua Collection", icon: "hands.sparkles.fill")
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
-                DuaCategoryTile(title: "Morning", icon: "sunrise.fill", count: 12, color: Color.alehaAmber)
-                DuaCategoryTile(title: "Evening", icon: "sunset.fill", count: 12, color: Color.alehaDarkGreen)
-                DuaCategoryTile(title: "Travel", icon: "airplane", count: 8, color: Color.alehaGreen)
-                DuaCategoryTile(title: "Protection", icon: "shield.fill", count: 10, color: Color.noorGold)
+                DuaCategoryTile(title: "Morning",    icon: "sunrise.fill",   count: 12, color: Color.alehaAmber)
+                DuaCategoryTile(title: "Evening",    icon: "sunset.fill",    count: 12, color: Color.alehaDarkGreen)
+                DuaCategoryTile(title: "Travel",     icon: "airplane",       count: 8,  color: Color.alehaGreen)
+                DuaCategoryTile(title: "Protection", icon: "shield.fill",    count: 10, color: Color(red: 0.55, green: 0.30, blue: 0.85))
             }
         }
+        .opacity(appeared ? 1 : 0)
+        .offset(y: appeared ? 0 : 16)
+        .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.3), value: appeared)
     }
 
     private var toolsSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             sectionHeader(title: "Islamic Tools", icon: "wrench.and.screwdriver.fill")
             NavigationLink(destination: QiblaCompassView()) {
                 ToolRow(icon: "location.north.fill", title: "Qibla Compass", subtitle: "Find prayer direction", color: Color.alehaGreen)
             }
-            .buttonStyle(.plain)
-            ToolRow(icon: "rosette", title: "Dhikr Counter", subtitle: "Digital tasbeeh", color: Color.alehaAmber)
-            ToolRow(icon: "calendar.badge.clock", title: "Hijri Calendar", subtitle: "Islamic date converter", color: Color.alehaDarkGreen)
+            .buttonStyle(SpringPressStyle())
+            ToolRow(icon: "rosette",                  title: "Dhikr Counter",  subtitle: "Digital tasbeeh",        color: Color.alehaAmber)
+            ToolRow(icon: "calendar.badge.clock",     title: "Hijri Calendar", subtitle: "Islamic date converter", color: Color.alehaDarkGreen)
         }
+        .opacity(appeared ? 1 : 0)
+        .offset(y: appeared ? 0 : 16)
+        .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.4), value: appeared)
     }
 
     private func sectionHeader(title: String, icon: String) -> some View {
         HStack(spacing: 8) {
-            Image(systemName: icon)
-                .foregroundStyle(Color.alehaGreen)
-                .font(.subheadline)
+            RoundedRectangle(cornerRadius: 2).fill(Color.alehaGreen).frame(width: 4, height: 18)
+            Image(systemName: icon).foregroundStyle(Color.alehaGreen).font(.subheadline)
             Text(title).font(.headline.weight(.bold))
             Spacer()
         }
@@ -113,61 +128,57 @@ struct CategoryChip: View {
                 .foregroundStyle(isSelected ? .white : .primary)
                 .padding(.horizontal, 18)
                 .padding(.vertical, 9)
-                .background(isSelected ? Color.alehaGreen : (cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.7)))
+                .background(isSelected
+                             ? Color.alehaGreen
+                             : (cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.75)))
                 .clipShape(Capsule())
-                .overlay(
-                    Capsule().stroke(isSelected ? Color.clear : (cs == .dark ? Color.white.opacity(0.06) : Color.black.opacity(0.05)), lineWidth: 0.5)
-                )
+                .overlay(Capsule().stroke(isSelected ? Color.clear : (cs == .dark ? Color.white.opacity(0.06) : Color.black.opacity(0.06)), lineWidth: 0.5))
         }
+        .buttonStyle(SpringPressStyle())
     }
 }
 
 // MARK: - Dua Category Tile
 struct DuaCategoryTile: View {
-    let title: String
-    let icon: String
-    let count: Int
-    let color: Color
+    let title: String; let icon: String; let count: Int; let color: Color
+    @State private var pressed = false
     @Environment(\.colorScheme) var cs
 
     var body: some View {
-        VStack(spacing: 10) {
-            ZStack {
-                Circle()
-                    .fill(color.opacity(0.12))
-                    .frame(width: 44, height: 44)
-                Image(systemName: icon)
-                    .font(.title3)
-                    .foregroundStyle(color)
+        Button {
+            let gen = UIImpactFeedbackGenerator(style: .light); gen.impactOccurred()
+            pressed = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { pressed = false }
+        } label: {
+            VStack(spacing: 10) {
+                ZStack {
+                    Circle().fill(color.opacity(0.13)).frame(width: 48, height: 48)
+                    Image(systemName: icon).font(.title3).foregroundStyle(color)
+                }
+                Text(title).font(.subheadline.weight(.semibold))
+                Text("\(count) duas").font(.caption).foregroundStyle(.secondary)
             }
-            Text(title).font(.subheadline.weight(.semibold))
-            Text("\(count) duas").font(.caption).foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 20)
+            .background(cs == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.85))
+            .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous).stroke(cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.6), lineWidth: 0.5))
+            .scaleEffect(pressed ? 0.95 : 1.0)
+            .animation(.spring(response: 0.25, dampingFraction: 0.6), value: pressed)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 18)
-        .background(cs == .dark ? Color.white.opacity(0.05) : Color.white.opacity(0.7))
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                .stroke(cs == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.5), lineWidth: 0.5)
-        )
+        .buttonStyle(.plain)
     }
 }
 
 // MARK: - Tool Row
 struct ToolRow: View {
-    let icon: String
-    let title: String
-    let subtitle: String
-    let color: Color
+    let icon: String; let title: String; let subtitle: String; let color: Color
     @Environment(\.colorScheme) var cs
 
     var body: some View {
         HStack(spacing: 14) {
             ZStack {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(color.opacity(0.12))
-                    .frame(width: 46, height: 46)
+                RoundedRectangle(cornerRadius: 12, style: .continuous).fill(color.opacity(0.12)).frame(width: 48, height: 48)
                 Image(systemName: icon).font(.title3).foregroundStyle(color)
             }
             VStack(alignment: .leading, spacing: 3) {
@@ -175,14 +186,11 @@ struct ToolRow: View {
                 Text(subtitle).font(.caption).foregroundStyle(.secondary)
             }
             Spacer()
-            Image(systemName: "chevron.right").font(.caption).foregroundStyle(.tertiary)
+            Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(.tertiary)
         }
-        .padding(14)
-        .background(cs == .dark ? Color.white.opacity(0.05) : Color.white.opacity(0.7))
+        .padding(16)
+        .background(cs == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.85))
         .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                .stroke(cs == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.5), lineWidth: 0.5)
-        )
+        .overlay(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous).stroke(cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.6), lineWidth: 0.5))
     }
 }

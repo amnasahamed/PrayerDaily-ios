@@ -6,24 +6,25 @@ struct NoorApp: App {
 
     var body: some Scene {
         WindowGroup {
-            TabView(selection: $selectedTab) {
-                HomeView()
-                    .tabItem { Label(AppTab.home.rawValue, systemImage: AppTab.home.icon) }
-                    .tag(AppTab.home)
-                SurahListView()
-                    .tabItem { Label(AppTab.quran.rawValue, systemImage: AppTab.quran.icon) }
-                    .tag(AppTab.quran)
-                SalahDashboard()
-                    .tabItem { Label(AppTab.salah.rawValue, systemImage: AppTab.salah.icon) }
-                    .tag(AppTab.salah)
-                LibraryView()
-                    .tabItem { Label(AppTab.library.rawValue, systemImage: AppTab.library.icon) }
-                    .tag(AppTab.library)
-                MorePlaceholderView()
-                    .tabItem { Label(AppTab.more.rawValue, systemImage: AppTab.more.icon) }
-                    .tag(AppTab.more)
+            ZStack(alignment: .bottom) {
+                TabView(selection: $selectedTab) {
+                    HomeView()
+                        .tag(AppTab.home)
+                    SurahListView()
+                        .tag(AppTab.quran)
+                    SalahDashboard()
+                        .tag(AppTab.salah)
+                    LibraryView()
+                        .tag(AppTab.library)
+                    MorePlaceholderView()
+                        .tag(AppTab.more)
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .animation(.spring(response: 0.38, dampingFraction: 0.85), value: selectedTab)
+
+                FloatingTabBar(selectedTab: $selectedTab)
             }
-            .tint(Color.alehaGreen)
+            .ignoresSafeArea(.keyboard)
         }
     }
 }

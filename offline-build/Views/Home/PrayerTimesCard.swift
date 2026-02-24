@@ -7,21 +7,22 @@ struct PrayerTimesCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             headerRow
-            if service.isLoading {
-                HStack { Spacer(); ProgressView(); Spacer() }.padding(.vertical, 8)
-            } else if !service.prayerTimes.isEmpty {
-                timesGrid
-            } else {
-                emptyState
-            }
-            if !service.hijriDate.isEmpty {
-                Text(service.hijriDate)
-                    .font(.caption2).foregroundStyle(.tertiary)
-                    .frame(maxWidth: .infinity, alignment: .center)
-            }
+            contentBody
+            hijriLabel
         }
-        .noorCard()
+        .alehaCard()
         .onAppear { service.requestLocation() }
+    }
+
+    @ViewBuilder
+    private var contentBody: some View {
+        if service.isLoading {
+            HStack { Spacer(); ProgressView(); Spacer() }.padding(.vertical, 8)
+        } else if !service.prayerTimes.isEmpty {
+            timesGrid
+        } else {
+            emptyState
+        }
     }
 
     private var headerRow: some View {
@@ -60,7 +61,7 @@ struct PrayerTimesCard: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)
                 .background(isNext ? Color("NoorGold").opacity(0.1) : Color.clear)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
         }
     }
@@ -71,7 +72,15 @@ struct PrayerTimesCard: View {
                 .font(.caption.weight(.medium))
                 .foregroundStyle(Color("NoorPrimary"))
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity).padding(.vertical, 8)
+    }
+
+    @ViewBuilder
+    private var hijriLabel: some View {
+        if !service.hijriDate.isEmpty {
+            Text(service.hijriDate)
+                .font(.caption2).foregroundStyle(.tertiary)
+                .frame(maxWidth: .infinity, alignment: .center)
+        }
     }
 }

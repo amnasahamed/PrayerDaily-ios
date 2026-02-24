@@ -28,15 +28,35 @@ struct TranslationAyah: Codable {
     let text: String
 }
 
+// MARK: - Tafsir Response
+struct TafsirResponse: Codable {
+    let data: TafsirData
+}
+
+struct TafsirData: Codable {
+    let ayahs: [TafsirAyah]
+}
+
+struct TafsirAyah: Codable {
+    let numberInSurah: Int
+    let text: String
+}
+
 // MARK: - API Service
 class QuranAPIService {
     static let shared = QuranAPIService()
-    private let cache = NSCache<NSString, NSArray>()
+    private let memoryCache = NSCache<NSString, NSArray>()
 
     func fetchVerses(surahId: Int) async throws -> [Verse] {
         let key = NSString(string: "surah-\(surahId)")
-        if let cached = cache.object(forKey: key) as? [Verse] {
+        if let cached = memoryCache.object(forKey: key) as? [Verse] {
             return cached
+        }
+
+        // Check disk cache
+        if let diskCached = OfflineCacheService.shared.loadCachedVerses(surahId: surahId) {
+            memoryCache.setObject(diskCached as NSArray, forKey: key)
+            return diskCached
         }
 
         let arabicURL = URL(string: "https://api.alquran.cloud/v1/surah/\(surahId)/ar.alafasy")!
@@ -61,7 +81,15 @@ class QuranAPIService {
             )
         }
 
-        cache.setObject(verses as NSArray, forKey: key)
+        memoryCache.setObject(verses as NSArray, forKey: key)
+        OfflineCacheService.shared.cacheVerses(verses, surahId: surahId)
         return verses
+    }
+
+    func fetchTafsir(surahId: Int) async throws -> [Int: String] {
+        let url = URL(string: "https://api.alquran.cloud/v1/surah/\(surahId)/en.ibn-kathir")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let response = try JSONDecoder().decode(TafsirResponse.self, from: data)
+        return Dictionary(uniqueKeysWithValues: response.data.ayahs.map { ($0.numberInSurah, $0.text) })
     }
 }

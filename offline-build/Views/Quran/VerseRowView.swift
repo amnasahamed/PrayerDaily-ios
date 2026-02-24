@@ -7,15 +7,15 @@ struct VerseRowView: View {
     let onPlay: () -> Void
     let onBookmark: () -> Void
     let isBookmarked: Bool
+    var onTafsir: (() -> Void)? = nil
 
     @Environment(\.colorScheme) var colorScheme
 
     private var isCurrentlyPlaying: Bool {
         switch audioState {
         case .playing(let s, let v): return s == verse.surahId && v == verse.number
-        case .loading: return false
         case .paused(let s, let v): return s == verse.surahId && v == verse.number
-        case .idle: return false
+        default: return false
         }
     }
 
@@ -30,15 +30,12 @@ struct VerseRowView: View {
         VStack(alignment: .trailing, spacing: 12) {
             verseHeader
             arabicText
-            if showTranslation {
-                translationText
-            }
+            if showTranslation { translationText }
         }
         .padding(16)
         .background(verseBackground)
     }
 
-    // MARK: - Header
     private var verseHeader: some View {
         HStack {
             verseNumberBadge
@@ -63,6 +60,13 @@ struct VerseRowView: View {
                     .font(.subheadline)
                     .foregroundStyle(isCurrentlyPlaying ? Color("NoorGold") : Color("NoorPrimary"))
             }
+            if let onTafsir = onTafsir {
+                Button(action: onTafsir) {
+                    Image(systemName: "text.magnifyingglass")
+                        .font(.subheadline)
+                        .foregroundStyle(Color("NoorAccent"))
+                }
+            }
             Button(action: onBookmark) {
                 Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
                     .font(.subheadline)
@@ -77,7 +81,6 @@ struct VerseRowView: View {
         return "play.circle"
     }
 
-    // MARK: - Text
     private var arabicText: some View {
         Text(verse.arabic)
             .font(.system(size: 26))

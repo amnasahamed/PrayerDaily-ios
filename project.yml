@@ -38,6 +38,10 @@ targets:
         CFBundleIconName: AppIcon
         ITSAppUsesNonExemptEncryption: false
         LSRequiresIPhoneOS: true
+        NSLocationWhenInUseUsageDescription: "Aleha needs your location to calculate accurate prayer times for your area."
+        UIBackgroundModes:
+          - fetch
+          - processing
         UIApplicationSupportsIndirectInputEvents: true
         UILaunchStoryboardName: LaunchScreen
         UIRequiredDeviceCapabilities: [arm64]

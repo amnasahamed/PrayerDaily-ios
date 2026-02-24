@@ -8,7 +8,9 @@ struct HomeView: View {
         NavigationStack {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 20) {
+                    prayerTimesSection
                     dailyReflectionCard
+                    readingProgressSection
                     prayerTrackerSection
                     streakSection
                     quickAccessGrid
@@ -18,14 +20,17 @@ struct HomeView: View {
                 .padding(.bottom, 30)
             }
             .background(Color("NoorSurface").ignoresSafeArea())
-            .navigationTitle("Noor")
+            .navigationTitle("Aleha")
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbarBackground(Color("NoorPrimary"), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
         }
     }
 
-    // MARK: - Daily Reflection
+    private var prayerTimesSection: some View {
+        PrayerTimesCard()
+    }
+
     private var dailyReflectionCard: some View {
         DailyReflectionCard(
             arabic: SampleData.dailyAyah.arabic,
@@ -35,22 +40,22 @@ struct HomeView: View {
         )
     }
 
-    // MARK: - Prayer Tracker
+    private var readingProgressSection: some View {
+        ReadingProgressCard()
+    }
+
     private var prayerTrackerSection: some View {
         PrayerTrackerCard(prayers: $todayPrayers)
     }
 
-    // MARK: - Streak
     private var streakSection: some View {
         StreakCard(streak: streak)
     }
 
-    // MARK: - Quick Access
     private var quickAccessGrid: some View {
         QuickAccessSection()
     }
 
-    // MARK: - Hadith
     private var hadithOfDayCard: some View {
         HadithCard(hadith: SampleData.hadiths[0])
     }

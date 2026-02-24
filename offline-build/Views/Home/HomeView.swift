@@ -9,7 +9,7 @@ struct HomeView: View {
             ZStack {
                 CalmingBackground()
                 ScrollView(.vertical, showsIndicators: false) {
-                    VStack(spacing: 20) {
+                    VStack(spacing: 22) {
                         heroSection
                         prayerTimesSection
                         dailyReflection
@@ -43,31 +43,34 @@ struct HomeView: View {
     }
 
     private var greetingColumn: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 6) {
             Text(greetingText)
-                .font(.title2.weight(.bold))
+                .font(.system(size: 28, weight: .bold, design: .rounded))
                 .foregroundStyle(.primary)
             Text("السلام عليكم")
-                .font(.title3.weight(.medium))
-                .foregroundStyle(Color.alehaGreen.opacity(0.8))
+                .font(.system(size: 20, weight: .medium, design: .serif))
+                .foregroundStyle(Color.alehaGreen.opacity(0.75))
         }
     }
 
     private var greetingText: String {
         let h = Calendar.current.component(.hour, from: Date())
-        if h < 12 { return "Good Morning" }
-        if h < 17 { return "Good Afternoon" }
-        return "Good Evening"
+        if h < 12 { return "Good Morning ☀️" }
+        if h < 17 { return "Good Afternoon 🌤" }
+        return "Good Evening 🌙"
     }
 
     private var crescentMark: some View {
         ZStack {
             Circle()
-                .fill(Color.alehaAmber.opacity(0.12))
-                .frame(width: 52, height: 52)
+                .fill(
+                    RadialGradient(colors: [Color.alehaAmber.opacity(0.2), Color.alehaAmber.opacity(0.02)],
+                                   center: .center, startRadius: 2, endRadius: 30)
+                )
+                .frame(width: 60, height: 60)
             CrescentShape()
-                .fill(Color.alehaAmber)
-                .frame(width: 26, height: 26)
+                .fill(Color.alehaAmber.opacity(0.8))
+                .frame(width: 28, height: 28)
         }
     }
 

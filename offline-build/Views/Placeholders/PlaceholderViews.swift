@@ -1,60 +1,43 @@
 import SwiftUI
 
-// MARK: - Library
-struct LibraryPlaceholderView: View {
-    var body: some View {
-        NavigationStack {
-            PlaceholderContent(
-                icon: "books.vertical.fill",
-                title: "Islamic Knowledge Vault",
-                subtitle: "Your pocket Islamic library. Hadith collections, Seerah, Prophet stories, duas, and more.",
-                features: ["40 Hadith collection", "Sahih Hadith selections", "Seerah timeline", "Stories of 25 Prophets", "Dua by situation", "Islamic quotes database"]
-            )
-            .navigationTitle("Library")
-            .toolbarColorScheme(.dark, for: .navigationBar)
-            .toolbarBackground(Color("NoorPrimary"), for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
-        }
-    }
-}
-
 // MARK: - More
 struct MorePlaceholderView: View {
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-                    NavigationLink(destination: EmergencyGuidesView()) {
-                        MoreMenuRow(icon: "cross.case.fill", title: "Emergency Guides", subtitle: "Janazah, Ruqyah, Nikah & Travel Duas", color: "NoorAccent")
+            ZStack {
+                CalmingBackground()
+                ScrollView {
+                    VStack(spacing: 14) {
+                        NavigationLink(destination: EmergencyGuidesView()) {
+                            MoreMenuRow(icon: "cross.case.fill", title: "Emergency Guides", subtitle: "Janazah, Ruqyah, Nikah & Travel Duas", color: Color.alehaAmber)
+                        }
+                        .buttonStyle(.plain)
+                        MoreMenuRow(icon: "person.crop.circle.fill", title: "Profile", subtitle: "Your settings & preferences", color: Color.alehaGreen)
+                        MoreMenuRow(icon: "moon.stars.fill", title: "Night Mode", subtitle: "Dark theme for late reading", color: Color.alehaDarkGreen)
+                        MoreMenuRow(icon: "arrow.down.circle.fill", title: "Offline Cache", subtitle: "\(OfflineCacheService.shared.cachedSurahCount()) surahs cached (\(OfflineCacheService.shared.cacheSizeString()))", color: Color.alehaAmber)
                     }
-                    .buttonStyle(.plain)
-
-                    MoreMenuRow(icon: "person.crop.circle.fill", title: "Profile", subtitle: "Your settings & preferences", color: "NoorPrimary")
-                    MoreMenuRow(icon: "moon.stars.fill", title: "Night Mode", subtitle: "Dark theme for late reading", color: "NoorSecondary")
-                    MoreMenuRow(icon: "arrow.down.circle.fill", title: "Offline Cache", subtitle: "\(OfflineCacheService.shared.cachedSurahCount()) surahs cached (\(OfflineCacheService.shared.cacheSizeString()))", color: "NoorGold")
+                    .padding(AppTheme.screenPadding)
                 }
-                .padding(AppTheme.screenPadding)
             }
-            .background(Color("NoorSurface").ignoresSafeArea())
             .navigationTitle("More")
-            .toolbarColorScheme(.dark, for: .navigationBar)
-            .toolbarBackground(Color("NoorPrimary"), for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .modifier(AlehaNavStyle())
         }
     }
 }
 
 struct MoreMenuRow: View {
-    let icon: String; let title: String; let subtitle: String; let color: String
+    let icon: String; let title: String; let subtitle: String; let color: Color
     @Environment(\.colorScheme) var cs
     var body: some View {
         HStack(spacing: 14) {
-            Image(systemName: icon)
-                .font(.title3).foregroundStyle(Color(color))
-                .frame(width: 44, height: 44)
-                .background(Color(color).opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-            VStack(alignment: .leading, spacing: 2) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(color.opacity(0.12))
+                    .frame(width: 46, height: 46)
+                Image(systemName: icon)
+                    .font(.title3).foregroundStyle(color)
+            }
+            VStack(alignment: .leading, spacing: 3) {
                 Text(title).font(.subheadline.weight(.semibold))
                 Text(subtitle).font(.caption).foregroundStyle(.secondary)
             }
@@ -62,9 +45,12 @@ struct MoreMenuRow: View {
             Image(systemName: "chevron.right").font(.caption).foregroundStyle(.tertiary)
         }
         .padding(14)
-        .background(cs == .dark ? Color(.systemGray6) : .white)
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius))
-        .shadow(color: .black.opacity(cs == .dark ? 0.3 : 0.05), radius: 6, y: 3)
+        .background(cs == .dark ? Color.white.opacity(0.05) : Color.white.opacity(0.7))
+        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .stroke(cs == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.5), lineWidth: 0.5)
+        )
     }
 }
 
@@ -78,12 +64,12 @@ struct PlaceholderContent: View {
             }
             .padding(AppTheme.screenPadding)
         }
-        .background(Color("NoorSurface").ignoresSafeArea())
+        .background(CalmingBackground())
     }
     private var iconHeader: some View {
         VStack(spacing: 12) {
-            Image(systemName: icon).font(.system(size: 50)).foregroundStyle(Color("NoorPrimary"))
-                .padding(24).background(Color("NoorPrimary").opacity(0.1)).clipShape(Circle())
+            Image(systemName: icon).font(.system(size: 50)).foregroundStyle(Color.alehaGreen)
+                .padding(24).background(Color.alehaGreen.opacity(0.1)).clipShape(Circle())
             Text(title).font(.title2.weight(.bold))
         }.padding(.top, 20)
     }
@@ -95,15 +81,15 @@ struct PlaceholderContent: View {
             Text("Planned Features").font(.subheadline.weight(.semibold))
             ForEach(features, id: \.self) { f in
                 HStack(spacing: 10) {
-                    Image(systemName: "checkmark.circle.fill").foregroundStyle(Color("NoorPrimary"))
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.alehaGreen)
                     Text(f).font(.subheadline)
                 }
             }
         }.frame(maxWidth: .infinity, alignment: .leading).noorCard()
     }
     private var comingSoonBadge: some View {
-        Text("Coming Soon").font(.caption.weight(.semibold)).foregroundStyle(Color("NoorGold"))
+        Text("Coming Soon").font(.caption.weight(.semibold)).foregroundStyle(Color.alehaAmber)
             .padding(.horizontal, 16).padding(.vertical, 8)
-            .background(Color("NoorGold").opacity(0.12)).clipShape(Capsule())
+            .background(Color.alehaAmber.opacity(0.12)).clipShape(Capsule())
     }
 }

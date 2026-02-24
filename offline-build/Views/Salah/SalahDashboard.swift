@@ -17,11 +17,9 @@ struct SalahDashboard: View {
                 sectionPicker
                 tabContent
             }
-            .background(Color("NoorSurface").ignoresSafeArea())
+            .background(CalmingBackground())
             .navigationTitle("Salah Tracker")
-            .toolbarColorScheme(.dark, for: .navigationBar)
-            .toolbarBackground(Color("NoorPrimary"), for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .modifier(AlehaNavStyle())
         }
         .environmentObject(store)
     }
@@ -36,7 +34,6 @@ struct SalahDashboard: View {
             .padding(.horizontal, AppTheme.screenPadding)
             .padding(.vertical, 12)
         }
-        .background(Color("NoorSurface"))
     }
 
     private func sectionChip(_ section: SalahSection) -> some View {
@@ -49,7 +46,7 @@ struct SalahDashboard: View {
                 .foregroundStyle(isSelected ? .white : .primary)
                 .padding(.horizontal, 18)
                 .padding(.vertical, 9)
-                .background(isSelected ? Color("NoorPrimary") : Color(.systemGray5))
+                .background(isSelected ? Color.alehaGreen : Color(.systemGray5).opacity(0.6))
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)
@@ -58,14 +55,10 @@ struct SalahDashboard: View {
     @ViewBuilder
     private var tabContent: some View {
         switch selectedSection {
-        case .today:
-            TodayPrayerView()
-        case .calendar:
-            CalendarPrayerView()
-        case .qada:
-            QadaTrackerView()
-        case .dhikr:
-            DhikrCounterView()
+        case .today: TodayPrayerView()
+        case .calendar: CalendarPrayerView()
+        case .qada: QadaTrackerView()
+        case .dhikr: DhikrCounterView()
         }
     }
 }

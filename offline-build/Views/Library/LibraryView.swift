@@ -7,32 +7,31 @@ struct LibraryView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 20) {
-                    categoryPicker
-                    if selectedCategory == 0 || selectedCategory == 1 {
-                        hadithCollectionsSection
+            ZStack {
+                CalmingBackground()
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 22) {
+                        categoryPicker
+                        if selectedCategory == 0 || selectedCategory == 1 {
+                            hadithCollectionsSection
+                        }
+                        if selectedCategory == 0 || selectedCategory == 2 {
+                            duaSection
+                        }
+                        if selectedCategory == 0 || selectedCategory == 3 {
+                            toolsSection
+                        }
                     }
-                    if selectedCategory == 0 || selectedCategory == 2 {
-                        duaSection
-                    }
-                    if selectedCategory == 0 || selectedCategory == 3 {
-                        toolsSection
-                    }
+                    .padding(.horizontal, AppTheme.screenPadding)
+                    .padding(.bottom, 30)
                 }
-                .padding(.horizontal, AppTheme.screenPadding)
-                .padding(.bottom, 30)
             }
-            .background(Color("NoorSurface").ignoresSafeArea())
             .navigationTitle("Library")
-            .toolbarColorScheme(.dark, for: .navigationBar)
-            .toolbarBackground(Color("NoorPrimary"), for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .modifier(AlehaNavStyle())
             .searchable(text: $searchText, prompt: "Search hadith, duas...")
         }
     }
 
-    // MARK: - Category Picker
     private var categoryPicker: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
@@ -45,7 +44,6 @@ struct LibraryView: View {
         }
     }
 
-    // MARK: - Hadith Collections
     private var hadithCollectionsSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             sectionHeader(title: "Hadith Collections", icon: "book.closed.fill")
@@ -66,35 +64,35 @@ struct LibraryView: View {
         }
     }
 
-    // MARK: - Duas Section
     private var duaSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             sectionHeader(title: "Dua Collection", icon: "hands.sparkles.fill")
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                DuaCategoryTile(title: "Morning", icon: "sunrise.fill", count: 12, color: Color("NoorGold"))
-                DuaCategoryTile(title: "Evening", icon: "sunset.fill", count: 12, color: Color("NoorAccent"))
-                DuaCategoryTile(title: "Travel", icon: "airplane", count: 8, color: Color("NoorPrimary"))
-                DuaCategoryTile(title: "Protection", icon: "shield.fill", count: 10, color: Color("NoorSecondary"))
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
+                DuaCategoryTile(title: "Morning", icon: "sunrise.fill", count: 12, color: Color.alehaAmber)
+                DuaCategoryTile(title: "Evening", icon: "sunset.fill", count: 12, color: Color.alehaDarkGreen)
+                DuaCategoryTile(title: "Travel", icon: "airplane", count: 8, color: Color.alehaGreen)
+                DuaCategoryTile(title: "Protection", icon: "shield.fill", count: 10, color: Color.noorGold)
             }
         }
     }
 
-    // MARK: - Tools Section
     private var toolsSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             sectionHeader(title: "Islamic Tools", icon: "wrench.and.screwdriver.fill")
             NavigationLink(destination: QiblaCompassView()) {
-                ToolRow(icon: "location.north.fill", title: "Qibla Compass", subtitle: "Find prayer direction", color: Color("NoorPrimary"))
+                ToolRow(icon: "location.north.fill", title: "Qibla Compass", subtitle: "Find prayer direction", color: Color.alehaGreen)
             }
             .buttonStyle(.plain)
-            ToolRow(icon: "rosette", title: "Dhikr Counter", subtitle: "Digital tasbeeh", color: Color("NoorGold"))
-            ToolRow(icon: "calendar.badge.clock", title: "Hijri Calendar", subtitle: "Islamic date converter", color: Color("NoorAccent"))
+            ToolRow(icon: "rosette", title: "Dhikr Counter", subtitle: "Digital tasbeeh", color: Color.alehaAmber)
+            ToolRow(icon: "calendar.badge.clock", title: "Hijri Calendar", subtitle: "Islamic date converter", color: Color.alehaDarkGreen)
         }
     }
 
     private func sectionHeader(title: String, icon: String) -> some View {
         HStack(spacing: 8) {
-            Image(systemName: icon).foregroundStyle(Color("NoorPrimary"))
+            Image(systemName: icon)
+                .foregroundStyle(Color.alehaGreen)
+                .font(.subheadline)
             Text(title).font(.headline.weight(.bold))
             Spacer()
         }
@@ -106,16 +104,20 @@ struct CategoryChip: View {
     let title: String
     let isSelected: Bool
     let action: () -> Void
+    @Environment(\.colorScheme) var cs
 
     var body: some View {
         Button(action: action) {
             Text(title)
                 .font(.subheadline.weight(isSelected ? .semibold : .regular))
                 .foregroundStyle(isSelected ? .white : .primary)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
-                .background(isSelected ? Color("NoorPrimary") : Color(.systemGray5))
+                .padding(.horizontal, 18)
+                .padding(.vertical, 9)
+                .background(isSelected ? Color.alehaGreen : (cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.7)))
                 .clipShape(Capsule())
+                .overlay(
+                    Capsule().stroke(isSelected ? Color.clear : (cs == .dark ? Color.white.opacity(0.06) : Color.black.opacity(0.05)), lineWidth: 0.5)
+                )
         }
     }
 }
@@ -129,16 +131,26 @@ struct DuaCategoryTile: View {
     @Environment(\.colorScheme) var cs
 
     var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: icon).font(.title2).foregroundStyle(color)
+        VStack(spacing: 10) {
+            ZStack {
+                Circle()
+                    .fill(color.opacity(0.12))
+                    .frame(width: 44, height: 44)
+                Image(systemName: icon)
+                    .font(.title3)
+                    .foregroundStyle(color)
+            }
             Text(title).font(.subheadline.weight(.semibold))
             Text("\(count) duas").font(.caption).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 16)
-        .background(cs == .dark ? Color(.systemGray6) : .white)
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius))
-        .shadow(color: .black.opacity(cs == .dark ? 0.3 : 0.05), radius: 4, y: 2)
+        .padding(.vertical, 18)
+        .background(cs == .dark ? Color.white.opacity(0.05) : Color.white.opacity(0.7))
+        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .stroke(cs == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.5), lineWidth: 0.5)
+        )
     }
 }
 
@@ -152,11 +164,13 @@ struct ToolRow: View {
 
     var body: some View {
         HStack(spacing: 14) {
-            Image(systemName: icon).font(.title3).foregroundStyle(color)
-                .frame(width: 44, height: 44)
-                .background(color.opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-            VStack(alignment: .leading, spacing: 2) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(color.opacity(0.12))
+                    .frame(width: 46, height: 46)
+                Image(systemName: icon).font(.title3).foregroundStyle(color)
+            }
+            VStack(alignment: .leading, spacing: 3) {
                 Text(title).font(.subheadline.weight(.semibold))
                 Text(subtitle).font(.caption).foregroundStyle(.secondary)
             }
@@ -164,8 +178,11 @@ struct ToolRow: View {
             Image(systemName: "chevron.right").font(.caption).foregroundStyle(.tertiary)
         }
         .padding(14)
-        .background(cs == .dark ? Color(.systemGray6) : .white)
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius))
-        .shadow(color: .black.opacity(cs == .dark ? 0.3 : 0.05), radius: 6, y: 3)
+        .background(cs == .dark ? Color.white.opacity(0.05) : Color.white.opacity(0.7))
+        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .stroke(cs == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.5), lineWidth: 0.5)
+        )
     }
 }

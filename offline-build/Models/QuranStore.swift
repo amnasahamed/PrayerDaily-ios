@@ -1,0 +1,126 @@
+import Foundation
+import AVFoundation
+import Combine
+
+// MARK: - Full Surah Data
+struct SurahInfo: Identifiable, Hashable {
+    let id: Int
+    let nameArabic: String
+    let nameEnglish: String
+    let nameTransliteration: String
+    let meaning: String
+    let verses: Int
+    let type: String
+    let juz: Int
+}
+
+// MARK: - Verse
+struct Verse: Identifiable {
+    var id: String { "\(surahId)-\(number)" }
+    let surahId: Int
+    let number: Int
+    let arabic: String
+    let translation: String
+}
+
+// MARK: - Audio State
+enum AudioPlayState: Equatable {
+    case idle
+    case loading
+    case playing(surahId: Int, verseNum: Int)
+    case paused(surahId: Int, verseNum: Int)
+}
+
+// MARK: - Quran Store
+@MainActor
+class QuranStore: ObservableObject {
+    @Published var bookmarks: Set<String> = [] // "surahId-verseNum"
+    @Published var lastRead: (surahId: Int, verse: Int)? = nil
+    @Published var audioState: AudioPlayState = .idle
+
+    private var player: AVPlayer?
+    private var playerObserver: Any?
+
+    static let shared = QuranStore()
+
+    func toggleBookmark(surahId: Int, verse: Int) {
+        let key = "\(surahId)-\(verse)"
+        if bookmarks.contains(key) {
+            bookmarks.remove(key)
+        } else {
+            bookmarks.insert(key)
+        }
+    }
+
+    func isBookmarked(surahId: Int, verse: Int) -> Bool {
+        bookmarks.contains("\(surahId)-\(verse)")
+    }
+
+    func setLastRead(surahId: Int, verse: Int) {
+        lastRead = (surahId, verse)
+    }
+
+    // MARK: - Audio
+    func playVerse(surahId: Int, verseNum: Int) {
+        stopAudio()
+        audioState = .loading
+
+        let surahStr = String(format: "%03d", surahId)
+        let verseStr = String(format: "%03d", verseNum)
+        let urlString = "https://cdn.islamic.network/quran/audio/128/ar.alafasy/\(computeAbsoluteVerse(surah: surahId, verse: verseNum)).mp3"
+
+        guard let url = URL(string: urlString) else {
+            audioState = .idle
+            return
+        }
+
+        let item = AVPlayerItem(url: url)
+        player = AVPlayer(playerItem: item)
+
+        playerObserver = NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemDidPlayToEndTime,
+            object: item,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.audioState = .idle
+            }
+        }
+
+        player?.play()
+        audioState = .playing(surahId: surahId, verseNum: verseNum)
+    }
+
+    func stopAudio() {
+        player?.pause()
+        player = nil
+        if let obs = playerObserver {
+            NotificationCenter.default.removeObserver(obs)
+            playerObserver = nil
+        }
+        audioState = .idle
+    }
+
+    func togglePause(surahId: Int, verseNum: Int) {
+        switch audioState {
+        case .playing(let s, let v) where s == surahId && v == verseNum:
+            player?.pause()
+            audioState = .paused(surahId: s, verseNum: v)
+        case .paused(let s, let v) where s == surahId && v == verseNum:
+            player?.play()
+            audioState = .playing(surahId: s, verseNum: v)
+        default:
+            playVerse(surahId: surahId, verseNum: verseNum)
+        }
+    }
+
+    // Compute absolute verse number for audio API
+    private func computeAbsoluteVerse(surah: Int, verse: Int) -> Int {
+        let verseCounts = [0,7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6]
+        var total = 0
+        for i in 1..<surah {
+            if i < verseCounts.count { total += verseCounts[i] }
+        }
+        return total + verse
+    }
+}

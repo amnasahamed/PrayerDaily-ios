@@ -10,7 +10,7 @@ struct NoorApp: App {
                 HomeView()
                     .tabItem { Label(AppTab.home.rawValue, systemImage: AppTab.home.icon) }
                     .tag(AppTab.home)
-                QuranPlaceholderView()
+                SurahListView()
                     .tabItem { Label(AppTab.quran.rawValue, systemImage: AppTab.quran.icon) }
                     .tag(AppTab.quran)
                 SalahDashboard()

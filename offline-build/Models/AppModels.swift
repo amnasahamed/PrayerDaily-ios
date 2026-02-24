@@ -20,7 +20,7 @@ enum AppTab: String, CaseIterable {
 }
 
 // MARK: - Prayer
-enum Prayer: String, CaseIterable, Identifiable {
+enum Prayer: String, CaseIterable, Identifiable, Codable {
     case fajr = "Fajr"
     case dhuhr = "Dhuhr"
     case asr = "Asr"

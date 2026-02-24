@@ -13,7 +13,7 @@ struct NoorApp: App {
                 QuranPlaceholderView()
                     .tabItem { Label(AppTab.quran.rawValue, systemImage: AppTab.quran.icon) }
                     .tag(AppTab.quran)
-                SalahPlaceholderView()
+                SalahDashboard()
                     .tabItem { Label(AppTab.salah.rawValue, systemImage: AppTab.salah.icon) }
                     .tag(AppTab.salah)
                 LibraryPlaceholderView()

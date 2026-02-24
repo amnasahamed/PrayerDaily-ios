@@ -1,0 +1,301 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0011D2A9A44DA9CEEDF790AB /* PrayerTrackerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F27A462BD711D77AA544F8EF /* PrayerTrackerCard.swift */; };
+		1231E2248728021C214FEEEA /* QuickAccessSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5FA503527474C0588A09DC5 /* QuickAccessSection.swift */; };
+		1889D2D2D0613C27325EB5B5 /* ColorAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC4AD52DF8E393B67B40BAF /* ColorAssets.swift */; };
+		1C535E083C00EE95C01AB535 /* PlaceholderViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC3D1A619275EB4CDB9F853 /* PlaceholderViews.swift */; };
+		2343CC2756FC540E3404CEB7 /* StreakCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD35CC1985099BDF2EE042E /* StreakCard.swift */; };
+		37431E9D2788A1AB93272716 /* DailyReflectionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7A56891A9136075680FB4D /* DailyReflectionCard.swift */; };
+		47000118B2BE4AB70CE5FF95 /* NoorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9770DA743A6BD676FAFFF73 /* NoorApp.swift */; };
+		54F505206100F43AFD347639 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F133255393F84EA34910EB98 /* SampleData.swift */; };
+		5D4F5CDCC3FCA7AE47B04D80 /* AppModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CC04AFC65AF0D0DF555172 /* AppModels.swift */; };
+		8D125E6185BE90486F2DF300 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7A6EADD77F6AF34431D8FD /* AppTheme.swift */; };
+		9AF4038EEB79C5056E73C51B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13E789698BE43AB9C2E89A1 /* HomeView.swift */; };
+		A10DED2B350D9B1479DC6DCA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BECBD7E784FDB27DDA19174B /* LaunchScreen.storyboard */; };
+		C0194D6B5B7A4479C8C14757 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0C1A1A793700A17FA3C9EB0 /* Assets.xcassets */; };
+		EDBE28992C23AF95BC8CE0ED /* HadithCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A3835D843C7E9E129E12EF /* HadithCard.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1CD35CC1985099BDF2EE042E /* StreakCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakCard.swift; sourceTree = "<group>"; };
+		24822E4FB602556FE1BF161A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		45F44C9330F8AD73F9BE62E4 /* offline-build.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "offline-build.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		59A3835D843C7E9E129E12EF /* HadithCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HadithCard.swift; sourceTree = "<group>"; };
+		86CC04AFC65AF0D0DF555172 /* AppModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModels.swift; sourceTree = "<group>"; };
+		8FC3D1A619275EB4CDB9F853 /* PlaceholderViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderViews.swift; sourceTree = "<group>"; };
+		AA7A56891A9136075680FB4D /* DailyReflectionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyReflectionCard.swift; sourceTree = "<group>"; };
+		AB7A6EADD77F6AF34431D8FD /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		C0C1A1A793700A17FA3C9EB0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D13E789698BE43AB9C2E89A1 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		D9770DA743A6BD676FAFFF73 /* NoorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoorApp.swift; sourceTree = "<group>"; };
+		E5FA503527474C0588A09DC5 /* QuickAccessSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAccessSection.swift; sourceTree = "<group>"; };
+		ECC4AD52DF8E393B67B40BAF /* ColorAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorAssets.swift; sourceTree = "<group>"; };
+		F133255393F84EA34910EB98 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
+		F27A462BD711D77AA544F8EF /* PrayerTrackerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTrackerCard.swift; sourceTree = "<group>"; };
+		FA5AA79AB276A40FBF501D79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		573814724B0076E6CD7A4EA6 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				D9770DA743A6BD676FAFFF73 /* NoorApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		576DA640583D66D88286736A /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				AA7A56891A9136075680FB4D /* DailyReflectionCard.swift */,
+				59A3835D843C7E9E129E12EF /* HadithCard.swift */,
+				D13E789698BE43AB9C2E89A1 /* HomeView.swift */,
+				F27A462BD711D77AA544F8EF /* PrayerTrackerCard.swift */,
+				E5FA503527474C0588A09DC5 /* QuickAccessSection.swift */,
+				1CD35CC1985099BDF2EE042E /* StreakCard.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		7590B9F39A041E67AEACFB46 /* Placeholders */ = {
+			isa = PBXGroup;
+			children = (
+				8FC3D1A619275EB4CDB9F853 /* PlaceholderViews.swift */,
+			);
+			path = Placeholders;
+			sourceTree = "<group>";
+		};
+		81A6EE0572265F5346FAE825 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				AB7A6EADD77F6AF34431D8FD /* AppTheme.swift */,
+				ECC4AD52DF8E393B67B40BAF /* ColorAssets.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		ACD031B553C039789867812E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				576DA640583D66D88286736A /* Home */,
+				7590B9F39A041E67AEACFB46 /* Placeholders */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		BEC32557E43E591F31709132 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				45F44C9330F8AD73F9BE62E4 /* offline-build.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D43F943EAE89D11598AADE21 /* offline-build */ = {
+			isa = PBXGroup;
+			children = (
+				C0C1A1A793700A17FA3C9EB0 /* Assets.xcassets */,
+				FA5AA79AB276A40FBF501D79 /* Info.plist */,
+				BECBD7E784FDB27DDA19174B /* LaunchScreen.storyboard */,
+				573814724B0076E6CD7A4EA6 /* App */,
+				F260FB4A869B7C17CE5B116F /* Models */,
+				81A6EE0572265F5346FAE825 /* Theme */,
+				ACD031B553C039789867812E /* Views */,
+			);
+			path = "offline-build";
+			sourceTree = "<group>";
+		};
+		F260FB4A869B7C17CE5B116F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				86CC04AFC65AF0D0DF555172 /* AppModels.swift */,
+				F133255393F84EA34910EB98 /* SampleData.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F92BC92166E668AA47AAA4F6 = {
+			isa = PBXGroup;
+			children = (
+				D43F943EAE89D11598AADE21 /* offline-build */,
+				BEC32557E43E591F31709132 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1ED302962DEFB46E04CCD065 /* offline-build */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F3A40B9B3EEC555AE807906 /* Build configuration list for PBXNativeTarget "offline-build" */;
+			buildPhases = (
+				396C14E5486E73EF47F92F48 /* Sources */,
+				EA62F924F8A87A523B72E19F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "offline-build";
+			packageProductDependencies = (
+			);
+			productName = "offline-build";
+			productReference = 45F44C9330F8AD73F9BE62E4 /* offline-build.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3BE8C92B76DC549CB33C7E1E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+			};
+			buildConfigurationList = 7B391D8250AB01380BF40323 /* Build configuration list for PBXProject "offline-build" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = F92BC92166E668AA47AAA4F6;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1ED302962DEFB46E04CCD065 /* offline-build */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EA62F924F8A87A523B72E19F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C0194D6B5B7A4479C8C14757 /* Assets.xcassets in Resources */,
+				A10DED2B350D9B1479DC6DCA /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		396C14E5486E73EF47F92F48 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D4F5CDCC3FCA7AE47B04D80 /* AppModels.swift in Sources */,
+				8D125E6185BE90486F2DF300 /* AppTheme.swift in Sources */,
+				1889D2D2D0613C27325EB5B5 /* ColorAssets.swift in Sources */,
+				37431E9D2788A1AB93272716 /* DailyReflectionCard.swift in Sources */,
+				EDBE28992C23AF95BC8CE0ED /* HadithCard.swift in Sources */,
+				9AF4038EEB79C5056E73C51B /* HomeView.swift in Sources */,
+				47000118B2BE4AB70CE5FF95 /* NoorApp.swift in Sources */,
+				1C535E083C00EE95C01AB535 /* PlaceholderViews.swift in Sources */,
+				0011D2A9A44DA9CEEDF790AB /* PrayerTrackerCard.swift in Sources */,
+				1231E2248728021C214FEEEA /* QuickAccessSection.swift in Sources */,
+				54F505206100F43AFD347639 /* SampleData.swift in Sources */,
+				2343CC2756FC540E3404CEB7 /* StreakCard.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		BECBD7E784FDB27DDA19174B /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				24822E4FB602556FE1BF161A /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		26D6DE668314E148783EEAD4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "offline-build/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+			};
+			name = Release;
+		};
+		5F1281CF36DDB85040F9AEC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CURRENT_PROJECT_VERSION = 1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.offlinebuild;
+				PRODUCT_NAME = "offline-build";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		D47F59A95C5E6B56F906FB07 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CURRENT_PROJECT_VERSION = 1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.offlinebuild;
+				PRODUCT_NAME = "offline-build";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		DCD4FF5A2E16E48E1D0CC846 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "offline-build/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1F3A40B9B3EEC555AE807906 /* Build configuration list for PBXNativeTarget "offline-build" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DCD4FF5A2E16E48E1D0CC846 /* Debug */,
+				26D6DE668314E148783EEAD4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7B391D8250AB01380BF40323 /* Build configuration list for PBXProject "offline-build" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D47F59A95C5E6B56F906FB07 /* Debug */,
+				5F1281CF36DDB85040F9AEC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3BE8C92B76DC549CB33C7E1E /* Project object */;
+}

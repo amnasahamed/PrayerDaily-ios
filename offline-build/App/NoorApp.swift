@@ -23,7 +23,7 @@ struct NoorApp: App {
                     .tabItem { Label(AppTab.more.rawValue, systemImage: AppTab.more.icon) }
                     .tag(AppTab.more)
             }
-            .tint(Color("NoorPrimary"))
+            .tint(Color.alehaGreen)
         }
     }
 }

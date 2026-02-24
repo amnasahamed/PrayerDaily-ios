@@ -27,7 +27,7 @@ targets:
       path: offline-build/Info.plist
       properties:
         CFBundleDevelopmentRegion: $(DEVELOPMENT_LANGUAGE)
-        CFBundleDisplayName: $(PRODUCT_NAME)
+        CFBundleDisplayName: Aleha
         CFBundleExecutable: $(EXECUTABLE_NAME)
         CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
         CFBundleInfoDictionaryVersion: 6.0

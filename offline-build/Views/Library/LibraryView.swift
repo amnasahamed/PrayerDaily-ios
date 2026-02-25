@@ -122,12 +122,21 @@ struct LibraryView: View {
                         subtitle: "Instant accurate direction anywhere", color: Color.alehaGreen)
             }
             .buttonStyle(SpringPressStyle())
-            ToolRow(icon: "rosette", title: "Dhikr Counter",
-                    subtitle: "Digital tasbeeh with streak tracking", color: Color.alehaAmber)
-            ToolRow(icon: "calendar.badge.clock", title: "Hijri Calendar",
-                    subtitle: "Convert Gregorian to Islamic date", color: Color.alehaDarkGreen)
-            ToolRow(icon: "moon.stars.fill", title: "Prayer Tracker",
-                    subtitle: "Log and review your daily salah", color: Color(red: 0.45, green: 0.25, blue: 0.75))
+            NavigationLink(destination: LibraryDhikrView()) {
+                ToolRow(icon: "rosette", title: "Dhikr Counter",
+                        subtitle: "Digital tasbeeh with streak tracking", color: Color.alehaAmber)
+            }
+            .buttonStyle(SpringPressStyle())
+            NavigationLink(destination: LibraryHijriView()) {
+                ToolRow(icon: "calendar.badge.clock", title: "Hijri Calendar",
+                        subtitle: "Convert Gregorian to Islamic date", color: Color.alehaDarkGreen)
+            }
+            .buttonStyle(SpringPressStyle())
+            NavigationLink(destination: LibraryPrayerTrackerView()) {
+                ToolRow(icon: "moon.stars.fill", title: "Prayer Tracker",
+                        subtitle: "Log and review your daily salah", color: Color(red: 0.45, green: 0.25, blue: 0.75))
+            }
+            .buttonStyle(SpringPressStyle())
         }
         .opacity(appeared ? 1 : 0)
         .offset(y: appeared ? 0 : 16)

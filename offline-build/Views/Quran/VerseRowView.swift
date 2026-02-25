@@ -14,6 +14,7 @@ struct VerseRowView: View {
     var surahName: String = ""
 
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.arabicFontSize) private var arabicFontSize
     @State private var showShareSheet = false
     @State private var shareItems: [Any] = []
 
@@ -64,13 +65,16 @@ struct VerseRowView: View {
         }
     }
 
+    @Environment(\.arabicFontSize) private var arabicFontSize
+
     private var arabicBlock: some View {
         Text(verse.arabic)
-            .font(.system(size: isFocusMode ? 32 : 28))
+            .font(.system(size: isFocusMode ? 32 : arabicFontSize))
             .lineSpacing(isFocusMode ? 20 : 14)
             .multilineTextAlignment(.trailing)
             .frame(maxWidth: .infinity, alignment: .trailing)
             .foregroundStyle(isFocusMode ? .white : (isCurrentlyPlaying ? Color("NoorPrimary") : .primary))
+            .animation(.spring(response: 0.35, dampingFraction: 0.8), value: arabicFontSize)
     }
 
     private var translationBlock: some View {

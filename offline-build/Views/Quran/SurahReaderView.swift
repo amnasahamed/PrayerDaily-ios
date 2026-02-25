@@ -10,9 +10,16 @@ struct SurahReaderView: View {
     @State private var tafsirMap: [Int: String] = [:]
     @State private var selectedVerse: Verse?
     @State private var isCached = false
+    @State private var appeared = false
+
+    @Environment(\.arabicFontSize) private var arabicFontSize
+    @Environment(\.translationEnabled) private var translationEnabled
+    @Environment(\.transliterationEnabled) private var transliterationEnabled
 
     private var showArabic: Bool { readingMode != .translationOnly }
-    private var showTranslation: Bool { readingMode == .both || readingMode == .translationOnly }
+    private var showTranslation: Bool {
+        translationEnabled && (readingMode == .both || readingMode == .translationOnly)
+    }
     private var isFocusMode: Bool { readingMode == .focus }
 
     var body: some View {
@@ -31,6 +38,9 @@ struct SurahReaderView: View {
         .toolbar { toolbarItems }
         .task { await loadVerses() }
         .onDisappear { store.stopAudio() }
+        .onAppear {
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.82).delay(0.05)) { appeared = true }
+        }
         .sheet(item: $selectedVerse) { verse in
             TafsirSheetView(verse: verse, tafsirText: tafsirMap[verse.number])
         }
@@ -72,6 +82,9 @@ struct SurahReaderView: View {
         ScrollView {
             LazyVStack(spacing: 0) {
                 compactBismillah
+                    .opacity(appeared ? 1 : 0)
+                    .offset(y: appeared ? 0 : 16)
+                    .animation(.spring(response: 0.5, dampingFraction: 0.82).delay(0.1), value: appeared)
                 ForEach(Array(verses.enumerated()), id: \.element.id) { index, verse in
                     verseItem(verse: verse, index: index)
                 }

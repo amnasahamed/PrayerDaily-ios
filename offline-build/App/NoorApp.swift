@@ -17,7 +17,7 @@ struct NoorApp: App {
                         .tag(AppTab.salah)
                     LibraryView()
                         .tag(AppTab.library)
-                    MorePlaceholderView()
+                    MoreView()
                         .tag(AppTab.more)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))

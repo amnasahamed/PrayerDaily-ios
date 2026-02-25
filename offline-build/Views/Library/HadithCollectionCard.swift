@@ -29,7 +29,7 @@ struct HadithCollectionCard: View {
     }
 
     private var textContent: some View {
-        VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: 4) {
             Text(collection.arabicName)
                 .font(.caption)
                 .foregroundStyle(Color(collection.color))
@@ -47,7 +47,22 @@ struct HadithCollectionCard: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            if let preview = previewLine {
+                Text(preview)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .italic()
+                    .lineLimit(1)
+                    .padding(.top, 2)
+            }
         }
+    }
+
+    private var previewLine: String? {
+        let first = collection.chapters.first?.hadiths.first?.english
+        guard let text = first else { return nil }
+        let words = text.split(separator: " ").prefix(8).joined(separator: " ")
+        return "\"\(words)…\""
     }
 
     private var chevron: some View {

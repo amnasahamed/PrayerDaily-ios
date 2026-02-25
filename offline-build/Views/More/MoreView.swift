@@ -6,7 +6,7 @@ struct MoreView: View {
     @State private var showStreakHistory = false
     @State private var showDataExport = false
     @State private var showShareApp = false
-    @State private var showInvite = false
+    @State private var showAbout = false
 
     var body: some View {
         NavigationStack {
@@ -28,6 +28,7 @@ struct MoreView: View {
             .sheet(isPresented: $showStreakHistory) { StreakHistorySheet(store: store) }
             .sheet(isPresented: $showDataExport) { DataExportSheet(store: store) }
             .sheet(isPresented: $showShareApp) { ShareAppSheet() }
+            .sheet(isPresented: $showAbout) { AboutAlehaSheet() }
         }
     }
 
@@ -61,6 +62,29 @@ struct MoreView: View {
     // MARK: - Main Section
     private var mainSection: some View {
         VStack(spacing: 0) {
+            NavigationLink(destination: ProfileView()) {
+                MoreMenuRow(icon: "person.crop.circle.fill", title: "Profile",
+                            subtitle: "Your name, madhab & preferences",
+                            color: Color.alehaGreen, showDivider: true)
+            }
+            .buttonStyle(.plain)
+
+            NavigationLink(destination: AppearanceView()) {
+                MoreMenuRow(icon: "moon.stars.fill", title: "Appearance",
+                            subtitle: "Theme, Arabic size & reading options",
+                            color: Color.alehaDarkGreen, showDivider: true)
+            }
+            .buttonStyle(.plain)
+
+            NavigationLink(destination: OfflineContentView()) {
+                let cacheCount = OfflineCacheService.shared.cachedSurahCount()
+                let cacheSize = OfflineCacheService.shared.cacheSizeString()
+                MoreMenuRow(icon: "arrow.down.circle.fill", title: "Offline Content",
+                            subtitle: "\(cacheCount) surahs saved (\(cacheSize))",
+                            color: Color.alehaAmber, showDivider: true)
+            }
+            .buttonStyle(.plain)
+
             NavigationLink(destination: EmergencyGuidesView()) {
                 MoreMenuRow(icon: "cross.case.fill", title: "Emergency Guides",
                             subtitle: "Janazah, Ruqyah, Nikah & Travel",
@@ -74,20 +98,6 @@ struct MoreView: View {
                             color: .orange, showDivider: true)
             }
             .buttonStyle(.plain)
-
-            MoreMenuRow(icon: "person.crop.circle.fill", title: "Profile",
-                        subtitle: "Your settings & preferences",
-                        color: Color.alehaGreen, showDivider: true)
-
-            MoreMenuRow(icon: "moon.stars.fill", title: "Appearance",
-                        subtitle: "Theme & display options",
-                        color: Color.alehaDarkGreen, showDivider: true)
-
-            let cacheCount = OfflineCacheService.shared.cachedSurahCount()
-            let cacheSize = OfflineCacheService.shared.cacheSizeString()
-            MoreMenuRow(icon: "arrow.down.circle.fill", title: "Offline Content",
-                        subtitle: "\(cacheCount) surahs saved (\(cacheSize))",
-                        color: Color.alehaAmber, showDivider: true)
 
             Button { showDataExport = true } label: {
                 MoreMenuRow(icon: "square.and.arrow.up.fill", title: "Export My Data",
@@ -103,7 +113,10 @@ struct MoreView: View {
     private var communitySection: some View {
         VStack(spacing: 0) {
             sectionLabel("Community")
-            Button { showShareApp = true } label: {
+            Button {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                showShareApp = true
+            } label: {
                 MoreMenuRow(icon: "square.and.arrow.up", title: "Share Aleha",
                             subtitle: "Help others discover the app",
                             color: Color.alehaGreen, showDivider: true)
@@ -115,7 +128,7 @@ struct MoreView: View {
                 showShareApp = true
             } label: {
                 MoreMenuRow(icon: "person.badge.plus", title: "Invite Friends",
-                            subtitle: "Grow your circle of practice",
+                            subtitle: "Send a personal invite to a friend",
                             color: Color.alehaAmber, showDivider: false)
             }
             .buttonStyle(.plain)
@@ -126,9 +139,12 @@ struct MoreView: View {
     // MARK: - Footer
     private var footerSection: some View {
         VStack(spacing: 0) {
-            MoreMenuRow(icon: "info.circle.fill", title: "About Aleha",
-                        subtitle: "Version 1.0 • Built with care",
-                        color: Color.alehaGreen, showDivider: false)
+            Button { showAbout = true } label: {
+                MoreMenuRow(icon: "info.circle.fill", title: "About Aleha",
+                            subtitle: "Version 1.0 • alehalearn.com",
+                            color: Color.alehaGreen, showDivider: false)
+            }
+            .buttonStyle(.plain)
         }
         .groupedCard()
     }
@@ -473,6 +489,77 @@ struct ShareAppSheet: View {
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(SpringPressStyle())
+    }
+}
+
+// MARK: - About Aleha Sheet
+struct AboutAlehaSheet: View {
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.openURL) var openURL
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                CalmingBackground().ignoresSafeArea()
+                VStack(spacing: 28) {
+                    Spacer()
+                    appIconView
+                    infoBlock
+                    websiteButton
+                    Spacer()
+                    Text("Made with care for the Muslim community")
+                        .font(.caption).foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(AppTheme.screenPadding)
+            }
+            .navigationTitle("About Aleha")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
+            }
+        }
+    }
+
+    private var appIconView: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .fill(LinearGradient(colors: [Color.alehaGreen, Color.alehaDarkGreen],
+                                     startPoint: .topLeading, endPoint: .bottomTrailing))
+                .frame(width: 96, height: 96)
+                .shadow(color: Color.alehaGreen.opacity(0.35), radius: 14, y: 6)
+            Image(systemName: "moon.stars.fill")
+                .font(.system(size: 42)).foregroundStyle(.white)
+        }
+    }
+
+    private var infoBlock: some View {
+        VStack(spacing: 8) {
+            Text("Aleha").font(.largeTitle.weight(.bold))
+            Text("Version 1.0").font(.subheadline).foregroundStyle(.secondary)
+            Text("Your companion for prayer, Quran reading, and daily remembrance — designed to make Islamic practice beautiful and accessible.")
+                .font(.subheadline).foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.top, 4)
+        }
+    }
+
+    private var websiteButton: some View {
+        Button {
+            openURL(URL(string: "https://alehalearn.com")!)
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "globe")
+                Text("alehalearn.com")
+                    .fontWeight(.semibold)
+            }
+            .font(.subheadline)
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(Color.alehaGreen)
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        }
     }
 }
 

@@ -37,11 +37,29 @@ class QuranStore: ObservableObject {
     @Published var bookmarks: Set<String> = [] // "surahId-verseNum"
     @Published var lastRead: (surahId: Int, verse: Int)? = nil
     @Published var audioState: AudioPlayState = .idle
+    @Published var surahProgress: [Int: Double] = [:] // surahId -> 0.0-1.0
 
     private var player: AVPlayer?
     private var playerObserver: Any?
 
     static let shared = QuranStore()
+
+    func updateProgress(surahId: Int, verse: Int, totalVerses: Int) {
+        guard totalVerses > 0 else { return }
+        let current = surahProgress[surahId] ?? 0.0
+        let newProgress = Double(verse) / Double(totalVerses)
+        if newProgress > current { surahProgress[surahId] = newProgress }
+    }
+
+    func progress(for surahId: Int) -> Double {
+        surahProgress[surahId] ?? 0.0
+    }
+
+    var overallProgress: Double {
+        let total = 114.0
+        let started = Double(surahProgress.filter { $0.value >= 1.0 }.count)
+        return started / total
+    }
 
     func toggleBookmark(surahId: Int, verse: Int) {
         let key = "\(surahId)-\(verse)"

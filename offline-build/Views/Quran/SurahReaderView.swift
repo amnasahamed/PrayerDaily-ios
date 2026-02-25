@@ -58,9 +58,13 @@ struct SurahReaderView: View {
                         onPlay: { store.togglePause(surahId: verse.surahId, verseNum: verse.number) },
                         onBookmark: { store.toggleBookmark(surahId: verse.surahId, verse: verse.number) },
                         isBookmarked: store.isBookmarked(surahId: verse.surahId, verse: verse.number),
-                        onTafsir: { selectedVerse = verse }
+                        onTafsir: { selectedVerse = verse },
+                        surahName: surah.nameEnglish
                     )
-                    .onAppear { store.setLastRead(surahId: surah.id, verse: verse.number) }
+                    .onAppear {
+                        store.setLastRead(surahId: surah.id, verse: verse.number)
+                        store.updateProgress(surahId: surah.id, verse: verse.number, totalVerses: surah.verses)
+                    }
                 }
             }
             .padding(.bottom, 60)

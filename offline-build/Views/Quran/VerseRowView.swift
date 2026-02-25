@@ -65,8 +65,6 @@ struct VerseRowView: View {
         }
     }
 
-    @Environment(\.arabicFontSize) private var arabicFontSize
-
     private var arabicBlock: some View {
         Text(verse.arabic)
             .font(.system(size: isFocusMode ? 32 : arabicFontSize))

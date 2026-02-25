@@ -16,6 +16,7 @@
 		1C3DB215D7AC7952ABA0BE60 /* VerseShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D7F6050FA0B8CD21D9EC293 /* VerseShareCard.swift */; };
 		1C535E083C00EE95C01AB535 /* PlaceholderViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC3D1A619275EB4CDB9F853 /* PlaceholderViews.swift */; };
 		1FC9FB245D9B925801A63BF0 /* SurahReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F30F31FE2D60F945FC0754 /* SurahReaderView.swift */; };
+		212FD971B26EFA35BC21AFBB /* AnimationHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D82984581CBD21324ECCC4D /* AnimationHelpers.swift */; };
 		21DD3DB2C61FDFF27067E65F /* AppearanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5352FACB7B571AAE16756704 /* AppearanceView.swift */; };
 		2343CC2756FC540E3404CEB7 /* StreakCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD35CC1985099BDF2EE042E /* StreakCard.swift */; };
 		2762BE477C9C2F8DFF55E628 /* SalahDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5B69ABF5416E44C909C59A /* SalahDashboard.swift */; };
@@ -82,6 +83,7 @@
 		33D682C9F07C85BAD9FAD6AF /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
 		382DDF8EFBA7B09B54E6288E /* FloatingTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingTabBar.swift; sourceTree = "<group>"; };
 		3AA636EFB3034323CE98D3FF /* PrayerTimesCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimesCard.swift; sourceTree = "<group>"; };
+		3D82984581CBD21324ECCC4D /* AnimationHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationHelpers.swift; sourceTree = "<group>"; };
 		411C2522A4F25739247AFA84 /* DuaListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuaListView.swift; sourceTree = "<group>"; };
 		427D7CC54EF12E139EE0BEB2 /* VerseRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseRowView.swift; sourceTree = "<group>"; };
 		45F44C9330F8AD73F9BE62E4 /* offline-build.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "offline-build.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -175,6 +177,7 @@
 		81A6EE0572265F5346FAE825 /* Theme */ = {
 			isa = PBXGroup;
 			children = (
+				3D82984581CBD21324ECCC4D /* AnimationHelpers.swift */,
 				AB7A6EADD77F6AF34431D8FD /* AppTheme.swift */,
 				ECC4AD52DF8E393B67B40BAF /* ColorAssets.swift */,
 			);
@@ -371,6 +374,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				212FD971B26EFA35BC21AFBB /* AnimationHelpers.swift in Sources */,
 				5D4F5CDCC3FCA7AE47B04D80 /* AppModels.swift in Sources */,
 				8D125E6185BE90486F2DF300 /* AppTheme.swift in Sources */,
 				21DD3DB2C61FDFF27067E65F /* AppearanceView.swift in Sources */,

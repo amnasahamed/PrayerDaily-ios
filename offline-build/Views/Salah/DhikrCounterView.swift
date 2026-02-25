@@ -22,7 +22,7 @@ struct DhikrCounterView: View {
     // MARK: - List View
     private var dhikrList: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 16) {
+            VStack(spacing: AppTheme.sectionSpacing) {
                 statsHeader
                 ForEach(store.dhikrPresets) { preset in
                     dhikrCard(preset)
@@ -30,6 +30,7 @@ struct DhikrCounterView: View {
                 streakCard
             }
             .padding(.horizontal, AppTheme.screenPadding)
+            .padding(.top, 4)
             .padding(.bottom, 30)
         }
     }
@@ -80,6 +81,7 @@ struct DhikrCounterView: View {
         let isComplete = preset.currentCount >= preset.target
 
         return Button {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
             withAnimation(.spring(response: 0.4)) { activeDhikrID = preset.id }
         } label: {
             HStack(spacing: 16) {
@@ -91,21 +93,39 @@ struct DhikrCounterView: View {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundStyle(Color("NoorGold"))
                                 .font(.caption)
+                                .transition(.scale.combined(with: .opacity))
                         }
                     }
                     Text(preset.arabic)
                         .font(.title3)
                         .foregroundStyle(.primary.opacity(0.7))
-                    Text("Target: \(preset.target)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    progressMiniBar(progress, color: accentColor)
                 }
                 Spacer()
-                Image(systemName: "chevron.right").foregroundStyle(.tertiary)
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text("\(preset.currentCount)/\(preset.target)")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(isComplete ? Color("NoorGold") : accentColor)
+                        .contentTransition(.numericText())
+                    Image(systemName: "chevron.right").font(.caption2).foregroundStyle(.tertiary)
+                }
             }
             .noorCard()
         }
-        .buttonStyle(.plain)
+        .buttonStyle(SpringPressStyle())
+    }
+
+    private func progressMiniBar(_ value: Double, color: Color) -> some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 2).fill(Color(.systemGray5)).frame(height: 3)
+                RoundedRectangle(cornerRadius: 2).fill(color)
+                    .frame(width: geo.size.width * min(value, 1.0), height: 3)
+                    .animation(.spring(response: 0.4, dampingFraction: 0.8), value: value)
+            }
+        }
+        .frame(height: 3)
+        .frame(maxWidth: 120)
     }
 
     private func circularProgress(_ value: Double, color: Color, count: Int, complete: Bool) -> some View {
@@ -115,10 +135,13 @@ struct DhikrCounterView: View {
                 .trim(from: 0, to: min(value, 1.0))
                 .stroke(complete ? Color("NoorGold") : color, style: StrokeStyle(lineWidth: 5, lineCap: .round))
                 .rotationEffect(.degrees(-90))
+                .animation(.spring(response: 0.4, dampingFraction: 0.7), value: value)
             Text("\(count)")
                 .font(.caption.weight(.bold).monospacedDigit())
+                .contentTransition(.numericText())
         }
         .frame(width: 50, height: 50)
+        .pulseGlow(color, active: value > 0 && !complete)
     }
 
     // MARK: - Streak Card
@@ -221,21 +244,25 @@ struct DhikrFullScreen: View {
     // MARK: - Counter
     private var counterCircle: some View {
         ZStack {
+            // Background track
             Circle()
-                .stroke(Color(.systemGray5), lineWidth: 10)
+                .stroke(Color(.systemGray5), lineWidth: 12)
+            // Fill track
             Circle()
                 .trim(from: 0, to: min(progress, 1.0))
                 .stroke(
                     isComplete ? Color("NoorGold") : accentColor,
-                    style: StrokeStyle(lineWidth: 10, lineCap: .round)
+                    style: StrokeStyle(lineWidth: 12, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
-                .animation(.spring(response: 0.3), value: preset.currentCount)
-
+                .animation(.spring(response: 0.25, dampingFraction: 0.65), value: preset.currentCount)
+                .pulseGlow(accentColor, active: !isComplete && preset.currentCount > 0)
+            // Center content
             VStack(spacing: 4) {
                 Text("\(preset.currentCount)")
                     .font(.system(size: 56, weight: .bold, design: .rounded))
                     .contentTransition(.numericText())
+                    .animation(.spring(response: 0.2), value: preset.currentCount)
                 Text("of \(preset.target)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -247,24 +274,26 @@ struct DhikrFullScreen: View {
                 }
             }
         }
-        .frame(width: 200, height: 200)
+        .frame(width: 210, height: 210)
         .scaleEffect(tapScale)
         .onTapGesture { handleTap() }
     }
 
     private var tapHint: some View {
-        Text(isComplete ? "Target reached! Tap to continue" : "Tap the circle to count")
+        Text(isComplete ? "Target reached! Tap to continue 🌿" : "Tap the circle to count")
             .font(.caption)
             .foregroundStyle(.tertiary)
+            .padding(.top, 4)
     }
 
     private func handleTap() {
         onTap()
-        let style: UIImpactFeedbackGenerator.FeedbackStyle = isComplete ? .heavy : .medium
-        let impact = UIImpactFeedbackGenerator(style: style)
-        impact.impactOccurred()
-        withAnimation(.spring(response: 0.12, dampingFraction: 0.4)) { tapScale = 1.1 }
-        withAnimation(.spring(response: 0.2).delay(0.1)) { tapScale = 1.0 }
+        // Graduated haptic: heavier when complete milestone hit
+        let style: UIImpactFeedbackGenerator.FeedbackStyle = isComplete ? .heavy : (preset.currentCount % 10 == 9 ? .medium : .light)
+        UIImpactFeedbackGenerator(style: style).impactOccurred()
+        // Pulse scale
+        withAnimation(.spring(response: 0.10, dampingFraction: 0.38)) { tapScale = 1.08 }
+        withAnimation(.spring(response: 0.22).delay(0.08)) { tapScale = 1.0 }
     }
 
     // MARK: - Bottom Bar

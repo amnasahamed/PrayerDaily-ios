@@ -25,8 +25,14 @@ extension Color {
 struct AppTheme {
     static let cornerRadius: CGFloat   = 22
     static let smallRadius: CGFloat    = 14
-    static let cardPadding: CGFloat    = 18
-    static let screenPadding: CGFloat  = 18
+    static let cardPadding: CGFloat    = 15      // tightened from 18
+    static let screenPadding: CGFloat  = 16      // tightened from 18
+    static let sectionSpacing: CGFloat = 12      // tightened vertical rhythm
+}
+
+// MARK: - Stronger Active Green (for CTAs & active states)
+extension Color {
+    static let alehaActiveGreen = Color(red: 0.10, green: 0.62, blue: 0.30)  // richer/deeper
 }
 
 // MARK: - Frosted Glass Card
@@ -41,15 +47,90 @@ struct AlehaCardStyle: ViewModifier {
                 RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
                     .stroke(borderColor, lineWidth: 0.5)
             )
-            .shadow(color: .black.opacity(colorScheme == .dark ? 0.3 : 0.06), radius: 16, y: 6)
+            .shadow(color: .black.opacity(colorScheme == .dark ? 0.3 : 0.06), radius: 14, y: 5)
     }
     private var cardFill: some ShapeStyle {
         colorScheme == .dark
-            ? AnyShapeStyle(Color.white.opacity(0.07))
-            : AnyShapeStyle(Color.white.opacity(0.88))
+            ? AnyShapeStyle(Color.white.opacity(0.08))
+            : AnyShapeStyle(Color.white.opacity(0.92))
     }
     private var borderColor: Color {
-        colorScheme == .dark ? Color.white.opacity(0.10) : Color.white.opacity(0.70)
+        colorScheme == .dark ? Color.white.opacity(0.12) : Color.alehaGreen.opacity(0.08)
+    }
+}
+
+// MARK: - Primary CTA Button Style
+struct PrimaryCTAStyle: ButtonStyle {
+    var color: Color = Color.alehaActiveGreen
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 15)
+            .background(color.opacity(configuration.isPressed ? 0.8 : 1.0))
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .shadow(color: color.opacity(0.3), radius: configuration.isPressed ? 2 : 8, y: configuration.isPressed ? 1 : 4)
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .animation(.spring(response: 0.2, dampingFraction: 0.7), value: configuration.isPressed)
+    }
+}
+
+// MARK: - Checkmark Burst Animation
+struct CheckmarkBurst: View {
+    @Binding var show: Bool
+    var color: Color = Color.alehaActiveGreen
+
+    @State private var scale: CGFloat = 0.3
+    @State private var opacity: Double = 0
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(color.opacity(0.18))
+                .frame(width: 60, height: 60)
+                .scaleEffect(show ? 1.6 : 0.3)
+                .opacity(show ? 0 : 0)
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 36, weight: .bold))
+                .foregroundStyle(color)
+                .scaleEffect(scale)
+                .opacity(opacity)
+        }
+        .onChange(of: show) { _, newVal in
+            if newVal {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
+                    scale = 1.2; opacity = 1
+                }
+                withAnimation(.spring(response: 0.2).delay(0.15)) { scale = 1.0 }
+                withAnimation(.easeOut(duration: 0.3).delay(0.5)) { opacity = 0; scale = 0.8 }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) { show = false }
+            }
+        }
+    }
+}
+
+// MARK: - Pulse Glow Effect
+struct PulseGlow: ViewModifier {
+    var color: Color = Color.alehaActiveGreen
+    var active: Bool = true
+    @State private var pulse = false
+
+    func body(content: Content) -> some View {
+        content
+            .shadow(color: active ? color.opacity(pulse ? 0.55 : 0.15) : .clear, radius: pulse ? 12 : 4)
+            .onAppear {
+                guard active else { return }
+                withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: true)) {
+                    pulse = true
+                }
+            }
+    }
+}
+
+extension View {
+    func pulseGlow(_ color: Color = Color.alehaActiveGreen, active: Bool = true) -> some View {
+        modifier(PulseGlow(color: color, active: active))
     }
 }
 

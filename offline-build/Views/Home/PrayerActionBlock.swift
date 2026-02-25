@@ -63,24 +63,25 @@ struct PrayerActionBlock: View {
     private var progressRing: some View {
         ZStack {
             Circle()
-                .stroke(Color.alehaGreen.opacity(0.12), lineWidth: 8)
+                .stroke(Color.alehaActiveGreen.opacity(0.15), lineWidth: 9)
                 .frame(width: 88, height: 88)
             Circle()
                 .trim(from: 0, to: progress)
                 .stroke(
                     AngularGradient(
-                        colors: [Color.alehaGreen, Color.alehaGreen.opacity(0.5)],
+                        colors: [Color.alehaActiveGreen, Color.alehaGreen.opacity(0.6)],
                         center: .center
                     ),
-                    style: StrokeStyle(lineWidth: 8, lineCap: .round)
+                    style: StrokeStyle(lineWidth: 9, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
                 .frame(width: 88, height: 88)
                 .animation(.spring(response: 0.6, dampingFraction: 0.8), value: progress)
+                .pulseGlow(Color.alehaActiveGreen, active: progress > 0 && progress < 1)
             VStack(spacing: 0) {
                 Text("\(completedCount)")
                     .font(.system(size: 26, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color.alehaGreen)
+                    .foregroundStyle(Color.alehaActiveGreen)
                     .contentTransition(.numericText())
                 Text("of 5")
                     .font(.system(size: 10, weight: .medium))
@@ -132,22 +133,22 @@ struct PrayerRowItem: View {
     private var checkButton: some View {
         Button {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
-                bounceScale = 1.3
+            withAnimation(.spring(response: 0.25, dampingFraction: 0.45)) {
+                bounceScale = 1.35
                 entry.completed.toggle()
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                withAnimation(.spring(response: 0.2, dampingFraction: 0.6)) { bounceScale = 1.0 }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                withAnimation(.spring(response: 0.2, dampingFraction: 0.55)) { bounceScale = 1.0 }
             }
         } label: {
             ZStack {
                 Circle()
-                    .fill(entry.completed ? Color.alehaGreen : Color(.systemGray5).opacity(0.6))
-                    .frame(width: 28, height: 28)
-                    .shadow(color: entry.completed ? Color.alehaGreen.opacity(0.35) : .clear, radius: 5)
+                    .fill(entry.completed ? Color.alehaActiveGreen : Color(.systemGray5).opacity(0.6))
+                    .frame(width: 30, height: 30)
+                    .shadow(color: entry.completed ? Color.alehaActiveGreen.opacity(0.45) : .clear, radius: 7)
                 if entry.completed {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 11, weight: .bold))
+                        .font(.system(size: 12, weight: .heavy))
                         .foregroundStyle(.white)
                         .transition(.scale.combined(with: .opacity))
                 }

@@ -2,19 +2,22 @@ import SwiftUI
 
 struct TodayPrayerView: View {
     @EnvironmentObject var store: SalahStore
+    @State private var showShareProgress = false
 
     private var todayLog: PrayerDayLog { store.todayLog }
     private var progress: Double { Double(todayLog.completedCount) / 5.0 }
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 16) {
+            VStack(spacing: AppTheme.sectionSpacing) {
                 heroCard
                 weeklyConsistencyBanner
                 prayerListSection
                 weekOverviewCard
+                shareProgressButton
             }
             .padding(.horizontal, AppTheme.screenPadding)
+            .padding(.top, 4)
             .padding(.bottom, 30)
         }
     }
@@ -46,16 +49,17 @@ struct TodayPrayerView: View {
     private var progressRing: some View {
         ZStack {
             Circle()
-                .stroke(Color(.systemGray5), lineWidth: 7)
+                .stroke(Color.alehaActiveGreen.opacity(0.15), lineWidth: 8)
             Circle()
                 .trim(from: 0, to: progress)
-                .stroke(Color.alehaGreen, style: StrokeStyle(lineWidth: 7, lineCap: .round))
+                .stroke(Color.alehaActiveGreen, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-                .animation(.spring(response: 0.7, dampingFraction: 0.8), value: progress)
+                .animation(.spring(response: 0.7, dampingFraction: 0.75), value: progress)
+                .pulseGlow(Color.alehaActiveGreen, active: progress > 0 && progress < 1)
             VStack(spacing: 1) {
                 Text("\(Int(progress * 100))%")
                     .font(.system(size: 18, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color.alehaGreen)
+                    .foregroundStyle(Color.alehaActiveGreen)
                     .contentTransition(.numericText())
                 Text("Today")
                     .font(.caption2)
@@ -63,6 +67,32 @@ struct TodayPrayerView: View {
             }
         }
         .frame(width: 90, height: 90)
+    }
+
+    private var shareProgressButton: some View {
+        Button { showShareProgress = true } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "square.and.arrow.up.circle.fill")
+                    .font(.title3)
+                    .foregroundStyle(Color.alehaActiveGreen)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Share My Progress")
+                        .font(.subheadline.weight(.semibold))
+                    Text("Beautiful card with today's stats")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .noorCard()
+        }
+        .buttonStyle(.plain)
+        .sheet(isPresented: $showShareProgress) {
+            ShareProgressSheet(store: store)
+        }
     }
 
     private var statusLabel: some View {

@@ -29,7 +29,7 @@ struct HomeView: View {
     // MARK: - Main Scroll
     private var mainScroll: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 14) {
+            VStack(spacing: AppTheme.sectionSpacing) {
                 headerSection
                 sectionLabel("🕌 Salah")
                 prayerBlock
@@ -41,7 +41,7 @@ struct HomeView: View {
                 verseCard
             }
             .padding(.horizontal, AppTheme.screenPadding)
-            .padding(.top, 8)
+            .padding(.top, 4)
             .padding(.bottom, 120)
         }
     }

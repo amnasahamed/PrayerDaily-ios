@@ -137,9 +137,9 @@ struct HeroCard: View {
 
     private var greetingText: String {
         let h = Calendar.current.component(.hour, from: Date())
-        if h < 12 { return "Good Morning ☀️" }
-        if h < 17 { return "Good Afternoon 🌤" }
-        return "Good Evening 🌙"
+        if h < 12 { return "Good Morning" }
+        if h < 17 { return "Good Afternoon" }
+        return "Good Evening"
     }
 
     private var todayDateString: String {

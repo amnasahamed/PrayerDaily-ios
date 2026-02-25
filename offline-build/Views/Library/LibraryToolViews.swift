@@ -49,8 +49,9 @@ struct LibraryHijriView: View {
                 Circle()
                     .fill(Color.alehaDarkGreen.opacity(0.12))
                     .frame(width: 72, height: 72)
-                Text("🌙")
-                    .font(.system(size: 36))
+                Image(systemName: "moon.fill")
+                    .font(.system(size: 32, weight: .medium))
+                    .foregroundStyle(Color.alehaDarkGreen)
             }
             VStack(spacing: 6) {
                 Text("Today's Hijri Date")
@@ -165,7 +166,7 @@ struct LibraryHijriView: View {
         ("6. Jumada al-Thani", ""),
         ("7. Rajab", "Sacred month"),
         ("8. Sha'ban", "Night of Bara'ah"),
-        ("9. Ramadan", "Month of fasting 🌙"),
+        ("9. Ramadan", "Month of fasting"),
         ("10. Shawwal", "Eid al-Fitr"),
         ("11. Dhu al-Qi'dah", "Sacred month"),
         ("12. Dhu al-Hijjah", "Hajj & Eid al-Adha")
@@ -197,7 +198,7 @@ struct LibraryPrayerTrackerView: View {
 
     private var headerCard: some View {
         HStack(spacing: 0) {
-            statCell("\(store.currentStreak)🔥", label: "Streak")
+            statCell("\(store.currentStreak)", label: "Streak")
             Divider().frame(height: 44)
             statCell("\(store.weeklyConsistency)%", label: "This Week")
             Divider().frame(height: 44)

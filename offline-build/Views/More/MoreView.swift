@@ -23,6 +23,10 @@ struct MoreView: View {
                     .padding(.top, 8)
                     .padding(.bottom, 120)
                 }
+                .ignoresSafeArea(edges: .top)
+                .safeAreaInset(edge: .top) {
+                    Color.clear.frame(height: 0)
+                }
             }
             .navigationTitle("More")
             .modifier(AlehaNavStyle())

@@ -36,7 +36,7 @@ struct QadaTrackerView: View {
                     .font(.system(size: 36, weight: .bold, design: .rounded))
                     .foregroundStyle(totalQada == 0 ? Color.alehaGreen : Color("NoorAccent"))
                     .contentTransition(.numericText())
-                Text(totalQada == 0 ? "All caught up! Alhamdulillah ✨" : "Total Qada to Make Up")
+                Text(totalQada == 0 ? "All caught up! Alhamdulillah" : "Total Qada to Make Up")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

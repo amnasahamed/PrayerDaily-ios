@@ -61,8 +61,9 @@ struct CompactQiblaCard: View {
                 Circle()
                     .fill(Color.alehaGreen.opacity(0.12))
                     .frame(width: 24, height: 24)
-                Text("🕋")
-                    .font(.system(size: 13))
+                Image(systemName: "building.fill")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(Color.alehaGreen)
             }
         }
         .frame(width: 80, height: 80)

@@ -64,8 +64,7 @@ struct SurahListView: View {
             .background(Color("NoorSurface").ignoresSafeArea())
             .searchable(text: $searchText, prompt: "Search surahs...")
             .navigationTitle("Quran")
-            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarBackground(.hidden, for: .navigationBar)
         }
     }
 

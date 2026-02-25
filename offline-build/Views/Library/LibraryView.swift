@@ -27,6 +27,10 @@ struct LibraryView: View {
                     .padding(.bottom, 120)
                     .padding(.top, 8)
                 }
+                .ignoresSafeArea(edges: .top)
+                .safeAreaInset(edge: .top) {
+                    Color.clear.frame(height: 0)
+                }
             }
             .navigationTitle("Library")
             .modifier(AlehaNavStyle())

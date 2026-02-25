@@ -68,7 +68,7 @@ struct ShareProgressSheet: View {
 
     private var messageText: some View {
         VStack(spacing: 6) {
-            Text("Ready to inspire others? 🌿")
+            Text("Ready to inspire others?")
                 .font(.subheadline.weight(.semibold))
             Text("Share your consistency with family and friends.")
                 .font(.caption)
@@ -92,15 +92,14 @@ struct ShareProgressSheet: View {
     }
 
     private func buildShareText() -> String {
-        let emoji = todayCount == 5 ? "🌙" : "🕌"
         return """
 Aleha · \(formattedDate)
 
-\(todayCount)/5 Prayers Completed \(emoji)
-\(streak) Day Streak 🔥
+\(todayCount)/5 Prayers Completed
+\(streak) Day Streak
 \(pct)% Weekly Consistency
 
-Alhamdulillah ✨
+Alhamdulillah
 """
     }
 
@@ -176,8 +175,9 @@ struct ProgressShareCard: View {
                 Circle()
                     .fill(.white.opacity(0.06))
                     .frame(width: 48, height: 48)
-                Text(allDone ? "🌟" : "🕌")
-                    .font(.system(size: 24))
+                Image(systemName: allDone ? "star.fill" : "moon.stars.fill")
+                    .font(.system(size: 22))
+                    .foregroundStyle(allDone ? Color.alehaAmber : Color.alehaGreen)
             }
         }
     }
@@ -189,7 +189,7 @@ struct ProgressShareCard: View {
                 Text("\(completedCount) of 5")
                     .font(.system(size: 52, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
-                Text(allDone ? "Prayers Completed 🌙" : "Prayers Logged Today")
+                Text(allDone ? "Prayers Completed" : "Prayers Logged Today")
                     .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(.white.opacity(0.7))
             }
@@ -199,11 +199,11 @@ struct ProgressShareCard: View {
 
             // Stats row
             HStack(spacing: 0) {
-                miniStat(value: "\(streak)", label: "Day\nStreak", emoji: "🔥")
+                miniStat(value: "\(streak)", label: "Day\nStreak", icon: "flame.fill", color: .orange)
                 Rectangle().fill(.white.opacity(0.1)).frame(width: 1, height: 40)
-                miniStat(value: "\(weeklyPct)%", label: "This\nWeek", emoji: "📊")
+                miniStat(value: "\(weeklyPct)%", label: "This\nWeek", icon: "chart.bar.fill", color: Color.alehaGreen)
                 Rectangle().fill(.white.opacity(0.1)).frame(width: 1, height: 40)
-                miniStat(value: allDone ? "✓" : "\(completedCount)", label: "All\nToday", emoji: allDone ? "✨" : "🕌")
+                miniStat(value: allDone ? "All" : "\(completedCount)", label: "All\nToday", icon: allDone ? "checkmark.circle.fill" : "moon.stars.fill", color: allDone ? Color.alehaAmber : Color.alehaGreen)
             }
             .background(Color.white.opacity(0.06))
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -230,9 +230,9 @@ struct ProgressShareCard: View {
         }
     }
 
-    private func miniStat(value: String, label: String, emoji: String) -> some View {
+    private func miniStat(value: String, label: String, icon: String, color: Color) -> some View {
         VStack(spacing: 4) {
-            Text(emoji).font(.system(size: 18))
+            Image(systemName: icon).font(.system(size: 16)).foregroundStyle(color)
             Text(value)
                 .font(.system(size: 18, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
@@ -246,7 +246,7 @@ struct ProgressShareCard: View {
     }
 
     private var cardFooter: some View {
-        Text("Alhamdulillah ✨")
+        Text("Alhamdulillah")
             .font(.system(size: 16, weight: .medium, design: .serif))
             .foregroundStyle(.white.opacity(0.55))
     }

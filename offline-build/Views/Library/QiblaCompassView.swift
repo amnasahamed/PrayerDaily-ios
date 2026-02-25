@@ -215,8 +215,9 @@ struct QiblaCompassView: View {
             Circle()
                 .fill(cs == .dark ? Color(.systemGray6) : .white)
                 .frame(width: 48, height: 48)
-            Text("🕋")
-                .font(.title2)
+            Image(systemName: "building.fill")
+                .font(.system(size: 18, weight: .bold))
+                .foregroundStyle(Color("NoorPrimary"))
                 .rotationEffect(.degrees(qibla.heading))
         }
     }

@@ -29,8 +29,9 @@ struct HabitMotivationBlock: View {
 
     private var streakCard: some View {
         VStack(spacing: 6) {
-            Text("🔥")
-                .font(.system(size: 26))
+            Image(systemName: "flame.fill")
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(Color.alehaAmber)
                 .scaleEffect(animateFlame ? 1.15 : 1.0)
                 .animation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true), value: animateFlame)
                 .onAppear { animateFlame = true }
@@ -53,8 +54,9 @@ struct HabitMotivationBlock: View {
 
     private var weekCard: some View {
         VStack(spacing: 6) {
-            Text("📅")
-                .font(.system(size: 26))
+            Image(systemName: "calendar")
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(Color.alehaGreen)
             Text("\(weekTotal)/35")
                 .font(.system(size: 18, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.alehaGreen)
@@ -73,12 +75,14 @@ struct HabitMotivationBlock: View {
     }
 
     private var qadaCard: some View {
-        VStack(spacing: 6) {
-            Text("🌙")
-                .font(.system(size: 26))
+        let accent: Color = qadaTotal == 0 ? Color.alehaGreen : Color.alehaSaffron
+        return VStack(spacing: 6) {
+            Image(systemName: "moon.fill")
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(accent)
             Text("\(qadaTotal)")
                 .font(.system(size: 22, weight: .bold, design: .rounded))
-                .foregroundStyle(qadaTotal == 0 ? Color.alehaGreen : Color.alehaSaffron)
+                .foregroundStyle(accent)
                 .contentTransition(.numericText())
             Text("Qada Left")
                 .font(.system(size: 10, weight: .medium))
@@ -87,7 +91,7 @@ struct HabitMotivationBlock: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
-        .background(cardBg(qadaTotal == 0 ? Color.alehaGreen : Color.alehaSaffron))
+        .background(cardBg(accent))
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(cardBorder)
         .shadow(color: .black.opacity(0.04), radius: 8, y: 4)

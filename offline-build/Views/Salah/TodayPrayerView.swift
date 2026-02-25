@@ -42,7 +42,7 @@ struct TodayPrayerView: View {
 
     private var todayProgress: String {
         let remaining = 5 - todayLog.completedCount
-        if remaining == 0 { return "All prayers done today ✨" }
+        if remaining == 0 { return "All prayers done today — Alhamdulillah" }
         return "\(remaining) prayer\(remaining > 1 ? "s" : "") remaining"
     }
 
@@ -137,7 +137,7 @@ struct TodayPrayerView: View {
 
     private func consistencyMessage(_ pct: Int) -> String {
         switch pct {
-        case 90...100: return "Exceptional — keep it up! 🌟"
+        case 90...100: return "Exceptional — keep it up!"
         case 75..<90:  return "Great consistency this week"
         case 50..<75:  return "Good effort — aim for more"
         default:       return "Let's build the habit together"

@@ -159,9 +159,15 @@ struct DhikrCounterView: View {
             }
             Spacer()
             let allComplete = store.dhikrPresets.allSatisfy { $0.currentCount >= $0.target }
-            Text(allComplete ? "✅ Done!" : "\(store.currentStreak)d")
-                .font(.system(size: 18, weight: .bold, design: .rounded))
-                .foregroundStyle(allComplete ? Color.alehaGreen : Color.alehaAmber)
+            HStack(spacing: 4) {
+                if allComplete {
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.alehaGreen)
+                } else {
+                    Text("\(store.currentStreak)d")
+                }
+            }
+            .font(.system(size: 18, weight: .bold, design: .rounded))
+            .foregroundStyle(allComplete ? Color.alehaGreen : Color.alehaAmber)
         }
         .noorCard()
     }
@@ -267,7 +273,7 @@ struct DhikrFullScreen: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 if isComplete {
-                    Text("ماشاء الله ✨")
+                    Text("ماشاء الله")
                         .font(.caption.weight(.medium))
                         .foregroundStyle(Color("NoorGold"))
                         .transition(.scale.combined(with: .opacity))
@@ -280,7 +286,7 @@ struct DhikrFullScreen: View {
     }
 
     private var tapHint: some View {
-        Text(isComplete ? "Target reached! Tap to continue 🌿" : "Tap the circle to count")
+        Text(isComplete ? "Target reached! Tap to continue" : "Tap the circle to count")
             .font(.caption)
             .foregroundStyle(.tertiary)
             .padding(.top, 4)

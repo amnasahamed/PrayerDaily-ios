@@ -5,6 +5,11 @@ struct NoorApp: App {
     @State private var selectedTab: AppTab = .home
     @StateObject private var salahStore = SalahStore()
 
+    init() {
+        // Hide the native UITabBar so only our FloatingTabBar is visible
+        UITabBar.appearance().isHidden = true
+    }
+
     var body: some Scene {
         WindowGroup {
             ZStack(alignment: .bottom) {

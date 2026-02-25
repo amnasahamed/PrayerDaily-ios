@@ -31,13 +31,13 @@ struct HomeView: View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: AppTheme.sectionSpacing) {
                 headerSection
-                sectionLabel("🕌 Salah")
+                sectionLabel("moon.stars.fill", "Salah")
                 prayerBlock
-                sectionLabel("📊 Habits")
+                sectionLabel("chart.bar.fill", "Habits")
                 habitBlock
-                sectionLabel("⚡️ Quick Tools")
+                sectionLabel("bolt.fill", "Quick Tools")
                 quickTools
-                sectionLabel("✨ Verse of the Day")
+                sectionLabel("text.quote", "Verse of the Day")
                 verseCard
             }
             .padding(.horizontal, AppTheme.screenPadding)
@@ -57,12 +57,17 @@ struct HomeView: View {
     }
 
     // MARK: - Section Label
-    private func sectionLabel(_ text: String) -> some View {
-        Text(text)
-            .font(.system(size: 13, weight: .semibold))
-            .foregroundStyle(.secondary)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, 2)
+    private func sectionLabel(_ icon: String, _ title: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(Color.alehaGreen)
+            Text(title)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 2)
     }
 
     // MARK: - Sections

@@ -79,7 +79,7 @@ private struct ToolPill: View {
         .sheet(isPresented: $showQibla) { QiblaCompassView() }
         .sheet(isPresented: $showDhikr) { DhikrSheetWrapper() }
         .sheet(isPresented: $showHijri) { HijriDateSheet(hijriDate: service.hijriDate) }
-        .sheet(isPresented: $showDuas) { DuasSheet() }
+        .sheet(isPresented: $showDuas)  { DuasSheet() }
     }
 
     private var subtitle: String? {
@@ -117,8 +117,9 @@ private struct HijriDateSheet: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                Text("🌙")
-                    .font(.system(size: 64))
+                Image(systemName: "moon.stars.fill")
+                    .font(.system(size: 56, weight: .semibold))
+                    .foregroundStyle(Color.alehaAmber)
                 Text("Hijri Date")
                     .font(.title2.weight(.bold))
                 Text(hijriDate.isEmpty ? "Loading…" : hijriDate)

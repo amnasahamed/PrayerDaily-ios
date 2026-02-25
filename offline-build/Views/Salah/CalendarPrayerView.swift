@@ -13,6 +13,8 @@ struct CalendarPrayerView: View {
             VStack(spacing: 16) {
                 monthNav
                 calendarGrid
+                legendRow
+                monthlySummaryCard
                 selectedDayDetail
             }
             .padding(.horizontal, AppTheme.screenPadding)
@@ -24,16 +26,13 @@ struct CalendarPrayerView: View {
     private var monthNav: some View {
         HStack {
             Button { shiftMonth(-1) } label: {
-                Image(systemName: "chevron.left")
-                    .font(.headline)
+                Image(systemName: "chevron.left").font(.headline)
             }
             Spacer()
-            Text(monthTitle)
-                .font(.headline)
+            Text(monthTitle).font(.headline)
             Spacer()
             Button { shiftMonth(1) } label: {
-                Image(systemName: "chevron.right")
-                    .font(.headline)
+                Image(systemName: "chevron.right").font(.headline)
             }
         }
         .foregroundStyle(.primary)
@@ -42,8 +41,7 @@ struct CalendarPrayerView: View {
     }
 
     private var monthTitle: String {
-        let f = DateFormatter()
-        f.dateFormat = "MMMM yyyy"
+        let f = DateFormatter(); f.dateFormat = "MMMM yyyy"
         return f.string(from: displayedMonth)
     }
 
@@ -83,7 +81,7 @@ struct CalendarPrayerView: View {
         let isSelected = calendar.isDate(item.date, inSameDayAs: store.selectedDate)
         let isToday = calendar.isDateInToday(item.date)
         let dayLog = store.log(for: item.date)
-        let ratio = CGFloat(dayLog.completedCount) / 5.0
+        let count = dayLog.completedCount
 
         return Button {
             withAnimation(.spring(response: 0.3)) { store.selectedDate = item.date }
@@ -97,13 +95,24 @@ struct CalendarPrayerView: View {
                     .clipShape(Circle())
 
                 if !item.isPlaceholder {
-                    prayerDots(ratio)
+                    Circle()
+                        .fill(dotColor(count: count))
+                        .frame(width: 5, height: 5)
                 }
             }
             .frame(height: 48)
         }
         .buttonStyle(.plain)
         .disabled(item.isPlaceholder)
+    }
+
+    private func dotColor(count: Int) -> Color {
+        switch count {
+        case 5:    return Color.alehaGreen
+        case 3...4: return Color.alehaAmber
+        case 1...2: return .red.opacity(0.65)
+        default:   return Color(.systemGray5)
+        }
     }
 
     private func foregroundForCell(item: CalendarDay, isSelected: Bool, isToday: Bool) -> Color {
@@ -119,19 +128,84 @@ struct CalendarPrayerView: View {
         return AnyShapeStyle(Color.clear)
     }
 
-    private func prayerDots(_ ratio: CGFloat) -> some View {
-        let dotColor: Color = ratio >= 1.0 ? Color("NoorPrimary") : (ratio > 0 ? Color("NoorGold") : Color(.systemGray5))
-        return Circle()
-            .fill(dotColor)
-            .frame(width: 5, height: 5)
+    // MARK: - Legend
+    private var legendRow: some View {
+        HStack(spacing: 16) {
+            legendItem(color: Color.alehaGreen, label: "All 5")
+            legendItem(color: Color.alehaAmber, label: "3–4")
+            legendItem(color: .red.opacity(0.65), label: "<3")
+            legendItem(color: Color(.systemGray5), label: "None")
+        }
+        .font(.caption2)
+        .foregroundStyle(.secondary)
+        .frame(maxWidth: .infinity)
+    }
+
+    private func legendItem(color: Color, label: String) -> some View {
+        HStack(spacing: 4) {
+            Circle().fill(color).frame(width: 8, height: 8)
+            Text(label)
+        }
+    }
+
+    // MARK: - Monthly Summary
+    private var monthlySummaryCard: some View {
+        let summary = store.monthlySummary(for: displayedMonth)
+        let monthName = monthNameOnly(displayedMonth)
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "chart.bar.fill")
+                    .foregroundStyle(Color("NoorPrimary"))
+                Text("\(monthName) Summary")
+                    .font(.subheadline.weight(.semibold))
+            }
+            HStack(spacing: 0) {
+                summaryStatBlock(value: "\(summary.logged)", label: "Prayers Logged", color: Color("NoorPrimary"))
+                Divider().frame(height: 40)
+                summaryStatBlock(value: "\(summary.bestStreak)", label: "Best Streak", color: Color.alehaAmber)
+                Divider().frame(height: 40)
+                let possible = daysInDisplayedMonth() * 5
+                let pct = possible > 0 ? Int(Double(summary.logged) / Double(possible) * 100) : 0
+                summaryStatBlock(value: "\(pct)%", label: "Completion", color: Color.alehaGreen)
+            }
+        }
+        .noorCard()
+    }
+
+    private func summaryStatBlock(value: String, label: String, color: Color) -> some View {
+        VStack(spacing: 4) {
+            Text(value)
+                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .foregroundStyle(color)
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func monthNameOnly(_ date: Date) -> String {
+        let f = DateFormatter(); f.dateFormat = "MMMM"
+        return f.string(from: date)
+    }
+
+    private func daysInDisplayedMonth() -> Int {
+        calendar.range(of: .day, in: .month, for: displayedMonth)?.count ?? 30
     }
 
     // MARK: - Selected Day Detail
     private var selectedDayDetail: some View {
         let dayLog = store.log(for: store.selectedDate)
         return VStack(alignment: .leading, spacing: 12) {
-            Text(selectedDayTitle)
-                .font(.subheadline.weight(.semibold))
+            HStack {
+                Text(selectedDayTitle).font(.subheadline.weight(.semibold))
+                Spacer()
+                let c = dayLog.completedCount
+                Text("\(c)/5")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(c == 5 ? Color.alehaGreen : (c >= 3 ? Color.alehaAmber : .red.opacity(0.7)))
+            }
             ForEach(Prayer.allCases) { prayer in
                 PrayerLogRow(prayer: prayer, status: dayLog.status(for: prayer)) { newStatus in
                     store.setStatus(newStatus, prayer: prayer, date: store.selectedDate)
@@ -142,8 +216,7 @@ struct CalendarPrayerView: View {
     }
 
     private var selectedDayTitle: String {
-        let f = DateFormatter()
-        f.dateStyle = .long
+        let f = DateFormatter(); f.dateStyle = .long
         return f.string(from: store.selectedDate)
     }
 

@@ -94,10 +94,12 @@ class SalahStore: ObservableObject {
     @Published var qadaEntries: [QadaEntry]
     @Published var dhikrPresets: [DhikrPreset]
     @Published var selectedDate: Date = Date()
+    @Published var dhikrLifetimeCounts: [UUID: Int] = [:]
 
     private static let logsKey = "salah_logs"
     private static let qadaKey = "salah_qada"
     private static let dhikrKey = "salah_dhikr"
+    private static let dhikrLifetimeKey = "salah_dhikr_lifetime"
 
     static let dateFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -128,6 +130,16 @@ class SalahStore: ObservableObject {
             self.dhikrPresets = Self.defaultDhikr()
         }
 
+        // Load lifetime dhikr
+        if let data = UserDefaults.standard.data(forKey: Self.dhikrLifetimeKey),
+           let decoded = try? JSONDecoder().decode([String: Int].self, from: data) {
+            var mapped: [UUID: Int] = [:]
+            for (k, v) in decoded {
+                if let uid = UUID(uuidString: k) { mapped[uid] = v }
+            }
+            self.dhikrLifetimeCounts = mapped
+        }
+
         // Seed sample data if empty
         if logs.isEmpty {
             seedSampleData()
@@ -144,6 +156,10 @@ class SalahStore: ObservableObject {
         }
         if let data = try? JSONEncoder().encode(dhikrPresets) {
             UserDefaults.standard.set(data, forKey: Self.dhikrKey)
+        }
+        let stringKeyed = Dictionary(uniqueKeysWithValues: dhikrLifetimeCounts.map { (k, v) in (k.uuidString, v) })
+        if let data = try? JSONEncoder().encode(stringKeyed) {
+            UserDefaults.standard.set(data, forKey: Self.dhikrLifetimeKey)
         }
     }
 
@@ -215,6 +231,7 @@ class SalahStore: ObservableObject {
     func incrementDhikr(_ id: UUID) {
         if let idx = dhikrPresets.firstIndex(where: { $0.id == id }) {
             dhikrPresets[idx].currentCount += 1
+            dhikrLifetimeCounts[id, default: 0] += 1
             save()
         }
     }
@@ -224,6 +241,73 @@ class SalahStore: ObservableObject {
             dhikrPresets[idx].currentCount = 0
             save()
         }
+    }
+
+    // MARK: - Weekly Consistency
+    var weeklyConsistency: Int {
+        let cal = Calendar.current
+        let today = Date()
+        var total = 0
+        var logged = 0
+        for offset in 0..<7 {
+            guard let d = cal.date(byAdding: .day, value: -offset, to: today) else { continue }
+            total += 5
+            logged += log(for: d).completedCount
+        }
+        guard total > 0 else { return 0 }
+        return Int(Double(logged) / Double(total) * 100)
+    }
+
+    // MARK: - Monthly Summary
+    func monthlySummary(for month: Date) -> (logged: Int, bestStreak: Int) {
+        let cal = Calendar.current
+        guard let range = cal.range(of: .day, in: .month, for: month),
+              let firstDay = cal.date(from: cal.dateComponents([.year, .month], from: month)) else {
+            return (0, 0)
+        }
+        var totalLogged = 0
+        var best = 0
+        var current = 0
+        for day in range {
+            guard let date = cal.date(byAdding: .day, value: day - 1, to: firstDay) else { continue }
+            let dayLog = log(for: date)
+            totalLogged += dayLog.completedCount
+            if dayLog.completedCount == 5 {
+                current += 1
+                best = max(best, current)
+            } else {
+                current = 0
+            }
+        }
+        return (totalLogged, best)
+    }
+
+    // MARK: - Estimated missed (auto-suggest for Qada)
+    var estimatedMissedPrayers: Int {
+        let cal = Calendar.current
+        let today = Date()
+        var missed = 0
+        for offset in 0..<30 {
+            guard let d = cal.date(byAdding: .day, value: -offset, to: today) else { continue }
+            let dayLog = log(for: d)
+            for status in dayLog.allStatuses {
+                if status == .missed { missed += 1 }
+            }
+        }
+        return missed
+    }
+
+    // MARK: - Dhikr weekly total
+    var dhikrWeeklyTotal: Int {
+        dhikrLifetimeCounts.values.reduce(0, +)
+    }
+
+    var dhikrTodayTotal: Int {
+        dhikrPresets.reduce(0) { $0 + $1.currentCount }
+    }
+
+    var dhikrLifetimeTotal: Int {
+        dhikrLifetimeCounts.values.reduce(0, +)
     }
 
     // MARK: - Defaults

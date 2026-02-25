@@ -8,8 +8,9 @@ struct TodayPrayerView: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 18) {
+            VStack(spacing: 16) {
                 heroCard
+                weeklyConsistencyBanner
                 prayerListSection
                 weekOverviewCard
             }
@@ -20,42 +21,54 @@ struct TodayPrayerView: View {
 
     // MARK: - Hero
     private var heroCard: some View {
-        VStack(spacing: 14) {
+        HStack(spacing: 20) {
             progressRing
-            Text("\(todayLog.completedCount) of 5 Prayers")
-                .font(.headline)
-            statusLabel
+            VStack(alignment: .leading, spacing: 6) {
+                Text("\(todayLog.completedCount) of 5 Prayers")
+                    .font(.headline)
+                statusLabel
+                Text(todayProgress)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
         }
         .frame(maxWidth: .infinity)
         .noorCard()
     }
 
+    private var todayProgress: String {
+        let remaining = 5 - todayLog.completedCount
+        if remaining == 0 { return "All prayers done today ✨" }
+        return "\(remaining) prayer\(remaining > 1 ? "s" : "") remaining"
+    }
+
     private var progressRing: some View {
         ZStack {
             Circle()
-                .stroke(Color(.systemGray5), lineWidth: 8)
+                .stroke(Color(.systemGray5), lineWidth: 7)
             Circle()
                 .trim(from: 0, to: progress)
-                .stroke(Color.alehaGreen, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                .stroke(Color.alehaGreen, style: StrokeStyle(lineWidth: 7, lineCap: .round))
                 .rotationEffect(.degrees(-90))
                 .animation(.spring(response: 0.7, dampingFraction: 0.8), value: progress)
-            VStack(spacing: 2) {
+            VStack(spacing: 1) {
                 Text("\(Int(progress * 100))%")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.alehaGreen)
                     .contentTransition(.numericText())
-                Text("Complete")
+                Text("Today")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
         }
-        .frame(width: 110, height: 110)
+        .frame(width: 90, height: 90)
     }
 
     private var statusLabel: some View {
         Group {
             if todayLog.completedCount == 5 {
-                Label("All prayers completed! ماشاء الله", systemImage: "star.fill")
+                Label("ماشاء الله!", systemImage: "star.fill")
                     .foregroundStyle(Color.alehaAmber)
             } else {
                 let nextPrayer = Prayer.allCases.first { todayLog.status(for: $0) == .none }
@@ -68,13 +81,52 @@ struct TodayPrayerView: View {
         .font(.subheadline)
     }
 
+    // MARK: - Weekly Consistency Banner
+    private var weeklyConsistencyBanner: some View {
+        let pct = store.weeklyConsistency
+        let color: Color = pct >= 80 ? Color.alehaGreen : (pct >= 50 ? Color.alehaAmber : .red.opacity(0.7))
+        return HStack(spacing: 14) {
+            Image(systemName: "trophy.fill")
+                .font(.title2)
+                .foregroundStyle(color)
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Weekly Consistency")
+                    .font(.subheadline.weight(.semibold))
+                Text(consistencyMessage(pct))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text("\(pct)%")
+                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .foregroundStyle(color)
+                .contentTransition(.numericText())
+        }
+        .noorCard()
+    }
+
+    private func consistencyMessage(_ pct: Int) -> String {
+        switch pct {
+        case 90...100: return "Exceptional — keep it up! 🌟"
+        case 75..<90:  return "Great consistency this week"
+        case 50..<75:  return "Good effort — aim for more"
+        default:       return "Let's build the habit together"
+        }
+    }
+
     // MARK: - Prayer List
     private var prayerListSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Log Your Prayers")
-                .font(.subheadline.weight(.semibold))
+            HStack {
+                Text("Log Your Prayers")
+                    .font(.subheadline.weight(.semibold))
+                Spacer()
+                Text("Swipe to log")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
             ForEach(Prayer.allCases) { prayer in
-                PrayerLogRow(prayer: prayer, status: todayLog.status(for: prayer)) { newStatus in
+                SwipeToPrayRow(prayer: prayer, status: todayLog.status(for: prayer)) { newStatus in
                     withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
                         store.setStatus(newStatus, prayer: prayer, date: Date())
                     }
@@ -91,7 +143,7 @@ struct TodayPrayerView: View {
                 Text("This Week")
                     .font(.subheadline.weight(.semibold))
                 Spacer()
-                Text("🔥 \(store.currentStreak) day streak")
+                Label("\(store.currentStreak) day streak", systemImage: "flame.fill")
                     .font(.caption.weight(.medium))
                     .foregroundStyle(Color.alehaAmber)
             }
@@ -129,21 +181,73 @@ struct TodayPrayerView: View {
     }
 }
 
-// MARK: - Prayer Log Row
-struct PrayerLogRow: View {
+// MARK: - Swipe-to-Log Row
+struct SwipeToPrayRow: View {
     let prayer: Prayer
     let status: PrayerStatus
     let onStatusChange: (PrayerStatus) -> Void
+    @State private var dragOffset: CGFloat = 0
     @State private var didJustChange = false
 
+    private let swipeThreshold: CGFloat = 60
+
     var body: some View {
-        HStack(spacing: 12) {
-            prayerIcon
-            prayerLabel
-            Spacer()
-            statusButton
+        ZStack {
+            // Swipe hint background
+            HStack {
+                swipeHintView
+                Spacer()
+            }
+            // Row content
+            HStack(spacing: 12) {
+                prayerIcon
+                prayerLabel
+                Spacer()
+                statusMenu
+            }
+            .padding(.vertical, 4)
+            .background(Color("NoorSurface"))
+            .offset(x: dragOffset)
+            .gesture(
+                DragGesture(minimumDistance: 20)
+                    .onChanged { v in
+                        if v.translation.width > 0 {
+                            dragOffset = min(v.translation.width, swipeThreshold * 1.5)
+                        }
+                    }
+                    .onEnded { v in
+                        if v.translation.width > swipeThreshold {
+                            triggerSwipeLog()
+                        }
+                        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                            dragOffset = 0
+                        }
+                    }
+            )
         }
-        .padding(.vertical, 3)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    private var swipeHintView: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "checkmark.circle.fill")
+            Text("Prayed")
+                .font(.caption.weight(.semibold))
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 14)
+        .frame(height: 44)
+        .background(Color.alehaGreen)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .opacity(dragOffset > 10 ? Double(dragOffset / swipeThreshold) : 0)
+    }
+
+    private func triggerSwipeLog() {
+        let impact = UIImpactFeedbackGenerator(style: .medium)
+        impact.impactOccurred()
+        didJustChange = true
+        onStatusChange(.prayed)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { didJustChange = false }
     }
 
     private var prayerIcon: some View {
@@ -151,7 +255,7 @@ struct PrayerLogRow: View {
             .font(.title3)
             .foregroundStyle(status == .none ? .secondary : status.color)
             .frame(width: 32)
-            .scaleEffect(didJustChange ? 1.15 : 1.0)
+            .scaleEffect(didJustChange ? 1.2 : 1.0)
             .animation(.spring(response: 0.3, dampingFraction: 0.5), value: didJustChange)
     }
 
@@ -162,21 +266,15 @@ struct PrayerLogRow: View {
         }
     }
 
-    private var statusButton: some View {
+    private var statusMenu: some View {
         Menu {
             ForEach(PrayerStatus.allCases.filter { $0 != .none }, id: \.self) { s in
                 Button {
-                    didJustChange = true
                     onStatusChange(s)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { didJustChange = false }
-                } label: {
-                    Label(s.rawValue, systemImage: s.icon)
-                }
+                } label: { Label(s.rawValue, systemImage: s.icon) }
             }
             if status != .none {
-                Button(role: .destructive) {
-                    onStatusChange(.none)
-                } label: {
+                Button(role: .destructive) { onStatusChange(.none) } label: {
                     Label("Clear", systemImage: "trash")
                 }
             }
@@ -187,5 +285,45 @@ struct PrayerLogRow: View {
                 .frame(width: 40, height: 40)
                 .contentShape(Rectangle())
         }
+    }
+}
+
+// MARK: - Legacy Row (Calendar reuse)
+struct PrayerLogRow: View {
+    let prayer: Prayer
+    let status: PrayerStatus
+    let onStatusChange: (PrayerStatus) -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: prayer.icon)
+                .font(.title3)
+                .foregroundStyle(status == .none ? .secondary : status.color)
+                .frame(width: 32)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(prayer.rawValue).font(.body.weight(.medium))
+                Text(status.rawValue).font(.caption).foregroundStyle(status.color)
+            }
+            Spacer()
+            Menu {
+                ForEach(PrayerStatus.allCases.filter { $0 != .none }, id: \.self) { s in
+                    Button { onStatusChange(s) } label: {
+                        Label(s.rawValue, systemImage: s.icon)
+                    }
+                }
+                if status != .none {
+                    Button(role: .destructive) { onStatusChange(.none) } label: {
+                        Label("Clear", systemImage: "trash")
+                    }
+                }
+            } label: {
+                Image(systemName: status.icon)
+                    .font(.title2)
+                    .foregroundStyle(status == .none ? Color(.systemGray3) : status.color)
+                    .frame(width: 40, height: 40)
+                    .contentShape(Rectangle())
+            }
+        }
+        .padding(.vertical, 3)
     }
 }

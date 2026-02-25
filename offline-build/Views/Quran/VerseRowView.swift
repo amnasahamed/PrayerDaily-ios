@@ -1,6 +1,156 @@
 import SwiftUI
 
-// MARK: - Ayah Share Card Generator
+// MARK: - Verse Row
+struct VerseRowView: View {
+    let verse: Verse
+    let showTranslation: Bool
+    var showArabic: Bool = true
+    var isFocusMode: Bool = false
+    let audioState: AudioPlayState
+    let onPlay: () -> Void
+    let onBookmark: () -> Void
+    let isBookmarked: Bool
+    var onTafsir: (() -> Void)? = nil
+    var surahName: String = ""
+
+    @Environment(\.colorScheme) var colorScheme
+    @State private var showShareSheet = false
+    @State private var shareItems: [Any] = []
+
+    private var isCurrentlyPlaying: Bool {
+        switch audioState {
+        case .playing(let s, let v): return s == verse.surahId && v == verse.number
+        case .paused(let s, let v): return s == verse.surahId && v == verse.number
+        default: return false
+        }
+    }
+
+    private var isPaused: Bool {
+        if case .paused(let s, let v) = audioState { return s == verse.surahId && v == verse.number }
+        return false
+    }
+
+    var body: some View {
+        VStack(alignment: .trailing, spacing: 0) {
+            cardContent
+            actionBar
+            Divider().opacity(isFocusMode ? 0.15 : 0.35)
+        }
+        .background(cardBackground)
+        .sheet(isPresented: $showShareSheet) { ShareSheet(items: shareItems) }
+    }
+
+    // MARK: - Card Content
+    private var cardContent: some View {
+        VStack(alignment: .trailing, spacing: 10) {
+            numberBadge
+            if showArabic { arabicBlock }
+            if showTranslation { translationBlock }
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 14)
+        .padding(.bottom, 6)
+    }
+
+    private var numberBadge: some View {
+        HStack {
+            Text("\(verse.number)")
+                .font(.caption2.weight(.bold))
+                .foregroundStyle(isFocusMode ? Color("NoorGold") : Color("NoorPrimary"))
+                .frame(width: 28, height: 28)
+                .background((isFocusMode ? Color("NoorGold") : Color("NoorPrimary")).opacity(0.12))
+                .clipShape(Circle())
+            Spacer()
+        }
+    }
+
+    private var arabicBlock: some View {
+        Text(verse.arabic)
+            .font(.system(size: isFocusMode ? 32 : 28))
+            .lineSpacing(isFocusMode ? 20 : 14)
+            .multilineTextAlignment(.trailing)
+            .frame(maxWidth: .infinity, alignment: .trailing)
+            .foregroundStyle(isFocusMode ? .white : (isCurrentlyPlaying ? Color("NoorPrimary") : .primary))
+    }
+
+    private var translationBlock: some View {
+        Text(verse.translation)
+            .font(.subheadline)
+            .foregroundStyle(isFocusMode ? .white.opacity(0.75) : Color.primary.opacity(0.75))
+            .lineSpacing(5)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: - Action Bar
+    private var actionBar: some View {
+        HStack(spacing: 0) {
+            actionButton(icon: playIcon, tint: isCurrentlyPlaying ? Color("NoorGold") : iconTint, action: onPlay)
+            if let tafsir = onTafsir {
+                actionButton(icon: "doc.text.magnifyingglass", tint: Color("NoorAccent"), action: tafsir)
+            }
+            actionButton(icon: "square.and.arrow.up", tint: iconTint, action: shareAyah)
+            actionButton(
+                icon: isBookmarked ? "bookmark.fill" : "bookmark",
+                tint: isBookmarked ? Color("NoorGold") : iconTint,
+                action: onBookmark
+            )
+            Spacer()
+        }
+        .padding(.horizontal, 10)
+        .padding(.bottom, 6)
+    }
+
+    private var iconTint: Color {
+        isFocusMode ? .white.opacity(0.55) : Color("NoorPrimary").opacity(0.7)
+    }
+
+    private func actionButton(icon: String, tint: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(tint)
+                .frame(width: 38, height: 32)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var playIcon: String {
+        if isCurrentlyPlaying && !isPaused { return "pause.circle.fill" }
+        if isPaused { return "play.circle.fill" }
+        return "play.circle"
+    }
+
+    // MARK: - Background
+    @ViewBuilder
+    private var cardBackground: some View {
+        if isFocusMode {
+            Color.black
+        } else if isCurrentlyPlaying {
+            Color("NoorPrimary").opacity(0.06)
+        } else {
+            colorScheme == .dark ? Color(.systemGray6) : Color.white
+        }
+    }
+
+    // MARK: - Share
+    private func shareAyah() {
+        let name = surahName.isEmpty ? "Surah \(verse.surahId)" : surahName
+        let text = "\(verse.arabic)\n\n\(verse.translation)\n\n— \(name) \(verse.surahId):\(verse.number) | Noor App"
+        shareItems = [text]
+        showShareSheet = true
+    }
+}
+
+// MARK: - Share Sheet
+struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+    func updateUIViewController(_ uvc: UIActivityViewController, context: Context) {}
+}
+
+// MARK: - Ayah Share Card
 struct AyahShareCard: View {
     let verse: Verse
     let surahName: String
@@ -46,146 +196,4 @@ struct AyahShareCard: View {
         .frame(width: 320, height: 220)
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
-}
-
-// MARK: - Verse Row
-struct VerseRowView: View {
-    let verse: Verse
-    let showTranslation: Bool
-    let audioState: AudioPlayState
-    let onPlay: () -> Void
-    let onBookmark: () -> Void
-    let isBookmarked: Bool
-    var onTafsir: (() -> Void)? = nil
-    var surahName: String = ""
-
-    @Environment(\.colorScheme) var colorScheme
-    @State private var showShareSheet = false
-    @State private var shareItems: [Any] = []
-
-    private var isCurrentlyPlaying: Bool {
-        switch audioState {
-        case .playing(let s, let v): return s == verse.surahId && v == verse.number
-        case .paused(let s, let v): return s == verse.surahId && v == verse.number
-        default: return false
-        }
-    }
-
-    private var isPaused: Bool {
-        if case .paused(let s, let v) = audioState { return s == verse.surahId && v == verse.number }
-        return false
-    }
-
-    var body: some View {
-        VStack(alignment: .trailing, spacing: 14) {
-            verseHeader
-            arabicText
-            if showTranslation { translationText }
-            Divider().opacity(0.4)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
-        .background(verseBackground)
-        .sheet(isPresented: $showShareSheet) {
-            ShareSheet(items: shareItems)
-        }
-    }
-
-    // MARK: - Header
-    private var verseHeader: some View {
-        HStack {
-            verseNumberBadge
-            Spacer()
-            actionButtons
-        }
-    }
-
-    private var verseNumberBadge: some View {
-        Text("\(verse.number)")
-            .font(.caption2.weight(.bold))
-            .foregroundStyle(Color("NoorPrimary"))
-            .frame(width: 28, height: 28)
-            .background(Color("NoorPrimary").opacity(0.10))
-            .clipShape(Circle())
-    }
-
-    private var actionButtons: some View {
-        HStack(spacing: 14) {
-            Button(action: onPlay) {
-                Image(systemName: playIcon)
-                    .font(.subheadline)
-                    .foregroundStyle(isCurrentlyPlaying ? Color("NoorGold") : Color("NoorPrimary"))
-            }
-            if let onTafsir = onTafsir {
-                Button(action: onTafsir) {
-                    Image(systemName: "text.magnifyingglass")
-                        .font(.subheadline)
-                        .foregroundStyle(Color("NoorAccent"))
-                }
-            }
-            Button(action: shareAyah) {
-                Image(systemName: "square.and.arrow.up")
-                    .font(.subheadline)
-                    .foregroundStyle(Color("NoorSecondary"))
-            }
-            Button(action: onBookmark) {
-                Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
-                    .font(.subheadline)
-                    .foregroundStyle(isBookmarked ? Color("NoorGold") : .secondary)
-                    .scaleEffect(isBookmarked ? 1.1 : 1.0)
-                    .animation(.spring(response: 0.3, dampingFraction: 0.5), value: isBookmarked)
-            }
-        }
-    }
-
-    private var playIcon: String {
-        if isCurrentlyPlaying && !isPaused { return "pause.circle.fill" }
-        if isPaused { return "play.circle.fill" }
-        return "play.circle"
-    }
-
-    // MARK: - Content
-    private var arabicText: some View {
-        Text(verse.arabic)
-            .font(.system(size: 28))
-            .lineSpacing(16)
-            .multilineTextAlignment(.trailing)
-            .frame(maxWidth: .infinity, alignment: .trailing)
-            .foregroundStyle(isCurrentlyPlaying ? Color("NoorPrimary") : .primary)
-    }
-
-    private var translationText: some View {
-        Text(verse.translation)
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
-            .lineSpacing(5)
-            .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private var verseBackground: some View {
-        Group {
-            if isCurrentlyPlaying {
-                Color("NoorPrimary").opacity(0.06)
-            } else {
-                (colorScheme == .dark ? Color(.systemGray6) : Color.white)
-            }
-        }
-    }
-
-    // MARK: - Share
-    private func shareAyah() {
-        let name = surahName.isEmpty ? "Surah \(verse.surahId)" : surahName
-        let text = "\(verse.arabic)\n\n\(verse.translation)\n\n— \(name), Ayah \(verse.number) | Noor App"
-        shareItems = [text]
-        showShareSheet = true
-    }
-}
-
-// MARK: - Share Sheet
-struct ShareSheet: UIViewControllerRepresentable {
-    let items: [Any]
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: items, applicationActivities: nil)
-    }
-    func updateUIViewController(_ uvc: UIActivityViewController, context: Context) {}
 }

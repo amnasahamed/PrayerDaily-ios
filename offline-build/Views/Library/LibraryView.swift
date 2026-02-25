@@ -101,10 +101,17 @@ struct LibraryView: View {
         VStack(alignment: .leading, spacing: 14) {
             sectionHeader(title: "Dua Collection", icon: "hands.sparkles.fill")
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
-                DuaCategoryTile(title: "Morning",    icon: "sunrise.fill",   count: 12, color: Color.alehaAmber)
-                DuaCategoryTile(title: "Evening",    icon: "sunset.fill",    count: 12, color: Color.alehaDarkGreen)
-                DuaCategoryTile(title: "Travel",     icon: "airplane",       count: 8,  color: Color.alehaGreen)
-                DuaCategoryTile(title: "Protection", icon: "shield.fill",    count: 10, color: Color(red: 0.55, green: 0.30, blue: 0.85))
+                ForEach(DuaDatabase.all) { category in
+                    NavigationLink(destination: DuaListView(category: category)) {
+                        DuaCategoryTile(
+                            title: category.title,
+                            icon: category.icon,
+                            count: category.duas.count,
+                            color: category.color
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
             }
         }
         .opacity(appeared ? 1 : 0)
@@ -273,33 +280,23 @@ struct CategoryChip: View {
 // MARK: - Dua Category Tile
 struct DuaCategoryTile: View {
     let title: String; let icon: String; let count: Int; let color: Color
-    @State private var pressed = false
     @Environment(\.colorScheme) var cs
 
     var body: some View {
-        Button {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            pressed = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { pressed = false }
-        } label: {
-            VStack(spacing: 10) {
-                ZStack {
-                    Circle().fill(color.opacity(0.13)).frame(width: 48, height: 48)
-                    Image(systemName: icon).font(.title3).foregroundStyle(color)
-                }
-                Text(title).font(.subheadline.weight(.semibold))
-                Text("\(count) duas").font(.caption).foregroundStyle(.secondary)
+        VStack(spacing: 10) {
+            ZStack {
+                Circle().fill(color.opacity(0.13)).frame(width: 48, height: 48)
+                Image(systemName: icon).font(.title3).foregroundStyle(color)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 20)
-            .background(cs == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.85))
-            .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                .stroke(cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.6), lineWidth: 0.5))
-            .scaleEffect(pressed ? 0.95 : 1.0)
-            .animation(.spring(response: 0.25, dampingFraction: 0.6), value: pressed)
+            Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
+            Text("\(count) duas").font(.caption).foregroundStyle(.secondary)
         }
-        .buttonStyle(.plain)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 20)
+        .background(cs == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.85))
+        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+            .stroke(cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.6), lineWidth: 0.5))
     }
 }
 

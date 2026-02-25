@@ -18,6 +18,7 @@
 		1FC9FB245D9B925801A63BF0 /* SurahReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F30F31FE2D60F945FC0754 /* SurahReaderView.swift */; };
 		2343CC2756FC540E3404CEB7 /* StreakCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD35CC1985099BDF2EE042E /* StreakCard.swift */; };
 		2762BE477C9C2F8DFF55E628 /* SalahDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5B69ABF5416E44C909C59A /* SalahDashboard.swift */; };
+		28C5331B9E99357D8A728A9A /* DuaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14477478517FDC36813FCDE /* DuaData.swift */; };
 		29C52C0EF3BCCC6078DA1C9B /* FloatingTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 382DDF8EFBA7B09B54E6288E /* FloatingTabBar.swift */; };
 		2AAD751850D3FDA907E56557 /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D682C9F07C85BAD9FAD6AF /* MoreView.swift */; };
 		37431E9D2788A1AB93272716 /* DailyReflectionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7A56891A9136075680FB4D /* DailyReflectionCard.swift */; };
@@ -43,6 +44,7 @@
 		A10DED2B350D9B1479DC6DCA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BECBD7E784FDB27DDA19174B /* LaunchScreen.storyboard */; };
 		A1F885CBC8C4C8B20788E3C7 /* EmergencyGuidesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235CFFDB79F09FD381430EB /* EmergencyGuidesView.swift */; };
 		A9938ECD436F8A894407CC1B /* ReadingModeBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BD2ED725AC55AAFB63F842 /* ReadingModeBar.swift */; };
+		ABCF24C91BCE491FAA03EC7E /* DuaListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411C2522A4F25739247AFA84 /* DuaListView.swift */; };
 		ACA1B833727A202BB65432F1 /* HabitMotivationBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE8EB6653DB527BD0DA8DD7 /* HabitMotivationBlock.swift */; };
 		AFB1257C6A582756DDDED6E8 /* DhikrCounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610D9D96A07819D7DFAB4801 /* DhikrCounterView.swift */; };
 		B217230EDCC515E33E274698 /* ReflectionPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A680C3B3B8102C9299753308 /* ReflectionPromptView.swift */; };
@@ -77,6 +79,7 @@
 		33D682C9F07C85BAD9FAD6AF /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
 		382DDF8EFBA7B09B54E6288E /* FloatingTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingTabBar.swift; sourceTree = "<group>"; };
 		3AA636EFB3034323CE98D3FF /* PrayerTimesCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimesCard.swift; sourceTree = "<group>"; };
+		411C2522A4F25739247AFA84 /* DuaListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuaListView.swift; sourceTree = "<group>"; };
 		427D7CC54EF12E139EE0BEB2 /* VerseRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseRowView.swift; sourceTree = "<group>"; };
 		45F44C9330F8AD73F9BE62E4 /* offline-build.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "offline-build.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		461687FFCA99CF1CB0A6DC7B /* QuickToolsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickToolsRow.swift; sourceTree = "<group>"; };
@@ -111,6 +114,7 @@
 		D82953705DD4A007FE12CA61 /* CompactDhikrCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactDhikrCard.swift; sourceTree = "<group>"; };
 		D9770DA743A6BD676FAFFF73 /* NoorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoorApp.swift; sourceTree = "<group>"; };
 		DF5B69ABF5416E44C909C59A /* SalahDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalahDashboard.swift; sourceTree = "<group>"; };
+		E14477478517FDC36813FCDE /* DuaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuaData.swift; sourceTree = "<group>"; };
 		E5FA503527474C0588A09DC5 /* QuickAccessSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAccessSection.swift; sourceTree = "<group>"; };
 		ECC4AD52DF8E393B67B40BAF /* ColorAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorAssets.swift; sourceTree = "<group>"; };
 		EEF306CACD4538FBBFB1448C /* PrayerActionBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerActionBlock.swift; sourceTree = "<group>"; };
@@ -187,6 +191,7 @@
 		9486DB5E03F3CE6D0B439D62 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				411C2522A4F25739247AFA84 /* DuaListView.swift */,
 				F521D0FF8FF43ECDBE2CAD30 /* HadithCollectionCard.swift */,
 				BCBB90D553082B450C2BE140 /* HadithCollectionDetailView.swift */,
 				714D8D90C5223D5BB9A3B50C /* LibraryToolViews.swift */,
@@ -267,6 +272,7 @@
 			isa = PBXGroup;
 			children = (
 				86CC04AFC65AF0D0DF555172 /* AppModels.swift */,
+				E14477478517FDC36813FCDE /* DuaData.swift */,
 				7155F88738917606DBDD74FE /* EmergencyGuideData.swift */,
 				CAE9875F88F2F0654DF7E859 /* HadithData.swift */,
 				30D0CA0D5E550CD754B92C11 /* OfflineCacheService.swift */,
@@ -364,6 +370,8 @@
 				3A899FE8FB41BC968FC6E6D0 /* CompactQiblaCard.swift in Sources */,
 				37431E9D2788A1AB93272716 /* DailyReflectionCard.swift in Sources */,
 				AFB1257C6A582756DDDED6E8 /* DhikrCounterView.swift in Sources */,
+				28C5331B9E99357D8A728A9A /* DuaData.swift in Sources */,
+				ABCF24C91BCE491FAA03EC7E /* DuaListView.swift in Sources */,
 				0B3F8709297C304B9C22758A /* EmergencyGuideData.swift in Sources */,
 				A1F885CBC8C4C8B20788E3C7 /* EmergencyGuidesView.swift in Sources */,
 				29C52C0EF3BCCC6078DA1C9B /* FloatingTabBar.swift in Sources */,

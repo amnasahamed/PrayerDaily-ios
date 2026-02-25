@@ -4,6 +4,15 @@ import SwiftUI
 struct NoorApp: App {
     @State private var selectedTab: AppTab = .home
     @StateObject private var salahStore = SalahStore()
+    @AppStorage("appearanceMode") private var appearanceMode: String = "system"
+
+    private var preferredColorScheme: ColorScheme? {
+        switch appearanceMode {
+        case "light": return .light
+        case "dark":  return .dark
+        default:      return nil
+        }
+    }
 
     init() {
         // Hide the native UITabBar so only our FloatingTabBar is visible
@@ -32,6 +41,7 @@ struct NoorApp: App {
             }
             .ignoresSafeArea(.keyboard)
             .environmentObject(salahStore)
+            .preferredColorScheme(preferredColorScheme)
         }
     }
 }

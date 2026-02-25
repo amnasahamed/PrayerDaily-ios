@@ -125,7 +125,7 @@ struct MoreView: View {
 
             Button {
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                showShareApp = true
+                triggerInviteShare()
             } label: {
                 MoreMenuRow(icon: "person.badge.plus", title: "Invite Friends",
                             subtitle: "Send a personal invite to a friend",
@@ -134,6 +134,15 @@ struct MoreView: View {
             .buttonStyle(.plain)
         }
         .groupedCard()
+    }
+
+    private func triggerInviteShare() {
+        let msg = "Assalamu Alaikum! I've been using Aleha for prayer tracking & Quran reading — it's beautiful and really helpful. Check it out at https://alehalearn.com"
+        let av = UIActivityViewController(activityItems: [msg], applicationActivities: nil)
+        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let root = scene.windows.first?.rootViewController {
+            root.present(av, animated: true)
+        }
     }
 
     // MARK: - Footer
@@ -379,6 +388,7 @@ struct DataExportSheet: View {
         Button {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
             exported = true
+            presentExportShare()
         } label: {
             Label("Export Summary", systemImage: "arrow.down.doc.fill")
                 .font(.subheadline.weight(.semibold))
@@ -393,20 +403,39 @@ struct DataExportSheet: View {
     private var successBadge: some View {
         HStack(spacing: 10) {
             Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.alehaGreen)
-            Text("Export ready — check your share sheet").font(.subheadline)
+            Text("Export ready — sharing…").font(.subheadline)
         }
         .padding(14)
         .background(Color.alehaGreen.opacity(0.1))
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
+    private func presentExportShare() {
+        let total = store.logs.values.reduce(0) { $0 + $1.completedCount }
+        let text = """
+        📊 Aleha Prayer Export
+        ————————————
+        Current Streak: \(store.currentStreak) days
+        Weekly Consistency: \(store.weeklyConsistency)%
+        Total Prayers Logged: \(total)
+        Dhikr Lifetime: \(store.dhikrLifetimeTotal)
+        Days Tracked: \(store.logs.count)
+        ————————————
+        Exported from Aleha • alehalearn.com
+        """
+        let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let root = scene.windows.first?.rootViewController {
+            root.present(av, animated: true)
+        }
     }
 }
 
 // MARK: - Share App Sheet
 struct ShareAppSheet: View {
     @Environment(\.dismiss) var dismiss
-    @State private var showShareSheet = false
 
-    private let shareText = "I've been using Aleha for prayer tracking & Quran reading — it's beautiful and super helpful. Try it out!"
+    private let shareText = "Assalamu Alaikum! I've been using Aleha for prayer tracking & Quran reading — beautiful and super helpful. Check it out at https://alehalearn.com"
 
     var body: some View {
         NavigationStack {
@@ -426,9 +455,6 @@ struct ShareAppSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
-            }
-            .sheet(isPresented: $showShareSheet) {
-                ShareSheet(items: [shareText])
             }
         }
     }
@@ -455,7 +481,7 @@ struct ShareAppSheet: View {
     }
 
     private var shareButton: some View {
-        Button { showShareSheet = true } label: {
+        Button { presentNativeShare() } label: {
             Label("Share Aleha", systemImage: "square.and.arrow.up")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.white)
@@ -477,7 +503,11 @@ struct ShareAppSheet: View {
     private func inviteChip(icon: String, label: String, color: Color) -> some View {
         Button {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            showShareSheet = true
+            if label == "Copy Link" {
+                UIPasteboard.general.string = "https://alehalearn.com"
+            } else {
+                presentNativeShare()
+            }
         } label: {
             VStack(spacing: 8) {
                 ZStack {
@@ -489,6 +519,14 @@ struct ShareAppSheet: View {
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(SpringPressStyle())
+    }
+
+    private func presentNativeShare() {
+        let av = UIActivityViewController(activityItems: [shareText], applicationActivities: nil)
+        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let root = scene.windows.first?.rootViewController {
+            root.present(av, animated: true)
+        }
     }
 }
 

@@ -5,6 +5,7 @@ struct AppearanceView: View {
     @AppStorage("arabicFontSize") private var arabicFontSize: Double = 28
     @AppStorage("translationEnabled") private var translationEnabled: Bool = true
     @AppStorage("transliterationEnabled") private var transliterationEnabled: Bool = true
+    @State private var confirmationMessage: String? = nil
 
     private let modes: [(String, String, String)] = [
         ("system", "sparkles", "System"),
@@ -20,6 +21,9 @@ struct AppearanceView: View {
                     themePicker
                     arabicSection
                     readingSection
+                    if let msg = confirmationMessage {
+                        confirmationBanner(msg)
+                    }
                 }
                 .padding(.horizontal, AppTheme.screenPadding)
                 .padding(.top, 8)
@@ -31,14 +35,30 @@ struct AppearanceView: View {
         .modifier(AlehaNavStyle())
     }
 
+    private func confirmationBanner(_ text: String) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.alehaGreen)
+            Text(text).font(.subheadline)
+        }
+        .padding(14)
+        .background(Color.alehaGreen.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
     // MARK: - Theme
     private var themePicker: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("App Theme").font(.headline.weight(.bold))
+            Text("Takes effect immediately across the whole app.")
+                .font(.caption).foregroundStyle(.secondary)
             HStack(spacing: 12) {
                 ForEach(modes, id: \.0) { id, icon, label in
                     let selected = appearanceMode == id
-                    Button { appearanceMode = id } label: {
+                    Button {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        appearanceMode = id
+                        showConfirmation("Theme set to \(label)")
+                    } label: {
                         VStack(spacing: 10) {
                             ZStack {
                                 Circle()
@@ -65,6 +85,13 @@ struct AppearanceView: View {
         .noorCard()
     }
 
+    private func showConfirmation(_ text: String) {
+        confirmationMessage = text
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            confirmationMessage = nil
+        }
+    }
+
     // MARK: - Arabic Font
     private var arabicSection: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -74,6 +101,7 @@ struct AppearanceView: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .multilineTextAlignment(.trailing)
                 .padding(.vertical, 4)
+                .animation(.spring(response: 0.3), value: arabicFontSize)
             HStack {
                 Text("A").font(.caption)
                 Slider(value: $arabicFontSize, in: 20...42, step: 2)
@@ -81,9 +109,11 @@ struct AppearanceView: View {
                 Text("A").font(.title2)
             }
             HStack {
-                Spacer()
-                Text("Size: \(Int(arabicFontSize))pt")
+                Text("Applied in Quran reader & Dua screens.")
                     .font(.caption).foregroundStyle(.secondary)
+                Spacer()
+                Text("\(Int(arabicFontSize))pt")
+                    .font(.caption.weight(.semibold)).foregroundStyle(Color.alehaGreen)
             }
         }
         .noorCard()

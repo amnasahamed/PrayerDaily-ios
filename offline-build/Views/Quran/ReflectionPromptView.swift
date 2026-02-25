@@ -104,7 +104,7 @@ struct ReflectionPromptView: View {
                 }
                 UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
             } label: {
-                Label(isSaved ? "Saved ✓" : "Save Note", systemImage: isSaved ? "checkmark.circle.fill" : "square.and.arrow.down")
+                Label(isSaved ? "Saved" : "Save Note", systemImage: isSaved ? "checkmark.circle.fill" : "square.and.arrow.down")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)

@@ -15,23 +15,18 @@ struct LibraryView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                CalmingBackground()
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(spacing: 22) {
-                        continueReadingBanner
-                        categoryPicker
-                        contentForCategory
-                    }
-                    .padding(.horizontal, AppTheme.screenPadding)
-                    .padding(.bottom, 120)
-                    .padding(.top, 8)
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 22) {
+                    continueReadingBanner
+                    categoryPicker
+                    contentForCategory
                 }
-                .ignoresSafeArea(edges: .top)
-                .safeAreaInset(edge: .top) {
-                    Color.clear.frame(height: 0)
-                }
+                .padding(.horizontal, AppTheme.screenPadding)
+                .padding(.bottom, 120)
+                .padding(.top, 8)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(CalmingBackground())
             .navigationTitle("Library")
             .modifier(AlehaNavStyle())
             .searchable(text: $searchText, prompt: "Search hadith, duas...")

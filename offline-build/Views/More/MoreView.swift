@@ -10,24 +10,19 @@ struct MoreView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                CalmingBackground()
-                ScrollView {
-                    VStack(spacing: 18) {
-                        streakSnapshot
-                        mainSection
-                        communitySection
-                        footerSection
-                    }
-                    .padding(.horizontal, AppTheme.screenPadding)
-                    .padding(.top, 8)
-                    .padding(.bottom, 120)
+            ScrollView {
+                VStack(spacing: 18) {
+                    streakSnapshot
+                    mainSection
+                    communitySection
+                    footerSection
                 }
-                .ignoresSafeArea(edges: .top)
-                .safeAreaInset(edge: .top) {
-                    Color.clear.frame(height: 0)
-                }
+                .padding(.horizontal, AppTheme.screenPadding)
+                .padding(.top, 8)
+                .padding(.bottom, 120)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(CalmingBackground())
             .navigationTitle("More")
             .modifier(AlehaNavStyle())
             .sheet(isPresented: $showStreakHistory) { StreakHistorySheet(store: store) }
@@ -132,7 +127,7 @@ struct MoreView: View {
     private var footerSection: some View {
         VStack(spacing: 0) {
             MoreMenuRow(icon: "info.circle.fill", title: "About Aleha",
-                        subtitle: "Version 1.0 • Built with ♥",
+                        subtitle: "Version 1.0 • Built with care",
                         color: Color.alehaGreen, showDivider: false)
         }
         .groupedCard()
@@ -395,7 +390,7 @@ struct ShareAppSheet: View {
     @Environment(\.dismiss) var dismiss
     @State private var showShareSheet = false
 
-    private let shareText = "I've been using Aleha for prayer tracking & Quran reading 🕌 — it's beautiful and super helpful. Try it out!"
+    private let shareText = "I've been using Aleha for prayer tracking & Quran reading — it's beautiful and super helpful. Try it out!"
 
     var body: some View {
         NavigationStack {

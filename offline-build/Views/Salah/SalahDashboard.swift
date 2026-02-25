@@ -14,13 +14,12 @@ struct SalahDashboard: View {
 
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .top) {
-                CalmingBackground()
-                VStack(spacing: 0) {
-                    sectionPicker
-                    tabContent
-                }
+            VStack(spacing: 0) {
+                sectionPicker
+                tabContent
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(CalmingBackground())
             .navigationTitle("Salah")
             .modifier(AlehaNavStyle())
         }

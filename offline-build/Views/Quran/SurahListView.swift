@@ -48,20 +48,22 @@ struct SurahListView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                    continueReadingCard
-                        .padding(.horizontal, 16)
-                        .padding(.top, 12)
-                        .padding(.bottom, 8)
+            ZStack {
+                Color("NoorSurface").ignoresSafeArea()
+                ScrollView {
+                    LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                        continueReadingCard
+                            .padding(.horizontal, 16)
+                            .padding(.top, 12)
+                            .padding(.bottom, 8)
 
-                    Section(header: stickyFilterBar) {
-                        if activeFilter == .juz { juzPickerRow }
-                        surahListContent
+                        Section(header: stickyFilterBar) {
+                            if activeFilter == .juz { juzPickerRow }
+                            surahListContent
+                        }
                     }
                 }
             }
-            .background(Color("NoorSurface").ignoresSafeArea())
             .searchable(text: $searchText, prompt: "Search surahs...")
             .navigationTitle("Quran")
             .toolbarBackground(.hidden, for: .navigationBar)
@@ -303,7 +305,7 @@ struct SurahRowView: View {
             }
             .frame(height: 3)
             .frame(maxWidth: 80)
-            Text(progress >= 1.0 ? "✓" : String(format: "%.0f%%", progress * 100))
+            Text(progress >= 1.0 ? "100%" : String(format: "%.0f%%", progress * 100))
                 .font(.system(size: 9, weight: .bold))
                 .foregroundStyle(progress >= 1.0 ? Color("NoorGold") : Color("NoorPrimary"))
         }

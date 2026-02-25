@@ -36,7 +36,7 @@ struct StreakCard: View {
             Text("Best: \(streak.bestDays) days")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            let todayLabel = streak.todayRead ? "✓ \(streak.pagesReadToday) pages today" : "Read today to continue!"
+            let todayLabel = streak.todayRead ? "\(streak.pagesReadToday) pages today" : "Read today to continue!"
             Text(todayLabel)
                 .font(.caption)
                 .foregroundStyle(streak.todayRead ? Color("NoorPrimary") : .orange)

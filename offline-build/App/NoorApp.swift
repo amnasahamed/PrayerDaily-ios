@@ -3,6 +3,7 @@ import SwiftUI
 @main
 struct NoorApp: App {
     @State private var selectedTab: AppTab = .home
+    @StateObject private var salahStore = SalahStore()
 
     var body: some Scene {
         WindowGroup {
@@ -25,6 +26,7 @@ struct NoorApp: App {
                 FloatingTabBar(selectedTab: $selectedTab)
             }
             .ignoresSafeArea(.keyboard)
+            .environmentObject(salahStore)
         }
     }
 }

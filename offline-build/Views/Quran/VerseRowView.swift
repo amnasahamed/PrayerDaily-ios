@@ -27,12 +27,13 @@ struct VerseRowView: View {
     }
 
     var body: some View {
-        VStack(alignment: .trailing, spacing: 12) {
+        VStack(alignment: .trailing, spacing: 14) {
             verseHeader
             arabicText
             if showTranslation { translationText }
         }
-        .padding(16)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
         .background(verseBackground)
     }
 
@@ -47,30 +48,32 @@ struct VerseRowView: View {
     private var verseNumberBadge: some View {
         Text("\(verse.number)")
             .font(.caption2.weight(.bold))
-            .foregroundStyle(Color("NoorPrimary"))
-            .frame(width: 30, height: 30)
-            .background(Color("NoorPrimary").opacity(0.1))
+            .foregroundStyle(Color.alehaGreen)
+            .frame(width: 28, height: 28)
+            .background(Color.alehaGreen.opacity(0.10))
             .clipShape(Circle())
     }
 
     private var actionButtons: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 14) {
             Button(action: onPlay) {
                 Image(systemName: playIcon)
                     .font(.subheadline)
-                    .foregroundStyle(isCurrentlyPlaying ? Color("NoorGold") : Color("NoorPrimary"))
+                    .foregroundStyle(isCurrentlyPlaying ? Color.alehaAmber : Color.alehaGreen)
             }
             if let onTafsir = onTafsir {
                 Button(action: onTafsir) {
                     Image(systemName: "text.magnifyingglass")
                         .font(.subheadline)
-                        .foregroundStyle(Color("NoorAccent"))
+                        .foregroundStyle(Color.noorAccent)
                 }
             }
             Button(action: onBookmark) {
                 Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
                     .font(.subheadline)
-                    .foregroundStyle(isBookmarked ? Color("NoorGold") : .secondary)
+                    .foregroundStyle(isBookmarked ? Color.alehaAmber : .secondary)
+                    .scaleEffect(isBookmarked ? 1.1 : 1.0)
+                    .animation(.spring(response: 0.3, dampingFraction: 0.5), value: isBookmarked)
             }
         }
     }
@@ -83,25 +86,25 @@ struct VerseRowView: View {
 
     private var arabicText: some View {
         Text(verse.arabic)
-            .font(.system(size: 26))
-            .lineSpacing(14)
+            .font(.system(size: 28))
+            .lineSpacing(16)
             .multilineTextAlignment(.trailing)
             .frame(maxWidth: .infinity, alignment: .trailing)
-            .foregroundStyle(isCurrentlyPlaying ? Color("NoorPrimary") : .primary)
+            .foregroundStyle(isCurrentlyPlaying ? Color.alehaGreen : .primary)
     }
 
     private var translationText: some View {
         Text(verse.translation)
             .font(.subheadline)
             .foregroundStyle(.secondary)
-            .lineSpacing(4)
+            .lineSpacing(5)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var verseBackground: some View {
         Group {
             if isCurrentlyPlaying {
-                Color("NoorPrimary").opacity(0.06)
+                Color.alehaGreen.opacity(0.06)
             } else {
                 colorScheme == .dark ? Color(.systemGray6) : Color.white
             }

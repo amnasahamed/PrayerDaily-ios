@@ -27,13 +27,13 @@ struct SalahDashboard: View {
 
     private var sectionPicker: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 6) {
+            HStack(spacing: 8) {
                 ForEach(SalahSection.allCases, id: \.self) { section in
                     sectionChip(section)
                 }
             }
             .padding(.horizontal, AppTheme.screenPadding)
-            .padding(.vertical, 14)
+            .padding(.vertical, 12)
         }
     }
 
@@ -42,26 +42,31 @@ struct SalahDashboard: View {
         return Button {
             let gen = UIImpactFeedbackGenerator(style: .soft)
             gen.impactOccurred()
-            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
                 selectedSection = section
             }
         } label: {
-            ZStack {
-                if isSelected {
-                    Capsule()
-                        .fill(Color.alehaGreen)
-                        .matchedGeometryEffect(id: "pill", in: pillNS)
-                }
-                Text(section.rawValue)
-                    .font(.subheadline.weight(isSelected ? .bold : .medium))
-                    .foregroundStyle(isSelected ? .white : .primary)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 10)
-            }
-            .background(isSelected ? Color.clear : Color(.systemGray5).opacity(0.5))
-            .clipShape(Capsule())
+            Text(section.rawValue)
+                .font(.subheadline.weight(isSelected ? .bold : .medium))
+                .foregroundStyle(isSelected ? .white : .primary)
+                .padding(.horizontal, 18)
+                .padding(.vertical, 9)
+                .background(chipBackground(isSelected))
+                .clipShape(Capsule())
         }
         .buttonStyle(SpringPressStyle())
+    }
+
+    @ViewBuilder
+    private func chipBackground(_ isSelected: Bool) -> some View {
+        if isSelected {
+            Capsule()
+                .fill(Color.alehaGreen)
+                .matchedGeometryEffect(id: "salahPill", in: pillNS)
+        } else {
+            Capsule()
+                .fill(Color(.systemGray5).opacity(0.5))
+        }
     }
 
     @ViewBuilder

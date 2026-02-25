@@ -3,12 +3,13 @@ import SwiftUI
 struct PrayerTrackerCard: View {
     @Binding var prayers: [SalahLogEntry]
     @State private var lastTapped: String? = nil
+    @State private var confettiPrayer: String? = nil
 
     private var completedCount: Int { prayers.filter(\.completed).count }
     private var progress: Double { Double(completedCount) / 5.0 }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 14) {
             headerRow
             prayerRow
             AnimatedProgressBar(progress: progress, color: Color.alehaGreen)
@@ -22,31 +23,46 @@ struct PrayerTrackerCard: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.primary)
             Spacer()
-            ZStack {
-                Capsule()
-                    .fill(Color.alehaGreen.opacity(0.12))
-                    .frame(width: 44, height: 24)
-                Text("\(completedCount)/5")
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(Color.alehaGreen)
-            }
+            countBadge
         }
     }
 
+    private var countBadge: some View {
+        HStack(spacing: 3) {
+            Text("\(completedCount)")
+                .contentTransition(.numericText())
+            Text("/5")
+        }
+        .font(.caption.weight(.bold))
+        .foregroundStyle(Color.alehaGreen)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .background(Color.alehaGreen.opacity(0.10))
+        .clipShape(Capsule())
+    }
+
     private var prayerRow: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 6) {
             ForEach(prayers.indices, id: \.self) { idx in
                 PrayerBubble(
                     entry: prayers[idx],
-                    isLastTapped: lastTapped == prayers[idx].prayer.rawValue
+                    isLastTapped: lastTapped == prayers[idx].prayer.rawValue,
+                    showConfetti: confettiPrayer == prayers[idx].prayer.rawValue
                 ) {
                     let gen = UIImpactFeedbackGenerator(style: .medium)
                     gen.impactOccurred()
+                    let wasCompleted = prayers[idx].completed
                     lastTapped = prayers[idx].prayer.rawValue
                     withAnimation(.spring(response: 0.35, dampingFraction: 0.55)) {
                         prayers[idx].completed.toggle()
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    if !wasCompleted {
+                        confettiPrayer = prayers[idx].prayer.rawValue
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                            confettiPrayer = nil
+                        }
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         lastTapped = nil
                     }
                 }
@@ -59,31 +75,18 @@ struct PrayerTrackerCard: View {
 private struct PrayerBubble: View {
     let entry: SalahLogEntry
     let isLastTapped: Bool
+    let showConfetti: Bool
     let onTap: () -> Void
 
     var body: some View {
         Button(action: onTap) {
-            VStack(spacing: 6) {
+            VStack(spacing: 5) {
                 ZStack {
-                    Circle()
-                        .fill(entry.completed
-                              ? Color.alehaGreen
-                              : Color(.systemGray5).opacity(0.8))
-                        .frame(width: 46, height: 46)
-                        .shadow(color: entry.completed ? Color.alehaGreen.opacity(0.35) : .clear,
-                                radius: 8, y: 3)
-                    if entry.completed {
-                        Image(systemName: "checkmark")
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundStyle(.white)
-                            .transition(.scale.combined(with: .opacity))
-                    } else {
-                        Image(systemName: entry.prayer.icon)
-                            .font(.system(size: 15))
-                            .foregroundStyle(.secondary)
-                    }
+                    bubbleCircle
+                    bubbleIcon
+                    if showConfetti { confettiOverlay }
                 }
-                .scaleEffect(isLastTapped ? 1.25 : 1.0)
+                .scaleEffect(isLastTapped ? 1.2 : 1.0)
                 .animation(.spring(response: 0.3, dampingFraction: 0.5), value: isLastTapped)
 
                 Text(entry.prayer.rawValue)
@@ -93,6 +96,49 @@ private struct PrayerBubble: View {
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(.plain)
+    }
+
+    private var bubbleCircle: some View {
+        Circle()
+            .fill(entry.completed ? Color.alehaGreen : Color(.systemGray5).opacity(0.8))
+            .frame(width: 44, height: 44)
+            .shadow(color: entry.completed ? Color.alehaGreen.opacity(0.3) : .clear, radius: 6, y: 2)
+    }
+
+    @ViewBuilder
+    private var bubbleIcon: some View {
+        if entry.completed {
+            Image(systemName: "checkmark")
+                .font(.system(size: 15, weight: .bold))
+                .foregroundStyle(.white)
+                .transition(.scale.combined(with: .opacity))
+        } else {
+            Image(systemName: entry.prayer.icon)
+                .font(.system(size: 14))
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private var confettiOverlay: some View {
+        ZStack {
+            ForEach(0..<6, id: \.self) { i in
+                Circle()
+                    .fill(i.isMultiple(of: 2) ? Color.alehaGreen : Color.alehaAmber)
+                    .frame(width: 4, height: 4)
+                    .offset(confettiOffset(i))
+                    .opacity(showConfetti ? 0 : 1)
+                    .animation(
+                        .easeOut(duration: 0.6).delay(Double(i) * 0.04),
+                        value: showConfetti
+                    )
+            }
+        }
+    }
+
+    private func confettiOffset(_ i: Int) -> CGSize {
+        let angle = Double(i) * (360.0 / 6.0) * .pi / 180.0
+        let dist: CGFloat = showConfetti ? 28 : 0
+        return CGSize(width: dist * Foundation.cos(angle), height: dist * Foundation.sin(angle))
     }
 }
 
@@ -105,7 +151,7 @@ struct AnimatedProgressBar: View {
         GeometryReader { geo in
             ZStack(alignment: .leading) {
                 Capsule()
-                    .fill(Color(.systemGray5).opacity(0.6))
+                    .fill(Color(.systemGray5).opacity(0.5))
                 Capsule()
                     .fill(
                         LinearGradient(
@@ -118,6 +164,6 @@ struct AnimatedProgressBar: View {
                     .animation(.spring(response: 0.5, dampingFraction: 0.75), value: progress)
             }
         }
-        .frame(height: 6)
+        .frame(height: 5)
     }
 }

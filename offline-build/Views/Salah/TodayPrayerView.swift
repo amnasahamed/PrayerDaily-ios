@@ -8,7 +8,7 @@ struct TodayPrayerView: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 20) {
+            VStack(spacing: 18) {
                 heroCard
                 prayerListSection
                 weekOverviewCard
@@ -33,29 +33,30 @@ struct TodayPrayerView: View {
     private var progressRing: some View {
         ZStack {
             Circle()
-                .stroke(Color(.systemGray5), lineWidth: 10)
+                .stroke(Color(.systemGray5), lineWidth: 8)
             Circle()
                 .trim(from: 0, to: progress)
-                .stroke(Color("NoorPrimary"), style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                .stroke(Color.alehaGreen, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-                .animation(.spring(response: 0.5), value: progress)
+                .animation(.spring(response: 0.7, dampingFraction: 0.8), value: progress)
             VStack(spacing: 2) {
                 Text("\(Int(progress * 100))%")
-                    .font(.title.weight(.bold))
-                    .foregroundStyle(Color("NoorPrimary"))
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color.alehaGreen)
+                    .contentTransition(.numericText())
                 Text("Complete")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
         }
-        .frame(width: 120, height: 120)
+        .frame(width: 110, height: 110)
     }
 
     private var statusLabel: some View {
         Group {
             if todayLog.completedCount == 5 {
                 Label("All prayers completed! ماشاء الله", systemImage: "star.fill")
-                    .foregroundStyle(Color("NoorGold"))
+                    .foregroundStyle(Color.alehaAmber)
             } else {
                 let nextPrayer = Prayer.allCases.first { todayLog.status(for: $0) == .none }
                 if let next = nextPrayer {
@@ -69,12 +70,14 @@ struct TodayPrayerView: View {
 
     // MARK: - Prayer List
     private var prayerListSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             Text("Log Your Prayers")
                 .font(.subheadline.weight(.semibold))
             ForEach(Prayer.allCases) { prayer in
                 PrayerLogRow(prayer: prayer, status: todayLog.status(for: prayer)) { newStatus in
-                    store.setStatus(newStatus, prayer: prayer, date: Date())
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
+                        store.setStatus(newStatus, prayer: prayer, date: Date())
+                    }
                 }
             }
         }
@@ -90,7 +93,7 @@ struct TodayPrayerView: View {
                 Spacer()
                 Text("🔥 \(store.currentStreak) day streak")
                     .font(.caption.weight(.medium))
-                    .foregroundStyle(Color("NoorGold"))
+                    .foregroundStyle(Color.alehaAmber)
             }
             weekBars
         }
@@ -114,14 +117,15 @@ struct TodayPrayerView: View {
     }
 
     private func barView(_ value: Double) -> some View {
-        let barColor: Color = value >= 1.0 ? Color("NoorPrimary") : (value > 0 ? Color("NoorGold") : Color(.systemGray5))
+        let barColor: Color = value >= 1.0 ? Color.alehaGreen : (value > 0 ? Color.alehaAmber : Color(.systemGray5))
         return VStack {
             Spacer()
-            RoundedRectangle(cornerRadius: 3)
+            RoundedRectangle(cornerRadius: 4)
                 .fill(barColor)
-                .frame(width: 28, height: max(8, CGFloat(value) * 50))
+                .frame(width: 26, height: max(8, CGFloat(value) * 48))
+                .animation(.spring(response: 0.5, dampingFraction: 0.8), value: value)
         }
-        .frame(height: 55)
+        .frame(height: 52)
     }
 }
 
@@ -130,33 +134,31 @@ struct PrayerLogRow: View {
     let prayer: Prayer
     let status: PrayerStatus
     let onStatusChange: (PrayerStatus) -> Void
-
-    @State private var showPicker = false
+    @State private var didJustChange = false
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: 12) {
             prayerIcon
             prayerLabel
             Spacer()
             statusButton
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 3)
     }
 
     private var prayerIcon: some View {
         Image(systemName: prayer.icon)
             .font(.title3)
             .foregroundStyle(status == .none ? .secondary : status.color)
-            .frame(width: 36)
+            .frame(width: 32)
+            .scaleEffect(didJustChange ? 1.15 : 1.0)
+            .animation(.spring(response: 0.3, dampingFraction: 0.5), value: didJustChange)
     }
 
     private var prayerLabel: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(prayer.rawValue)
-                .font(.body.weight(.medium))
-            Text(status.rawValue)
-                .font(.caption)
-                .foregroundStyle(status.color)
+            Text(prayer.rawValue).font(.body.weight(.medium))
+            Text(status.rawValue).font(.caption).foregroundStyle(status.color)
         }
     }
 
@@ -164,14 +166,16 @@ struct PrayerLogRow: View {
         Menu {
             ForEach(PrayerStatus.allCases.filter { $0 != .none }, id: \.self) { s in
                 Button {
-                    withAnimation { onStatusChange(s) }
+                    didJustChange = true
+                    onStatusChange(s)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { didJustChange = false }
                 } label: {
                     Label(s.rawValue, systemImage: s.icon)
                 }
             }
             if status != .none {
                 Button(role: .destructive) {
-                    withAnimation { onStatusChange(.none) }
+                    onStatusChange(.none)
                 } label: {
                     Label("Clear", systemImage: "trash")
                 }
@@ -180,7 +184,7 @@ struct PrayerLogRow: View {
             Image(systemName: status.icon)
                 .font(.title2)
                 .foregroundStyle(status == .none ? Color(.systemGray3) : status.color)
-                .frame(width: 44, height: 44)
+                .frame(width: 40, height: 40)
                 .contentShape(Rectangle())
         }
     }

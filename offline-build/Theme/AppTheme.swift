@@ -5,6 +5,7 @@ import Foundation
 extension Color {
     static let alehaGreen      = Color(red: 0.176, green: 0.710, blue: 0.400)
     static let alehaAmber      = Color(red: 0.961, green: 0.651, blue: 0.133)
+    static let alehaSaffron    = Color(red: 0.96, green: 0.62, blue: 0.04)
     static let alehaDarkGreen  = Color(red: 0.063, green: 0.239, blue: 0.137)
     static let alehaLightGreen = Color(red: 0.40, green: 0.72, blue: 0.45)
     static let alehaCream      = Color(red: 0.984, green: 0.976, blue: 0.961)
@@ -22,10 +23,10 @@ extension Color {
 
 // MARK: - Theme Constants
 struct AppTheme {
-    static let cornerRadius: CGFloat   = 24
-    static let smallRadius: CGFloat    = 16
-    static let cardPadding: CGFloat    = 20
-    static let screenPadding: CGFloat  = 20
+    static let cornerRadius: CGFloat   = 22
+    static let smallRadius: CGFloat    = 14
+    static let cardPadding: CGFloat    = 18
+    static let screenPadding: CGFloat  = 18
 }
 
 // MARK: - Frosted Glass Card
@@ -40,12 +41,12 @@ struct AlehaCardStyle: ViewModifier {
                 RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
                     .stroke(borderColor, lineWidth: 0.5)
             )
-            .shadow(color: .black.opacity(colorScheme == .dark ? 0.25 : 0.06), radius: 20, y: 8)
+            .shadow(color: .black.opacity(colorScheme == .dark ? 0.3 : 0.06), radius: 16, y: 6)
     }
     private var cardFill: some ShapeStyle {
         colorScheme == .dark
             ? AnyShapeStyle(Color.white.opacity(0.07))
-            : AnyShapeStyle(Color.white.opacity(0.82))
+            : AnyShapeStyle(Color.white.opacity(0.88))
     }
     private var borderColor: Color {
         colorScheme == .dark ? Color.white.opacity(0.10) : Color.white.opacity(0.70)
@@ -61,8 +62,9 @@ extension View {
 struct SpringPressStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-            .animation(.spring(response: 0.25, dampingFraction: 0.6), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
+            .opacity(configuration.isPressed ? 0.85 : 1.0)
+            .animation(.spring(response: 0.25, dampingFraction: 0.65), value: configuration.isPressed)
     }
 }
 
@@ -82,7 +84,6 @@ struct CalmingBackground: View {
         ZStack {
             baseGradient
             topOrb
-            midOrb
             bottomOrb
         }
         .ignoresSafeArea()
@@ -91,35 +92,26 @@ struct CalmingBackground: View {
     private var baseGradient: some View {
         LinearGradient(
             colors: cs == .dark
-                ? [Color(red: 0.05, green: 0.07, blue: 0.06),
-                   Color(red: 0.06, green: 0.09, blue: 0.08),
-                   Color(red: 0.04, green: 0.06, blue: 0.05)]
+                ? [Color(red: 0.04, green: 0.06, blue: 0.05),
+                   Color(red: 0.05, green: 0.08, blue: 0.06)]
                 : [Color(red: 0.96, green: 0.98, blue: 0.96),
-                   Color(red: 0.94, green: 0.97, blue: 0.94),
-                   Color(red: 0.97, green: 0.97, blue: 0.95)],
+                   Color(red: 0.95, green: 0.97, blue: 0.94)],
             startPoint: .top, endPoint: .bottom
         )
     }
     private var topOrb: some View {
         Circle()
-            .fill(Color.alehaGreen.opacity(cs == .dark ? 0.08 : 0.09))
-            .frame(width: 460, height: 460)
-            .blur(radius: 130)
-            .offset(x: -80, y: -260)
-    }
-    private var midOrb: some View {
-        Circle()
-            .fill(Color.alehaAmber.opacity(cs == .dark ? 0.04 : 0.055))
-            .frame(width: 320, height: 320)
-            .blur(radius: 90)
-            .offset(x: 160, y: 100)
+            .fill(Color.alehaGreen.opacity(cs == .dark ? 0.06 : 0.07))
+            .frame(width: 400, height: 400)
+            .blur(radius: 120)
+            .offset(x: -80, y: -240)
     }
     private var bottomOrb: some View {
         Circle()
-            .fill(Color.alehaGreen.opacity(cs == .dark ? 0.04 : 0.05))
-            .frame(width: 380, height: 380)
-            .blur(radius: 100)
-            .offset(x: -30, y: 440)
+            .fill(Color.alehaAmber.opacity(cs == .dark ? 0.03 : 0.04))
+            .frame(width: 300, height: 300)
+            .blur(radius: 90)
+            .offset(x: 120, y: 300)
     }
 }
 
@@ -197,4 +189,28 @@ struct ShimmerModifier: ViewModifier {
 
 extension View {
     func shimmer(_ active: Bool = true) -> some View { modifier(ShimmerModifier(active: active)) }
+}
+
+// MARK: - Stagger Animation Helper
+struct StaggeredAppear: ViewModifier {
+    let appeared: Bool
+    let index: Int
+    let baseDelay: Double
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(appeared ? 1 : 0)
+            .offset(y: appeared ? 0 : 18)
+            .animation(
+                .spring(response: 0.5, dampingFraction: 0.82)
+                .delay(baseDelay + Double(index) * 0.06),
+                value: appeared
+            )
+    }
+}
+
+extension View {
+    func staggerAppear(_ appeared: Bool, index: Int, baseDelay: Double = 0.1) -> some View {
+        modifier(StaggeredAppear(appeared: appeared, index: index, baseDelay: baseDelay))
+    }
 }

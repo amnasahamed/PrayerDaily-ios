@@ -3,26 +3,12 @@ import SwiftUI
 struct HomeView: View {
     @State private var todayPrayers = SampleData.todayPrayers()
     @State private var appeared = false
-    @State private var heroScale: CGFloat = 0.96
 
     var body: some View {
         NavigationStack {
             ZStack {
                 CalmingBackground()
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(spacing: 20) {
-                        heroSection
-                        prayerTrackerSection
-                        prayerTimesSection
-                        dailyReflection
-                        streakAndProgress
-                        quickAccessGrid
-                        hadithSection
-                    }
-                    .padding(.horizontal, AppTheme.screenPadding)
-                    .padding(.top, 8)
-                    .padding(.bottom, 120)
-                }
+                mainScroll
             }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
@@ -30,48 +16,54 @@ struct HomeView: View {
             .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .onAppear {
-                withAnimation(.spring(response: 0.7, dampingFraction: 0.75).delay(0.1)) {
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.05)) {
                     appeared = true
-                    heroScale = 1.0
                 }
             }
         }
     }
 
-    // MARK: - Nav Logo
+    private var mainScroll: some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(spacing: 16) {
+                heroSection
+                prayerTrackerSection
+                prayerTimesSection
+                dailyReflection
+                streakAndProgress
+                quickAccessGrid
+                hadithSection
+            }
+            .padding(.horizontal, AppTheme.screenPadding)
+            .padding(.top, 8)
+            .padding(.bottom, 120)
+        }
+    }
+
     private var navLogo: some View {
         HStack(spacing: 6) {
-            AlehaLogoMark(size: 22)
+            AlehaLogoMark(size: 20)
             Text("aleha")
-                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .font(.system(size: 17, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.alehaGreen)
         }
     }
 
-    // MARK: - Hero
     private var heroSection: some View {
         HeroCard(appeared: appeared)
-            .scaleEffect(heroScale)
-            .opacity(appeared ? 1 : 0)
+            .staggerAppear(appeared, index: 0)
     }
 
-    // MARK: - Prayer Tracker
     private var prayerTrackerSection: some View {
         PrayerTrackerCard(prayers: $todayPrayers)
-            .opacity(appeared ? 1 : 0)
-            .offset(y: appeared ? 0 : 20)
-            .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.15), value: appeared)
+            .staggerAppear(appeared, index: 1)
     }
 
-    // MARK: - Prayer Times
     private var prayerTimesSection: some View {
         PrayerTimesCard()
-            .opacity(appeared ? 1 : 0)
-            .offset(y: appeared ? 0 : 20)
-            .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.22), value: appeared)
+            .staggerAppear(appeared, index: 2)
     }
 
-    // MARK: - Daily Reflection
     private var dailyReflection: some View {
         DailyReflectionCard(
             arabic: SampleData.dailyAyah.arabic,
@@ -79,36 +71,25 @@ struct HomeView: View {
             reference: SampleData.dailyAyah.reference,
             tafsir: SampleData.dailyAyah.tafsir
         )
-        .opacity(appeared ? 1 : 0)
-        .offset(y: appeared ? 0 : 20)
-        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.28), value: appeared)
+        .staggerAppear(appeared, index: 3)
     }
 
-    // MARK: - Streak & Progress
     private var streakAndProgress: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: 12) {
             CompactStreakView()
             ReadingProgressCard()
         }
-        .opacity(appeared ? 1 : 0)
-        .offset(y: appeared ? 0 : 20)
-        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.34), value: appeared)
+        .staggerAppear(appeared, index: 4)
     }
 
-    // MARK: - Quick Access
     private var quickAccessGrid: some View {
         QuickAccessSection()
-            .opacity(appeared ? 1 : 0)
-            .offset(y: appeared ? 0 : 20)
-            .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.4), value: appeared)
+            .staggerAppear(appeared, index: 5)
     }
 
-    // MARK: - Hadith
     private var hadithSection: some View {
         HadithCard(hadith: SampleData.hadiths[0])
-            .opacity(appeared ? 1 : 0)
-            .offset(y: appeared ? 0 : 20)
-            .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.46), value: appeared)
+            .staggerAppear(appeared, index: 6)
     }
 }
 
@@ -119,30 +100,17 @@ struct HeroCard: View {
     @State private var pulseScale: CGFloat = 1.0
     @State private var textOpacity = 0.0
 
-    private var greetingText: String {
-        let h = Calendar.current.component(.hour, from: Date())
-        if h < 12 { return "Good Morning" }
-        if h < 17 { return "Good Afternoon" }
-        return "Good Evening"
-    }
-    private var greetingEmoji: String {
-        let h = Calendar.current.component(.hour, from: Date())
-        if h < 12 { return "☀️" }
-        if h < 17 { return "🌤" }
-        return "🌙"
-    }
-
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             heroBackground
             heroContent
         }
-        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .shadow(color: Color.alehaGreen.opacity(0.25), radius: 24, y: 10)
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .shadow(color: Color.alehaGreen.opacity(cs == .dark ? 0.3 : 0.18), radius: 20, y: 8)
         .onAppear {
-            withAnimation(.easeIn(duration: 0.5).delay(0.4)) { textOpacity = 1 }
-            withAnimation(.easeInOut(duration: 2.5).repeatForever(autoreverses: true)) {
-                pulseScale = 1.08
+            withAnimation(.easeIn(duration: 0.5).delay(0.3)) { textOpacity = 1 }
+            withAnimation(.easeInOut(duration: 3.0).repeatForever(autoreverses: true)) {
+                pulseScale = 1.06
             }
         }
     }
@@ -151,111 +119,131 @@ struct HeroCard: View {
         ZStack {
             LinearGradient(
                 colors: [
-                    Color.alehaDeepTeal,
-                    Color.alehaDarkGreen,
-                    Color(red: 0.10, green: 0.38, blue: 0.22)
+                    Color(red: 0.08, green: 0.28, blue: 0.16),
+                    Color(red: 0.10, green: 0.36, blue: 0.22),
+                    Color(red: 0.14, green: 0.44, blue: 0.28)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
-            IslamicPatternOverlay(opacity: 0.04)
-            orbOverlay
+            IslamicPatternOverlay(opacity: 0.035)
+            greenOrb
+            amberOrb
         }
-        .frame(height: 200)
+        .frame(height: 180)
     }
 
-    private var orbOverlay: some View {
-        ZStack {
-            Circle()
-                .fill(Color.alehaGreen.opacity(0.25))
-                .frame(width: 220, height: 220)
-                .blur(radius: 60)
-                .offset(x: 100, y: -40)
-                .scaleEffect(pulseScale)
-            Circle()
-                .fill(Color.alehaAmber.opacity(0.12))
-                .frame(width: 140, height: 140)
-                .blur(radius: 40)
-                .offset(x: 140, y: 50)
-        }
+    private var greenOrb: some View {
+        Circle()
+            .fill(Color.alehaGreen.opacity(0.20))
+            .frame(width: 180, height: 180)
+            .blur(radius: 50)
+            .offset(x: 110, y: -30)
+            .scaleEffect(pulseScale)
+    }
+
+    private var amberOrb: some View {
+        Circle()
+            .fill(Color.alehaAmber.opacity(0.10))
+            .frame(width: 120, height: 120)
+            .blur(radius: 35)
+            .offset(x: 130, y: 50)
     }
 
     private var heroContent: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .center) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("\(greetingText) \(greetingEmoji)")
-                        .font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.75))
-                    Text("السلام عليكم")
-                        .font(.system(size: 28, weight: .bold, design: .serif))
-                        .foregroundStyle(.white)
-                }
-                Spacer()
-                crescentOrb
+        HStack(alignment: .bottom) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(greetingText)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.7))
+                Text("السلام عليكم")
+                    .font(.system(size: 30, weight: .bold, design: .serif))
+                    .foregroundStyle(.white)
+                Text(todayDateString)
+                    .font(.system(size: 11))
+                    .foregroundStyle(.white.opacity(0.4))
             }
-            hijriDateLabel
+            Spacer()
+            crescentOrb
         }
-        .padding(22)
+        .padding(20)
         .opacity(textOpacity)
-    }
-
-    @ViewBuilder
-    private var hijriDateLabel: some View {
-        let today = Date()
-        let formatter = DateFormatter()
-        let _ = { formatter.dateStyle = .full }()
-        Text(formatter.string(from: today))
-            .font(.system(size: 11, weight: .regular))
-            .foregroundStyle(.white.opacity(0.45))
     }
 
     private var crescentOrb: some View {
         ZStack {
             Circle()
-                .fill(.white.opacity(0.08))
-                .frame(width: 64, height: 64)
+                .fill(.white.opacity(0.06))
+                .frame(width: 52, height: 52)
             CrescentShape()
-                .fill(Color.alehaAmber.opacity(0.90))
-                .frame(width: 32, height: 32)
+                .fill(Color.alehaAmber.opacity(0.85))
+                .frame(width: 26, height: 26)
         }
-        .scaleEffect(pulseScale * 0.97)
+        .scaleEffect(pulseScale * 0.98)
+    }
+
+    private var greetingText: String {
+        let h = Calendar.current.component(.hour, from: Date())
+        if h < 12 { return "Good Morning ☀️" }
+        if h < 17 { return "Good Afternoon 🌤" }
+        return "Good Evening 🌙"
+    }
+
+    private var todayDateString: String {
+        let f = DateFormatter()
+        f.dateStyle = .full
+        return f.string(from: Date())
     }
 }
 
 // MARK: - Compact Streak View
 struct CompactStreakView: View {
     @Environment(\.colorScheme) var cs
-    @State private var animValue: CGFloat = 0
+    @State private var countAnim: CGFloat = 0
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 5) {
                 Image(systemName: "flame.fill")
                     .foregroundStyle(Color.alehaAmber)
-                    .font(.subheadline)
+                    .font(.system(size: 13))
                 Text("Streak")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
             }
-            Text("14")
-                .font(.system(size: 36, weight: .bold, design: .rounded))
-                .foregroundStyle(Color.alehaAmber)
-                .contentTransition(.numericText())
-            Text("days")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text("14")
+                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color.alehaAmber)
+                    .contentTransition(.numericText())
+                Text("days")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .offset(y: -2)
+            }
+            weekDots
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .background(cs == .dark ? Color.white.opacity(0.07) : Color.white.opacity(0.85))
+        .padding(16)
+        .background(cs == .dark ? Color.white.opacity(0.07) : Color.white.opacity(0.88))
         .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous).stroke(cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.6), lineWidth: 0.5))
-        .shadow(color: .black.opacity(0.05), radius: 14, y: 5)
+        .overlay(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+            .stroke(cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.6), lineWidth: 0.5))
+        .shadow(color: .black.opacity(0.04), radius: 10, y: 4)
+    }
+
+    private var weekDots: some View {
+        HStack(spacing: 4) {
+            ForEach(0..<7, id: \.self) { day in
+                Circle()
+                    .fill(day < 5 ? Color.alehaAmber : Color(.systemGray4))
+                    .frame(width: 6, height: 6)
+            }
+        }
     }
 }
 
-// MARK: - Crescent Shape (shared)
+// MARK: - Crescent Shape
 struct CrescentShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -275,7 +263,7 @@ struct AlehaLogoMark: View {
         ZStack {
             Circle()
                 .fill(Color.alehaGreen.opacity(0.15))
-                .frame(width: size * 1.4, height: size * 1.4)
+                .frame(width: size * 1.3, height: size * 1.3)
             CrescentShape()
                 .fill(Color.alehaGreen)
                 .frame(width: size, height: size)

@@ -1,6 +1,7 @@
 import Foundation
 import AVFoundation
 import Combine
+import UIKit
 
 // MARK: - Full Surah Data
 struct SurahInfo: Identifiable, Hashable {
@@ -65,8 +66,17 @@ class QuranStore: ObservableObject {
         let key = "\(surahId)-\(verse)"
         if bookmarks.contains(key) {
             bookmarks.remove(key)
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.impactOccurred()
         } else {
             bookmarks.insert(key)
+            // Double tap pattern: two quick medium impacts for "saved" confirmation
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.prepare()
+            generator.impactOccurred()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                generator.impactOccurred(intensity: 0.6)
+            }
         }
     }
 

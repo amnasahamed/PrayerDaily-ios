@@ -70,9 +70,6 @@ struct VerseShareCard: View {
             if showTafsir {
                 VStack(alignment: .leading, spacing: 6) {
                     Divider().background(.white.opacity(0.15))
-                    Text("📖 Reflection")
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(.white.opacity(0.55))
                     Text(tafsir)
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.78))
@@ -135,7 +132,7 @@ struct VerseShareCard: View {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) { showTafsir.toggle() }
         } label: {
-            Label(showTafsir ? "Less" : "Reflect", systemImage: showTafsir ? "chevron.up" : "book.pages")
+            Label(showTafsir ? "Less" : "Tafsir", systemImage: showTafsir ? "chevron.up" : "book.pages")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(.white.opacity(0.85))
                 .padding(.horizontal, 14)

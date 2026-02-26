@@ -24,7 +24,6 @@
 		29C52C0EF3BCCC6078DA1C9B /* FloatingTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 382DDF8EFBA7B09B54E6288E /* FloatingTabBar.swift */; };
 		2AAD751850D3FDA907E56557 /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D682C9F07C85BAD9FAD6AF /* MoreView.swift */; };
 		3324AC2F1614F3B20DB2EC02 /* OfflineContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62298697A5C78549C7D4F9ED /* OfflineContentView.swift */; };
-		37431E9D2788A1AB93272716 /* DailyReflectionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7A56891A9136075680FB4D /* DailyReflectionCard.swift */; };
 		390EC80907B6277F73D08EDE /* HeroCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C6B014AB1631D63984AE9A /* HeroCardView.swift */; };
 		3A899FE8FB41BC968FC6E6D0 /* CompactQiblaCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E7E55FF2BF05F28A7E3A2D /* CompactQiblaCard.swift */; };
 		43828977B6B9AFD9E5418D1A /* ReadingProgressCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC9AD374C985312AB89D0F /* ReadingProgressCard.swift */; };
@@ -50,7 +49,6 @@
 		ABCF24C91BCE491FAA03EC7E /* DuaListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411C2522A4F25739247AFA84 /* DuaListView.swift */; };
 		ACA1B833727A202BB65432F1 /* HabitMotivationBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE8EB6653DB527BD0DA8DD7 /* HabitMotivationBlock.swift */; };
 		AFB1257C6A582756DDDED6E8 /* DhikrCounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610D9D96A07819D7DFAB4801 /* DhikrCounterView.swift */; };
-		B217230EDCC515E33E274698 /* ReflectionPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A680C3B3B8102C9299753308 /* ReflectionPromptView.swift */; };
 		BA343A8102DA383DCC25D021 /* VerseRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D7CC54EF12E139EE0BEB2 /* VerseRowView.swift */; };
 		BBA300A7BB2565DB90E1403E /* CompactDhikrCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82953705DD4A007FE12CA61 /* CompactDhikrCard.swift */; };
 		BF4C6F642C4ACDD8B84EB46A /* CalendarPrayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F995E1788B5E2A9E8662B7DA /* CalendarPrayerView.swift */; };
@@ -105,9 +103,7 @@
 		984FB2A8B4EFD0849945E2C9 /* QuranAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranAPIService.swift; sourceTree = "<group>"; };
 		9D7F6050FA0B8CD21D9EC293 /* VerseShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseShareCard.swift; sourceTree = "<group>"; };
 		A45DC1FDB35BF68B1EE40BF1 /* QuranData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranData.swift; sourceTree = "<group>"; };
-		A680C3B3B8102C9299753308 /* ReflectionPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflectionPromptView.swift; sourceTree = "<group>"; };
 		A7A6721B171C921805F13508 /* ShareProgressSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareProgressSheet.swift; sourceTree = "<group>"; };
-		AA7A56891A9136075680FB4D /* DailyReflectionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyReflectionCard.swift; sourceTree = "<group>"; };
 		AB7A6EADD77F6AF34431D8FD /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		AE360B297A42CBC58EEA40FE /* TafsirSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TafsirSheetView.swift; sourceTree = "<group>"; };
 		AF4D6C2A7EA1E2B0A0E1B469 /* SmartHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartHeaderView.swift; sourceTree = "<group>"; };
@@ -148,7 +144,6 @@
 			children = (
 				D82953705DD4A007FE12CA61 /* CompactDhikrCard.swift */,
 				03E7E55FF2BF05F28A7E3A2D /* CompactQiblaCard.swift */,
-				AA7A56891A9136075680FB4D /* DailyReflectionCard.swift */,
 				0BE8EB6653DB527BD0DA8DD7 /* HabitMotivationBlock.swift */,
 				59A3835D843C7E9E129E12EF /* HadithCard.swift */,
 				25C6B014AB1631D63984AE9A /* HeroCardView.swift */,
@@ -236,7 +231,6 @@
 			isa = PBXGroup;
 			children = (
 				C7BD2ED725AC55AAFB63F842 /* ReadingModeBar.swift */,
-				A680C3B3B8102C9299753308 /* ReflectionPromptView.swift */,
 				F6965A3C787D4A4B6DEFFFE8 /* SurahListView.swift */,
 				D5F30F31FE2D60F945FC0754 /* SurahReaderView.swift */,
 				AE360B297A42CBC58EEA40FE /* TafsirSheetView.swift */,
@@ -382,7 +376,6 @@
 				1889D2D2D0613C27325EB5B5 /* ColorAssets.swift in Sources */,
 				BBA300A7BB2565DB90E1403E /* CompactDhikrCard.swift in Sources */,
 				3A899FE8FB41BC968FC6E6D0 /* CompactQiblaCard.swift in Sources */,
-				37431E9D2788A1AB93272716 /* DailyReflectionCard.swift in Sources */,
 				AFB1257C6A582756DDDED6E8 /* DhikrCounterView.swift in Sources */,
 				28C5331B9E99357D8A728A9A /* DuaData.swift in Sources */,
 				ABCF24C91BCE491FAA03EC7E /* DuaListView.swift in Sources */,
@@ -418,7 +411,6 @@
 				7B85924C56C1CB399A4742C7 /* QuranStore.swift in Sources */,
 				A9938ECD436F8A894407CC1B /* ReadingModeBar.swift in Sources */,
 				43828977B6B9AFD9E5418D1A /* ReadingProgressCard.swift in Sources */,
-				B217230EDCC515E33E274698 /* ReflectionPromptView.swift in Sources */,
 				2762BE477C9C2F8DFF55E628 /* SalahDashboard.swift in Sources */,
 				1302F3D4DE28D68ABC28FFA9 /* SalahStore.swift in Sources */,
 				54F505206100F43AFD347639 /* SampleData.swift in Sources */,

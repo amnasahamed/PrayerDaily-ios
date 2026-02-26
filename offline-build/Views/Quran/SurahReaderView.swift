@@ -113,11 +113,7 @@ struct SurahReaderView: View {
             store.updateProgress(surahId: surah.id, verse: verse.number, totalVerses: surah.verses)
         }
 
-        // Reflection prompt every 5 ayahs
-        if (index + 1) % 5 == 0 && readingMode != .arabicOnly {
-            ReflectionPromptView(verseNumber: index + 1, surahId: surah.id)
-                .padding(.vertical, 4)
-        }
+
     }
 
     // MARK: - Bismillah header (compact)

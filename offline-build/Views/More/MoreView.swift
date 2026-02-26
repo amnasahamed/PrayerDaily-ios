@@ -9,6 +9,7 @@ struct MoreView: View {
     @State private var showShareApp = false
     @State private var showAbout = false
     @State private var showLanguagePicker = false
+    @State private var showResetConfirm = false
 
     var body: some View {
         NavigationStack {

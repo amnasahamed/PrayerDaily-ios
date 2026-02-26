@@ -310,6 +310,23 @@ class SalahStore: ObservableObject {
         dhikrLifetimeCounts.values.reduce(0, +)
     }
 
+    // MARK: - Reset All
+    func resetAll() {
+        logs = [:]
+        qadaEntries = Prayer.allCases.map { QadaEntry(prayer: $0, count: 0) }
+        dhikrPresets = Self.defaultDhikr()
+        dhikrLifetimeCounts = [:]
+        UserDefaults.standard.removeObject(forKey: Self.logsKey)
+        UserDefaults.standard.removeObject(forKey: Self.qadaKey)
+        UserDefaults.standard.removeObject(forKey: Self.dhikrKey)
+        UserDefaults.standard.removeObject(forKey: Self.dhikrLifetimeKey)
+        // Clear all other app prefs except language
+        let lang = UserDefaults.standard.string(forKey: "appLanguage")
+        let domain = Bundle.main.bundleIdentifier ?? "com.aleha"
+        UserDefaults.standard.removePersistentDomain(forName: domain)
+        if let lang { UserDefaults.standard.set(lang, forKey: "appLanguage") }
+    }
+
     // MARK: - Defaults
     private static func defaultDhikr() -> [DhikrPreset] {
         [

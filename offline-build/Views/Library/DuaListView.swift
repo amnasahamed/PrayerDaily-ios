@@ -7,6 +7,8 @@ struct DuaListView: View {
     @State private var appeared = false
     @State private var selectedDua: DuaEntry? = nil
     @Environment(\.colorScheme) var cs
+    @Environment(\.localization) var l10n
+    private var isMl: Bool { l10n.currentLanguage == .malayalam }
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -20,7 +22,7 @@ struct DuaListView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(CalmingBackground())
-        .navigationTitle(category.title + " Duas")
+        .navigationTitle(category.localizedTitle(isMalayalam: isMl))
         .modifier(AlehaNavStyle())
         .sheet(item: $selectedDua) { dua in
             DuaDetailSheet(dua: dua, color: category.color, isFavorite: favorites.contains(dua.id)) {
@@ -46,9 +48,9 @@ struct DuaListView: View {
                     .foregroundStyle(category.color)
             }
             VStack(alignment: .leading, spacing: 4) {
-                Text(category.title + " Adhkar")
+                Text(category.localizedTitle(isMalayalam: isMl))
                     .font(.title3.weight(.bold))
-                Text("\(category.duas.count) duas • Recite daily for barakah")
+                Text(isMl ? "\(category.duas.count) ദുആകൾ • ദൈനംദിന ദിക്ർ" : "\(category.duas.count) duas • Recite daily for barakah")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -78,6 +80,7 @@ struct DuaListView: View {
                 DuaRowCard(
                     dua: dua,
                     color: category.color,
+                    isMl: isMl,
                     isFavorite: favorites.contains(dua.id)
                 ) {
                     selectedDua = dua
@@ -105,6 +108,7 @@ struct DuaListView: View {
 struct DuaRowCard: View {
     let dua: DuaEntry
     let color: Color
+    var isMl: Bool = false
     let isFavorite: Bool
     let onTap: () -> Void
     let onFavorite: () -> Void
@@ -151,7 +155,7 @@ struct DuaRowCard: View {
                         .font(.caption.weight(.bold))
                         .foregroundStyle(color)
                 }
-                Text(dua.title)
+                Text(dua.localizedTitle(isMalayalam: isMl))
                     .font(.subheadline.weight(.semibold))
             }
             Spacer()
@@ -174,7 +178,7 @@ struct DuaRowCard: View {
     }
 
     private var translationText: some View {
-        Text(dua.translation)
+        Text(dua.localizedTranslation(isMalayalam: isMl))
             .font(.footnote)
             .foregroundStyle(.secondary)
             .lineSpacing(3)
@@ -266,12 +270,17 @@ struct DuaDetailSheet: View {
         )
     }
 
+    @Environment(\.localization) var l10nDS
+    private var isMlDS: Bool { l10nDS.currentLanguage == .malayalam }
+
     private var transliterationCard: some View {
-        detailCard(label: "Transliteration", icon: "textformat.abc", content: dua.transliteration)
+        detailCard(label: isMlDS ? "ലിപ്യന്തരണം" : "Transliteration",
+                   icon: "textformat.abc", content: dua.transliteration)
     }
 
     private var translationCard: some View {
-        detailCard(label: "Translation", icon: "globe", content: dua.translation)
+        detailCard(label: isMlDS ? "അർത്ഥം" : "Translation",
+                   icon: "globe", content: dua.localizedTranslation(isMalayalam: isMlDS))
     }
 
     private var referenceCard: some View {

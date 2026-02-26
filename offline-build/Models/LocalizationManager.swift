@@ -103,6 +103,7 @@ enum LocalizedKey {
     case moreTitle, moreProfile, moreAppearance, morePrayerCalc, moreOffline
     case moreEmergency, moreStreakHistory, moreExport, moreCommunity
     case moreShare, moreInvite, moreAbout, moreLanguage
+    case moreReset, moreResetTitle, moreResetMessage, moreResetConfirm
 
     // Profile
     case profileTitle, profileName, profileLocation, profileMadhab
@@ -282,6 +283,10 @@ enum LocalizedKey {
         case .moreInvite: return "Invite Friends"
         case .moreAbout: return "About Aleha"
         case .moreLanguage: return "Language"
+        case .moreReset: return "Reset App"
+        case .moreResetTitle: return "Reset Everything?"
+        case .moreResetMessage: return "This will permanently clear all prayer logs, dhikr counts, qada records, bookmarks, and preferences. This cannot be undone."
+        case .moreResetConfirm: return "Reset Everything"
 
         // Profile
         case .profileTitle: return "Profile"
@@ -509,6 +514,10 @@ enum LocalizedKey {
         case .moreInvite: return "സുഹൃത്തുക്കളെ ക്ഷണിക്കുക"
         case .moreAbout: return "ആലിഹ നെ കുറിച്ച്"
         case .moreLanguage: return "ഭാഷ"
+        case .moreReset: return "ആപ്പ് റീസെറ്റ്"
+        case .moreResetTitle: return "എല്ലാം മായ്ക്കണോ?"
+        case .moreResetMessage: return "നമസ്കാര ലോഗ്, ദിക്ർ എണ്ണം, ഖദ രേഖ, ബുക്ക്മാർക്ക്, ക്രമീകരണങ്ങൾ എന്നിവ ശാശ്വതമായി നഷ്ടപ്പെടും. ഇത് പഴയപടിയാക്കാൻ കഴിയില്ല."
+        case .moreResetConfirm: return "എല്ലാം മായ്ക്കുക"
 
         // Profile
         case .profileTitle: return "പ്രൊഫൈൽ"

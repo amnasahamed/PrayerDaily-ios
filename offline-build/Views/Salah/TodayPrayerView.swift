@@ -3,22 +3,39 @@ import SwiftUI
 struct TodayPrayerView: View {
     @EnvironmentObject var store: SalahStore
     @State private var showShareProgress = false
+    @State private var confettiBurst = false
+    @State private var appeared = false
+    @State private var previousCount = 0
 
     private var todayLog: PrayerDayLog { store.todayLog }
     private var progress: Double { Double(todayLog.completedCount) / 5.0 }
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: AppTheme.sectionSpacing) {
-                heroCard
-                weeklyConsistencyBanner
-                prayerListSection
-                weekOverviewCard
-                shareProgressButton
+        ZStack {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: AppTheme.sectionSpacing) {
+                    heroCard.slideUp(appeared, delay: 0.05)
+                    weeklyConsistencyBanner.slideUp(appeared, delay: 0.12)
+                    prayerListSection.slideUp(appeared, delay: 0.18)
+                    weekOverviewCard.slideUp(appeared, delay: 0.24)
+                    shareProgressButton.slideUp(appeared, delay: 0.30)
+                }
+                .padding(.horizontal, AppTheme.screenPadding)
+                .padding(.top, 4)
+                .padding(.bottom, 30)
             }
-            .padding(.horizontal, AppTheme.screenPadding)
-            .padding(.top, 4)
-            .padding(.bottom, 30)
+            ConfettiBurst(trigger: $confettiBurst)
+        }
+        .onAppear {
+            previousCount = todayLog.completedCount
+            withAnimation { appeared = true }
+        }
+        .onChange(of: todayLog.completedCount) { _, newVal in
+            if newVal == 5 && previousCount < 5 {
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { confettiBurst = true }
+            }
+            previousCount = newVal
         }
     }
 

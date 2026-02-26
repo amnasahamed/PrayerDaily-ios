@@ -90,3 +90,69 @@ extension View {
         modifier(SectionAppear(delay: delay))
     }
 }
+
+// MARK: - Confetti Burst
+struct ConfettiBurst: View {
+    @Binding var trigger: Bool
+    private let colors: [Color] = [.alehaGreen, .alehaAmber, .alehaSaffron, .blue.opacity(0.7), .pink.opacity(0.7)]
+    @State private var particles: [ConfettiParticle] = []
+
+    struct ConfettiParticle: Identifiable {
+        let id = UUID()
+        var x: CGFloat
+        var y: CGFloat
+        var color: Color
+        var rotation: Double
+        var scale: CGFloat
+        var opacity: Double
+        var velocityX: CGFloat
+        var velocityY: CGFloat
+    }
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack {
+                ForEach(particles) { p in
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(p.color)
+                        .frame(width: 8, height: 8)
+                        .scaleEffect(p.scale)
+                        .rotationEffect(.degrees(p.rotation))
+                        .opacity(p.opacity)
+                        .position(x: p.x, y: p.y)
+                }
+            }
+            .onChange(of: trigger) { _, val in
+                guard val else { return }
+                let cx = geo.size.width / 2
+                particles = (0..<42).map { _ in
+                    ConfettiParticle(
+                        x: cx + CGFloat.random(in: -40...40),
+                        y: geo.size.height * 0.4,
+                        color: colors.randomElement()!,
+                        rotation: Double.random(in: 0...360),
+                        scale: CGFloat.random(in: 0.6...1.4),
+                        opacity: 1,
+                        velocityX: CGFloat.random(in: -140...140),
+                        velocityY: CGFloat.random(in: -260 ... -80)
+                    )
+                }
+                withAnimation(.easeOut(duration: 1.1)) {
+                    for i in particles.indices {
+                        particles[i].x += particles[i].velocityX
+                        particles[i].y += particles[i].velocityY + 180
+                        particles[i].opacity = 0
+                        particles[i].rotation += Double.random(in: 180...540)
+                    }
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                    particles = []
+                    trigger = false
+                }
+            }
+        }
+        .allowsHitTesting(false)
+    }
+}
+
+

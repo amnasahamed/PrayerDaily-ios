@@ -5,11 +5,11 @@ struct QuickToolsRow: View {
     @ObservedObject var service: PrayerTimesService
 
     private let tools: [QuickTool] = [
-        QuickTool(id: "qibla", icon: "location.north.fill", label: "Qibla", color: Color.alehaGreen),
-        QuickTool(id: "dhikr", icon: "hand.raised.fill", label: "Dhikr", color: Color.alehaAmber),
-        QuickTool(id: "quran", icon: "book.fill", label: "Quran", color: Color(red: 0.2, green: 0.6, blue: 0.45)),
-        QuickTool(id: "hijri", icon: "calendar", label: "Hijri", color: Color(red: 0.4, green: 0.3, blue: 0.8)),
-        QuickTool(id: "duas", icon: "hands.sparkles.fill", label: "Duas", color: Color(red: 0.8, green: 0.4, blue: 0.2)),
+        QuickTool(id: "qibla",  icon: "location.north.fill",  label: "Qibla",  color: Color.alehaGreen),
+        QuickTool(id: "dhikr",  icon: "hand.raised.fill",     label: "Dhikr",  color: Color.alehaAmber),
+        QuickTool(id: "quran",  icon: "book.fill",            label: "Quran",  color: Color(red: 0.2, green: 0.6, blue: 0.45)),
+        QuickTool(id: "hijri",  icon: "calendar",             label: "Hijri",  color: Color(red: 0.4, green: 0.3, blue: 0.8)),
+        QuickTool(id: "duas",   icon: "hands.sparkles.fill",  label: "Duas",   color: Color(red: 0.8, green: 0.4, blue: 0.2)),
     ]
 
     var body: some View {
@@ -40,26 +40,28 @@ private struct ToolPill: View {
     @ObservedObject var service: PrayerTimesService
     @Environment(\.colorScheme) var cs
 
-    @State private var showQibla = false
-    @State private var showDhikr = false
-    @State private var showHijri = false
-    @State private var showDuas = false
+    @State private var showQibla  = false
+    @State private var showDhikr  = false
+    @State private var showHijri  = false
+    @State private var showDuas   = false
+    @State private var showQuran  = false
+    @State private var pressed    = false
 
     var body: some View {
         Button { handleTap() } label: {
             HStack(spacing: 8) {
                 ZStack {
                     Circle()
-                        .fill(tool.color.opacity(0.15))
+                        .fill(tool.color.opacity(pressed ? 0.28 : 0.15))
                         .frame(width: 32, height: 32)
                     Image(systemName: tool.icon)
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(tool.color)
+                        .scaleEffect(pressed ? 1.15 : 1.0)
                 }
                 Text(tool.label)
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(.primary)
-                // Contextual subtitle
                 if let sub = subtitle {
                     Text(sub)
                         .font(.system(size: 10))
@@ -68,18 +70,23 @@ private struct ToolPill: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .background(
-                cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.88)
-            )
+            .background(cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.88))
             .clipShape(Capsule())
-            .overlay(Capsule().stroke(cs == .dark ? Color.white.opacity(0.10) : Color.white.opacity(0.6), lineWidth: 0.5))
-            .shadow(color: .black.opacity(0.05), radius: 6, y: 3)
+            .overlay(Capsule().stroke(
+                pressed ? tool.color.opacity(0.45) : (cs == .dark ? Color.white.opacity(0.10) : Color.white.opacity(0.6)),
+                lineWidth: pressed ? 1 : 0.5
+            ))
+            .shadow(color: pressed ? tool.color.opacity(0.25) : .black.opacity(0.05),
+                    radius: pressed ? 10 : 6, y: 3)
+            .scaleEffect(pressed ? 0.95 : 1.0)
         }
-        .buttonStyle(SpringPressStyle())
+        .buttonStyle(.plain)
+        .animation(.spring(response: 0.22, dampingFraction: 0.60), value: pressed)
         .sheet(isPresented: $showQibla) { QiblaCompassView() }
         .sheet(isPresented: $showDhikr) { DhikrSheetWrapper() }
         .sheet(isPresented: $showHijri) { HijriDateSheet(hijriDate: service.hijriDate) }
         .sheet(isPresented: $showDuas)  { DuasSheet() }
+        .sheet(isPresented: $showQuran) { QuranQuickSheet() }
     }
 
     private var subtitle: String? {
@@ -91,12 +98,17 @@ private struct ToolPill: View {
 
     private func handleTap() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        switch tool.id {
-        case "qibla": showQibla = true
-        case "dhikr": showDhikr = true
-        case "hijri": showHijri = true
-        case "duas":  showDuas = true
-        default: break
+        withAnimation(.spring(response: 0.22, dampingFraction: 0.5)) { pressed = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.65)) { pressed = false }
+            switch tool.id {
+            case "qibla": showQibla = true
+            case "dhikr": showDhikr = true
+            case "hijri": showHijri = true
+            case "duas":  showDuas  = true
+            case "quran": showQuran = true
+            default: break
+            }
         }
     }
 }
@@ -105,7 +117,47 @@ private struct ToolPill: View {
 private struct DhikrSheetWrapper: View {
     @StateObject private var store = SalahStore()
     var body: some View {
-        DhikrCounterView().environmentObject(store)
+        NavigationStack { DhikrCounterView().environmentObject(store) }
+    }
+}
+
+// MARK: - Quran Quick Sheet (opens Surah list)
+private struct QuranQuickSheet: View {
+    @Environment(\.dismiss) var dismiss
+    @StateObject private var store = QuranStore.shared
+    private let featured = Array(QuranData.allSurahs.prefix(10))
+
+    var body: some View {
+        NavigationStack {
+            List(featured) { surah in
+                NavigationLink(destination: SurahReaderView(surah: surah)) {
+                    HStack(spacing: 14) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color.alehaGreen.opacity(0.12))
+                                .frame(width: 36, height: 36)
+                            Text("\(surah.id)")
+                                .font(.system(size: 13, weight: .bold, design: .rounded))
+                                .foregroundStyle(Color.alehaGreen)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(surah.nameTransliteration)
+                                .font(.subheadline.weight(.semibold))
+                            Text("\(surah.verses) verses · \(surah.type)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Text(surah.nameArabic)
+                            .font(.system(size: 17, design: .serif))
+                            .foregroundStyle(Color.alehaGreen)
+                    }
+                }
+            }
+            .navigationTitle("Quran")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } } }
+        }
     }
 }
 

@@ -151,7 +151,7 @@ struct QiblaCompassView: View {
         }
         .frame(width: 280, height: 280)
         .rotationEffect(.degrees(-qibla.heading))
-        .animation(.easeInOut(duration: 0.3), value: qibla.heading)
+        .animation(.spring(response: 0.35, dampingFraction: 0.68), value: qibla.heading)
     }
 
     private var outerRing: some View {
@@ -204,7 +204,7 @@ struct QiblaCompassView: View {
         }
         .offset(y: -40)
         .rotationEffect(.degrees(qibla.qiblaDirection))
-        .animation(.easeInOut(duration: 0.3), value: qibla.qiblaDirection)
+        .animation(.spring(response: 0.45, dampingFraction: 0.62), value: qibla.qiblaDirection)
     }
 
     private var centerKaaba: some View {

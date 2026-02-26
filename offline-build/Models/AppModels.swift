@@ -48,6 +48,17 @@ enum Prayer: String, CaseIterable, Identifiable, Codable {
         case .isha: return "moon.fill"
         }
     }
+
+    func localizedName(isMalayalam: Bool) -> String {
+        guard isMalayalam else { return rawValue }
+        switch self {
+        case .fajr: return "ഫജ്ർ"
+        case .dhuhr: return "ദുഹ്ർ"
+        case .asr: return "അസ്ർ"
+        case .maghrib: return "മഗ്‌രിബ്"
+        case .isha: return "ഇശാ"
+        }
+    }
 }
 
 // MARK: - Surah

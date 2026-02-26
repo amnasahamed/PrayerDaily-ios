@@ -170,11 +170,36 @@ struct MoreView: View {
             Button { showAbout = true } label: {
                 MoreMenuRow(icon: "info.circle.fill", title: localization.t(.moreAbout),
                             subtitle: "Version 1.0 • alehalearn.com",
-                            color: Color.alehaGreen, showDivider: false)
+                            color: Color.alehaGreen, showDivider: true)
+            }
+            .buttonStyle(.plain)
+
+            Button {
+                UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                showResetConfirm = true
+            } label: {
+                MoreMenuRow(icon: "trash.fill", title: localization.t(.moreReset),
+                            subtitle: localization.currentLanguage == .malayalam ? "എല്ലാ ഡാറ്റയും ലോഗും മായ്ക്കുക" : "Erase all data, logs & preferences",
+                            color: .red, showDivider: false)
             }
             .buttonStyle(.plain)
         }
         .groupedCard()
+        .confirmationDialog(
+            localization.t(.moreResetTitle),
+            isPresented: $showResetConfirm,
+            titleVisibility: .visible
+        ) {
+            Button(localization.t(.moreResetConfirm), role: .destructive) {
+                Task { @MainActor in
+                    store.resetAll()
+                }
+                UINotificationFeedbackGenerator().notificationOccurred(.warning)
+            }
+            Button(localization.t(.commonCancel), role: .cancel) {}
+        } message: {
+            Text(localization.t(.moreResetMessage))
+        }
     }
 
     private func sectionLabel(_ text: String) -> some View {

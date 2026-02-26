@@ -28,6 +28,17 @@ enum PrayerStatus: String, Codable, CaseIterable {
         case .none: return "circle"
         }
     }
+
+    func localizedName(isMalayalam: Bool) -> String {
+        guard isMalayalam else { return rawValue }
+        switch self {
+        case .prayed: return "നിർവ്വഹിച്ചു"
+        case .late: return "വൈകി"
+        case .qada: return "ഖദ"
+        case .missed: return "വിട്ടുപോയി"
+        case .none: return "രേഖപ്പെടുത്തിയിട്ടില്ല"
+        }
+    }
 }
 
 // MARK: - Prayer Day Log

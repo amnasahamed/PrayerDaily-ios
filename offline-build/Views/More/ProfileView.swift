@@ -120,6 +120,9 @@ struct ProfileView: View {
                 .fill(Color(uiColor: .secondarySystemGroupedBackground))
         )
         .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
+        .onChange(of: profileMadhab) { _, newMadhab in
+            PrayerTimesService.shared.applyMadhab(newMadhab)
+        }
     }
 
     private var locationRow: some View {

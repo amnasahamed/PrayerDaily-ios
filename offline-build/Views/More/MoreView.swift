@@ -76,6 +76,13 @@ struct MoreView: View {
             }
             .buttonStyle(.plain)
 
+            NavigationLink(destination: PrayerSettingsView()) {
+                MoreMenuRow(icon: "clock.badge.checkmark.fill", title: "Prayer Calculation",
+                            subtitle: "Method, madhab & Asr juristic rule",
+                            color: Color.alehaAmber, showDivider: true)
+            }
+            .buttonStyle(.plain)
+
             NavigationLink(destination: OfflineContentView()) {
                 let cacheCount = OfflineCacheService.shared.cachedSurahCount()
                 let cacheSize = OfflineCacheService.shared.cacheSizeString()

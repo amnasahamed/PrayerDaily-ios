@@ -8,10 +8,11 @@ class LibraryReadingState: ObservableObject {
 
 struct LibraryView: View {
     @StateObject private var readingState = LibraryReadingState()
+    @Environment(\.localization) var l10n
     @State private var searchText = ""
     @State private var selectedCategory = 0
     @State private var appeared = false
-    private let categories = ["Knowledge", "Duas", "Tools", "Guides"]
+    private var categories: [String] { [l10n.t(.libraryKnowledge), l10n.t(.libraryDuas), l10n.t(.libraryTools), l10n.t(.libraryGuides)] }
 
     var body: some View {
         NavigationStack {
@@ -27,9 +28,9 @@ struct LibraryView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(CalmingBackground())
-            .navigationTitle("Library")
+            .navigationTitle(l10n.t(.libraryTitle))
             .modifier(AlehaNavStyle())
-            .searchable(text: $searchText, prompt: "Search hadith, duas...")
+            .searchable(text: $searchText, prompt: l10n.t(.quranSearchPrompt))
             .onAppear {
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1)) { appeared = true }
             }

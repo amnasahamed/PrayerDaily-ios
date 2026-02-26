@@ -3,6 +3,7 @@ import SwiftUI
 struct FloatingTabBar: View {
     @Binding var selectedTab: AppTab
     @Environment(\.colorScheme) var cs
+    @Environment(\.localization) var l10n
     @Namespace private var tabNS
 
     private let tabs: [AppTab] = [.home, .quran, .salah, .library, .more]
@@ -10,7 +11,7 @@ struct FloatingTabBar: View {
     var body: some View {
         HStack(spacing: 0) {
             ForEach(tabs, id: \.self) { tab in
-                TabItem(tab: tab, isSelected: selectedTab == tab, ns: tabNS) {
+                TabItem(tab: tab, isSelected: selectedTab == tab, ns: tabNS, label: l10n.t(tab.labelKey)) {
                     let impact = UIImpactFeedbackGenerator(style: .soft)
                     impact.impactOccurred()
                     withAnimation(.spring(response: 0.32, dampingFraction: 0.72)) {
@@ -45,6 +46,7 @@ private struct TabItem: View {
     let tab: AppTab
     let isSelected: Bool
     var ns: Namespace.ID
+    let label: String
     let action: () -> Void
 
     var body: some View {
@@ -65,9 +67,11 @@ private struct TabItem: View {
                 }
                 .frame(height: 28)
 
-                Text(tab.rawValue)
+                Text(label)
                     .font(.system(size: 9, weight: isSelected ? .bold : .medium))
                     .foregroundStyle(isSelected ? Color.alehaGreen : Color.secondary.opacity(0.6))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
             }
             .frame(maxWidth: .infinity)
         }

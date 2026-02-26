@@ -4,6 +4,7 @@ import SwiftUI
 struct NoorApp: App {
     @State private var selectedTab: AppTab = .home
     @StateObject private var salahStore = SalahStore()
+    @StateObject private var localization = LocalizationManager.shared
     @AppStorage("appearanceMode") private var appearanceMode: String = "system"
     @AppStorage("arabicFontSize") private var arabicFontSize: Double = 28
     @AppStorage("translationEnabled") private var translationEnabled: Bool = true
@@ -43,10 +44,12 @@ struct NoorApp: App {
             }
             .ignoresSafeArea(.keyboard)
             .environmentObject(salahStore)
+            .environmentObject(localization)
             .preferredColorScheme(preferredColorScheme)
             .environment(\.arabicFontSize, arabicFontSize)
             .environment(\.translationEnabled, translationEnabled)
             .environment(\.transliterationEnabled, transliterationEnabled)
+            .environment(\.localization, localization)
         }
     }
 }

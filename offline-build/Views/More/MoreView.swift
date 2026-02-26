@@ -2,11 +2,13 @@ import SwiftUI
 
 struct MoreView: View {
     @EnvironmentObject var store: SalahStore
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.colorScheme) var cs
     @State private var showStreakHistory = false
     @State private var showDataExport = false
     @State private var showShareApp = false
     @State private var showAbout = false
+    @State private var showLanguagePicker = false
 
     var body: some View {
         NavigationStack {
@@ -23,29 +25,30 @@ struct MoreView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(CalmingBackground())
-            .navigationTitle("More")
+            .navigationTitle(localization.t(.moreTitle))
             .modifier(AlehaNavStyle())
             .sheet(isPresented: $showStreakHistory) { StreakHistorySheet(store: store) }
             .sheet(isPresented: $showDataExport) { DataExportSheet(store: store) }
             .sheet(isPresented: $showShareApp) { ShareAppSheet() }
             .sheet(isPresented: $showAbout) { AboutAlehaSheet() }
+            .sheet(isPresented: $showLanguagePicker) { LanguagePickerSheet() }
         }
     }
 
     // MARK: - Streak Snapshot
-    private var streakSnapshot: some View {
-        HStack(spacing: 0) {
-            snapBlock(value: "\(store.currentStreak)", label: "Day Streak", icon: "flame.fill", color: .orange)
-            Divider().frame(height: 44)
-            snapBlock(value: "\(store.weeklyConsistency)%", label: "This Week", icon: "chart.bar.fill", color: Color.alehaGreen)
-            Divider().frame(height: 44)
-            snapBlock(value: "\(totalLogged)", label: "Total Logged", icon: "checkmark.seal.fill", color: Color.alehaAmber)
-        }
-        .noorCard()
-    }
-
     private var totalLogged: Int {
         store.logs.values.reduce(0) { $0 + $1.completedCount }
+    }
+
+    private var streakSnapshot: some View {
+        HStack(spacing: 0) {
+            snapBlock(value: "\(store.currentStreak)", label: localization.t(.salahStreak), icon: "flame.fill", color: .orange)
+            Divider().frame(height: 44)
+            snapBlock(value: "\(store.weeklyConsistency)%", label: localization.t(.salahThisWeek), icon: "chart.bar.fill", color: Color.alehaGreen)
+            Divider().frame(height: 44)
+            snapBlock(value: "\(totalLogged)", label: localization.t(.salahTotalLogged), icon: "checkmark.seal.fill", color: Color.alehaAmber)
+        }
+        .noorCard()
     }
 
     private func snapBlock(value: String, label: String, icon: String, color: Color) -> some View {
@@ -63,21 +66,21 @@ struct MoreView: View {
     private var mainSection: some View {
         VStack(spacing: 0) {
             NavigationLink(destination: ProfileView()) {
-                MoreMenuRow(icon: "person.crop.circle.fill", title: "Profile",
+                MoreMenuRow(icon: "person.crop.circle.fill", title: localization.t(.moreProfile),
                             subtitle: "Your name, madhab & preferences",
                             color: Color.alehaGreen, showDivider: true)
             }
             .buttonStyle(.plain)
 
             NavigationLink(destination: AppearanceView()) {
-                MoreMenuRow(icon: "moon.stars.fill", title: "Appearance",
+                MoreMenuRow(icon: "moon.stars.fill", title: localization.t(.moreAppearance),
                             subtitle: "Theme, Arabic size & reading options",
                             color: Color.alehaDarkGreen, showDivider: true)
             }
             .buttonStyle(.plain)
 
             NavigationLink(destination: PrayerSettingsView()) {
-                MoreMenuRow(icon: "clock.badge.checkmark.fill", title: "Prayer Calculation",
+                MoreMenuRow(icon: "clock.badge.checkmark.fill", title: localization.t(.morePrayerCalc),
                             subtitle: "Method, madhab & Asr juristic rule",
                             color: Color.alehaAmber, showDivider: true)
             }
@@ -86,28 +89,36 @@ struct MoreView: View {
             NavigationLink(destination: OfflineContentView()) {
                 let cacheCount = OfflineCacheService.shared.cachedSurahCount()
                 let cacheSize = OfflineCacheService.shared.cacheSizeString()
-                MoreMenuRow(icon: "arrow.down.circle.fill", title: "Offline Content",
+                MoreMenuRow(icon: "arrow.down.circle.fill", title: localization.t(.moreOffline),
                             subtitle: "\(cacheCount) surahs saved (\(cacheSize))",
                             color: Color.alehaAmber, showDivider: true)
             }
             .buttonStyle(.plain)
 
             NavigationLink(destination: EmergencyGuidesView()) {
-                MoreMenuRow(icon: "cross.case.fill", title: "Emergency Guides",
+                MoreMenuRow(icon: "cross.case.fill", title: localization.t(.moreEmergency),
                             subtitle: "Janazah, Ruqyah, Nikah & Travel",
                             color: Color.alehaAmber, showDivider: true)
             }
             .buttonStyle(.plain)
 
             Button { showStreakHistory = true } label: {
-                MoreMenuRow(icon: "flame.fill", title: "Streak History",
+                MoreMenuRow(icon: "flame.fill", title: localization.t(.moreStreakHistory),
                             subtitle: "View your prayer consistency over time",
                             color: .orange, showDivider: true)
             }
             .buttonStyle(.plain)
 
+            Button { showLanguagePicker = true } label: {
+                let lang = localization.currentLanguage
+                MoreMenuRow(icon: "globe", title: localization.t(.moreLanguage),
+                            subtitle: "\(lang.flag) \(lang.displayName)",
+                            color: Color.alehaGreen, showDivider: true)
+            }
+            .buttonStyle(.plain)
+
             Button { showDataExport = true } label: {
-                MoreMenuRow(icon: "square.and.arrow.up.fill", title: "Export My Data",
+                MoreMenuRow(icon: "square.and.arrow.up.fill", title: localization.t(.moreExport),
                             subtitle: "Download your prayer logs & notes",
                             color: Color(red: 0.45, green: 0.25, blue: 0.75), showDivider: false)
             }
@@ -119,12 +130,12 @@ struct MoreView: View {
     // MARK: - Community Section
     private var communitySection: some View {
         VStack(spacing: 0) {
-            sectionLabel("Community")
+            sectionLabel(localization.t(.moreCommunity))
             Button {
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 showShareApp = true
             } label: {
-                MoreMenuRow(icon: "square.and.arrow.up", title: "Share Aleha",
+                MoreMenuRow(icon: "square.and.arrow.up", title: localization.t(.moreShare),
                             subtitle: "Help others discover the app",
                             color: Color.alehaGreen, showDivider: true)
             }
@@ -134,7 +145,7 @@ struct MoreView: View {
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 triggerInviteShare()
             } label: {
-                MoreMenuRow(icon: "person.badge.plus", title: "Invite Friends",
+                MoreMenuRow(icon: "person.badge.plus", title: localization.t(.moreInvite),
                             subtitle: "Send a personal invite to a friend",
                             color: Color.alehaAmber, showDivider: false)
             }
@@ -156,7 +167,7 @@ struct MoreView: View {
     private var footerSection: some View {
         VStack(spacing: 0) {
             Button { showAbout = true } label: {
-                MoreMenuRow(icon: "info.circle.fill", title: "About Aleha",
+                MoreMenuRow(icon: "info.circle.fill", title: localization.t(.moreAbout),
                             subtitle: "Version 1.0 • alehalearn.com",
                             color: Color.alehaGreen, showDivider: false)
             }

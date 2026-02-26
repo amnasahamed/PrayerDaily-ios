@@ -2,11 +2,11 @@ import Foundation
 
 // MARK: - Tab Model
 enum AppTab: String, CaseIterable {
-    case home = "Home"
-    case quran = "Quran"
-    case salah = "Salah"
-    case library = "Library"
-    case more = "More"
+    case home = "home"
+    case quran = "quran"
+    case salah = "salah"
+    case library = "library"
+    case more = "more"
 
     var icon: String {
         switch self {
@@ -15,6 +15,16 @@ enum AppTab: String, CaseIterable {
         case .salah: return "clock.fill"
         case .library: return "books.vertical.fill"
         case .more: return "ellipsis.circle.fill"
+        }
+    }
+
+    var labelKey: LocalizedKey {
+        switch self {
+        case .home: return .tabHome
+        case .quran: return .tabQuran
+        case .salah: return .tabSalah
+        case .library: return .tabLibrary
+        case .more: return .tabMore
         }
     }
 }

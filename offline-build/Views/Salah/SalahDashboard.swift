@@ -2,14 +2,24 @@ import SwiftUI
 
 struct SalahDashboard: View {
     @StateObject private var store = SalahStore()
+    @Environment(\.localization) var l10n
     @State private var selectedSection: SalahSection = .today
     @Namespace private var pillNS
 
     enum SalahSection: String, CaseIterable {
-        case today = "Today"
-        case calendar = "Calendar"
-        case qada = "Qada"
-        case dhikr = "Dhikr"
+        case today = "today"
+        case calendar = "calendar"
+        case qada = "qada"
+        case dhikr = "dhikr"
+
+        func label(_ l10n: LocalizationManager) -> String {
+            switch self {
+            case .today: return l10n.t(.salahToday)
+            case .calendar: return l10n.t(.salahCalendar)
+            case .qada: return l10n.t(.salahQada)
+            case .dhikr: return l10n.t(.salahDhikr)
+            }
+        }
     }
 
     var body: some View {
@@ -20,7 +30,7 @@ struct SalahDashboard: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(CalmingBackground())
-            .navigationTitle("Salah")
+            .navigationTitle(l10n.t(.salahTitle))
             .modifier(AlehaNavStyle())
         }
         .environmentObject(store)
@@ -30,7 +40,7 @@ struct SalahDashboard: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 ForEach(SalahSection.allCases, id: \.self) { section in
-                    sectionChip(section)
+                    sectionChip(section, label: section.label(l10n))
                 }
             }
             .padding(.horizontal, AppTheme.screenPadding)
@@ -38,7 +48,7 @@ struct SalahDashboard: View {
         }
     }
 
-    private func sectionChip(_ section: SalahSection) -> some View {
+    private func sectionChip(_ section: SalahSection, label: String) -> some View {
         let isSelected = selectedSection == section
         return Button {
             let gen = UIImpactFeedbackGenerator(style: .soft)
@@ -47,7 +57,7 @@ struct SalahDashboard: View {
                 selectedSection = section
             }
         } label: {
-            Text(section.rawValue)
+            Text(label)
                 .font(.subheadline.weight(isSelected ? .bold : .medium))
                 .foregroundStyle(isSelected ? .white : .primary)
                 .padding(.horizontal, 18)

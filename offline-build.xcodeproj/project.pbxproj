@@ -20,6 +20,7 @@
 		21DD3DB2C61FDFF27067E65F /* AppearanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5352FACB7B571AAE16756704 /* AppearanceView.swift */; };
 		2343CC2756FC540E3404CEB7 /* StreakCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD35CC1985099BDF2EE042E /* StreakCard.swift */; };
 		2762BE477C9C2F8DFF55E628 /* SalahDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5B69ABF5416E44C909C59A /* SalahDashboard.swift */; };
+		2837887013B7E688727E4B3A /* LocalizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F8C1A15B62A19C52628B25 /* LocalizationManager.swift */; };
 		28C5331B9E99357D8A728A9A /* DuaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14477478517FDC36813FCDE /* DuaData.swift */; };
 		29C52C0EF3BCCC6078DA1C9B /* FloatingTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 382DDF8EFBA7B09B54E6288E /* FloatingTabBar.swift */; };
 		2AAD751850D3FDA907E56557 /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D682C9F07C85BAD9FAD6AF /* MoreView.swift */; };
@@ -34,6 +35,7 @@
 		54F505206100F43AFD347639 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F133255393F84EA34910EB98 /* SampleData.swift */; };
 		5A6EA6B9AB7A97D6E056153B /* QuickToolsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461687FFCA99CF1CB0A6DC7B /* QuickToolsRow.swift */; };
 		5D4F5CDCC3FCA7AE47B04D80 /* AppModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CC04AFC65AF0D0DF555172 /* AppModels.swift */; };
+		5D5BD7D4BEF1F8385D3193DA /* LanguagePickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508070D1F05B74A4EDA6AB01 /* LanguagePickerSheet.swift */; };
 		5DA8C7675EFE9F582E5D299D /* HadithData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAE9875F88F2F0654DF7E859 /* HadithData.swift */; };
 		60C5707A6A1C1C1FE1AA176F /* generate_icon.py in Resources */ = {isa = PBXBuildFile; fileRef = 0899B9170F6BDE884758354F /* generate_icon.py */; };
 		7B85924C56C1CB399A4742C7 /* QuranStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84121A68DA3813799CFBBEF1 /* QuranStore.swift */; };
@@ -88,6 +90,7 @@
 		45F44C9330F8AD73F9BE62E4 /* offline-build.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "offline-build.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		461687FFCA99CF1CB0A6DC7B /* QuickToolsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickToolsRow.swift; sourceTree = "<group>"; };
 		4BFC9AD374C985312AB89D0F /* ReadingProgressCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingProgressCard.swift; sourceTree = "<group>"; };
+		508070D1F05B74A4EDA6AB01 /* LanguagePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguagePickerSheet.swift; sourceTree = "<group>"; };
 		51AFAE62C84AEADB4F5426E6 /* QadaTrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QadaTrackerView.swift; sourceTree = "<group>"; };
 		5235CFFDB79F09FD381430EB /* EmergencyGuidesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyGuidesView.swift; sourceTree = "<group>"; };
 		5352FACB7B571AAE16756704 /* AppearanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceView.swift; sourceTree = "<group>"; };
@@ -128,6 +131,7 @@
 		F521D0FF8FF43ECDBE2CAD30 /* HadithCollectionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HadithCollectionCard.swift; sourceTree = "<group>"; };
 		F6965A3C787D4A4B6DEFFFE8 /* SurahListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurahListView.swift; sourceTree = "<group>"; };
 		F6A8F29FB289238100D0443E /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		F6F8C1A15B62A19C52628B25 /* LocalizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationManager.swift; sourceTree = "<group>"; };
 		F995E1788B5E2A9E8662B7DA /* CalendarPrayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarPrayerView.swift; sourceTree = "<group>"; };
 		FA5AA79AB276A40FBF501D79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -269,6 +273,7 @@
 			children = (
 				5352FACB7B571AAE16756704 /* AppearanceView.swift */,
 				5235CFFDB79F09FD381430EB /* EmergencyGuidesView.swift */,
+				508070D1F05B74A4EDA6AB01 /* LanguagePickerSheet.swift */,
 				33D682C9F07C85BAD9FAD6AF /* MoreView.swift */,
 				62298697A5C78549C7D4F9ED /* OfflineContentView.swift */,
 				845269B2933C0CB461C8D555 /* PrayerSettingsView.swift */,
@@ -284,6 +289,7 @@
 				E14477478517FDC36813FCDE /* DuaData.swift */,
 				7155F88738917606DBDD74FE /* EmergencyGuideData.swift */,
 				CAE9875F88F2F0654DF7E859 /* HadithData.swift */,
+				F6F8C1A15B62A19C52628B25 /* LocalizationManager.swift */,
 				30D0CA0D5E550CD754B92C11 /* OfflineCacheService.swift */,
 				BC60D652FC30F78F0847ADDD /* PrayerTimesService.swift */,
 				984FB2A8B4EFD0849945E2C9 /* QuranAPIService.swift */,
@@ -392,8 +398,10 @@
 				5DA8C7675EFE9F582E5D299D /* HadithData.swift in Sources */,
 				390EC80907B6277F73D08EDE /* HeroCardView.swift in Sources */,
 				9AF4038EEB79C5056E73C51B /* HomeView.swift in Sources */,
+				5D5BD7D4BEF1F8385D3193DA /* LanguagePickerSheet.swift in Sources */,
 				DC02D73E4AA6B20CB9232415 /* LibraryToolViews.swift in Sources */,
 				02230DC1CA3972C8E42906C5 /* LibraryView.swift in Sources */,
+				2837887013B7E688727E4B3A /* LocalizationManager.swift in Sources */,
 				2AAD751850D3FDA907E56557 /* MoreView.swift in Sources */,
 				47000118B2BE4AB70CE5FF95 /* NoorApp.swift in Sources */,
 				D5BECDA95CBD92B1CB0E956A /* OfflineCacheService.swift in Sources */,

@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @StateObject private var prayerService = PrayerTimesService.shared
     @EnvironmentObject var salahStore: SalahStore
+    @Environment(\.localization) var l10n
     @State private var todayPrayers = SampleData.todayPrayers()
     @State private var appeared = false
 
@@ -31,13 +32,13 @@ struct HomeView: View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: AppTheme.sectionSpacing) {
                 headerSection
-                sectionLabel("moon.stars.fill", "Salah")
+                sectionLabel("moon.stars.fill", l10n.t(.homeSalah))
                 prayerBlock
-                sectionLabel("chart.bar.fill", "Habits")
+                sectionLabel("chart.bar.fill", l10n.t(.homeHabits))
                 habitBlock
-                sectionLabel("bolt.fill", "Quick Tools")
+                sectionLabel("bolt.fill", l10n.t(.homeQuickTools))
                 quickTools
-                sectionLabel("text.quote", "Verse of the Day")
+                sectionLabel("text.quote", l10n.t(.homeVerseOfDay))
                 verseCard
             }
             .padding(.horizontal, AppTheme.screenPadding)

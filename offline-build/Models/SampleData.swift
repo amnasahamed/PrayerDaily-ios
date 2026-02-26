@@ -14,7 +14,7 @@ struct SampleData {
         Surah(id: 114, nameArabic: "الناس", nameEnglish: "An-Nas", verses: 6, type: "Meccan"),
     ]
 
-    // MARK: - Daily Reflection
+    // MARK: - Verse of the Day
     static let dailyAyah = (
         arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
         translation: "Indeed, with hardship comes ease.",

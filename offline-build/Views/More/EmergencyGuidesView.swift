@@ -48,47 +48,88 @@ struct GuideCard: View {
 // MARK: - Guide Detail
 struct GuideDetailView: View {
     let guide: EmergencyGuide
+    @State private var isMalayalam = false
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 headerBanner
                 ForEach(guide.sections) { section in
-                    SectionBlock(section: section, color: guide.color)
+                    SectionBlock(section: section, color: guide.color, isMalayalam: isMalayalam)
                 }
             }
             .padding(AppTheme.screenPadding)
             .padding(.bottom, 40)
         }
         .background(Color("NoorSurface").ignoresSafeArea())
-        .navigationTitle(guide.title)
+        .navigationTitle(isMalayalam ? guide.titleMl : guide.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                BilingualToggle(isMalayalam: $isMalayalam)
+            }
+        }
     }
 
     private var headerBanner: some View {
         HStack {
             VStack(alignment: .leading, spacing: 6) {
                 Image(systemName: guide.icon).font(.largeTitle).foregroundStyle(Color(guide.color))
-                Text(guide.title).font(.title2.weight(.bold))
-                Text(guide.subtitle).font(.subheadline).foregroundStyle(.secondary)
+                Text(isMalayalam ? guide.titleMl : guide.title)
+                    .font(.title2.weight(.bold))
+                    .animation(.none, value: isMalayalam)
+                Text(isMalayalam ? guide.subtitleMl : guide.subtitle)
+                    .font(.subheadline).foregroundStyle(.secondary)
+                    .animation(.none, value: isMalayalam)
             }
             Spacer()
         }
         .padding(20)
         .background(Color(guide.color).opacity(0.08))
         .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius))
+        .animation(.easeInOut(duration: 0.2), value: isMalayalam)
+    }
+}
+
+// MARK: - Bilingual Toggle
+struct BilingualToggle: View {
+    @Binding var isMalayalam: Bool
+
+    var body: some View {
+        HStack(spacing: 0) {
+            langButton(label: "EN", active: !isMalayalam) { isMalayalam = false }
+            langButton(label: "മ", active: isMalayalam) { isMalayalam = true }
+        }
+        .background(Color(.systemGray5))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    @ViewBuilder
+    private func langButton(label: String, active: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: { withAnimation(.easeInOut(duration: 0.2)) { action() } }) {
+            Text(label)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(active ? .white : .secondary)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .background(active ? Color.accentColor : Color.clear)
+                .clipShape(RoundedRectangle(cornerRadius: 7))
+        }
     }
 }
 
 struct SectionBlock: View {
     let section: GuideSection
     let color: String
+    let isMalayalam: Bool
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(section.heading)
+            Text(isMalayalam ? section.headingMl : section.heading)
                 .font(.headline)
                 .foregroundStyle(Color(color))
             ForEach(section.steps) { step in
-                StepRow(step: step, color: color)
+                StepRow(step: step, color: color, isMalayalam: isMalayalam)
             }
         }
     }
@@ -97,7 +138,9 @@ struct SectionBlock: View {
 struct StepRow: View {
     let step: GuideStep
     let color: String
+    let isMalayalam: Bool
     @Environment(\.colorScheme) var cs
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top, spacing: 10) {
@@ -108,8 +151,10 @@ struct StepRow: View {
                     .background(Color(color))
                     .clipShape(Circle())
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(step.title).font(.subheadline.weight(.semibold))
-                    Text(step.detail).font(.caption).foregroundStyle(.secondary).lineSpacing(3)
+                    Text(isMalayalam ? step.titleMl : step.title)
+                        .font(.subheadline.weight(.semibold))
+                    Text(isMalayalam ? step.detailMl : step.detail)
+                        .font(.caption).foregroundStyle(.secondary).lineSpacing(3)
                 }
             }
             if let arabic = step.arabic {
@@ -125,5 +170,6 @@ struct StepRow: View {
         .padding(14)
         .background(cs == .dark ? Color(.systemGray6) : .white)
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        .animation(.easeInOut(duration: 0.2), value: isMalayalam)
     }
 }

@@ -39,6 +39,8 @@ struct NoorApp: App {
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .animation(.spring(response: 0.38, dampingFraction: 0.85), value: selectedTab)
+                // Re-key the entire UI on reset so all @AppStorage bindings refresh
+                .id(salahStore.resetTrigger)
 
                 FloatingTabBar(selectedTab: $selectedTab)
             }

@@ -88,6 +88,13 @@ class QuranStore: ObservableObject {
         lastRead = (surahId, verse)
     }
 
+    func resetAll() {
+        bookmarks = []
+        lastRead = nil
+        surahProgress = [:]
+        stopAudio()
+    }
+
     // MARK: - Audio
     func playVerse(surahId: Int, verseNum: Int) {
         stopAudio()

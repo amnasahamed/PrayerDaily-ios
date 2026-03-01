@@ -323,20 +323,46 @@ class SalahStore: ObservableObject {
 
     // MARK: - Reset All
     func resetAll() {
+        // Reset in-memory state
         logs = [:]
         qadaEntries = Prayer.allCases.map { QadaEntry(prayer: $0, count: 0) }
         dhikrPresets = Self.defaultDhikr()
         dhikrLifetimeCounts = [:]
+
+        // Preserve language before wiping domain
+        let lang = UserDefaults.standard.string(forKey: "appLanguage")
+
+        // Wipe entire domain so @AppStorage bindings update reactively
+        let domain = Bundle.main.bundleIdentifier ?? "com.aleha"
+        UserDefaults.standard.removePersistentDomain(forName: domain)
+        UserDefaults.standard.synchronize()
+
+        // Restore language
+        if let lang { UserDefaults.standard.set(lang, forKey: "appLanguage") }
+
+        // Explicitly write back store keys so observers fire
         UserDefaults.standard.removeObject(forKey: Self.logsKey)
         UserDefaults.standard.removeObject(forKey: Self.qadaKey)
         UserDefaults.standard.removeObject(forKey: Self.dhikrKey)
         UserDefaults.standard.removeObject(forKey: Self.dhikrLifetimeKey)
-        // Clear all other app prefs except language
-        let lang = UserDefaults.standard.string(forKey: "appLanguage")
-        let domain = Bundle.main.bundleIdentifier ?? "com.aleha"
-        UserDefaults.standard.removePersistentDomain(forName: domain)
-        if let lang { UserDefaults.standard.set(lang, forKey: "appLanguage") }
+
+        // Restore AppStorage defaults so views update immediately
+        UserDefaults.standard.set("system",  forKey: "appearanceMode")
+        UserDefaults.standard.set(28.0,      forKey: "arabicFontSize")
+        UserDefaults.standard.set(true,      forKey: "translationEnabled")
+        UserDefaults.standard.set(true,      forKey: "transliterationEnabled")
+        UserDefaults.standard.set("Muslim",  forKey: "profileName")
+        UserDefaults.standard.set("",        forKey: "profileLocation")
+        UserDefaults.standard.set("Hanafi",  forKey: "profileMadhab")
+
+        // Also reset QuranStore shared state
+        QuranStore.shared.resetAll()
+
+        resetTrigger += 1
     }
+
+    /// Incrementing this triggers UI refresh via .id(store.resetTrigger) on root views
+    @Published var resetTrigger: Int = 0
 
     // MARK: - Defaults
     private static func defaultDhikr() -> [DhikrPreset] {

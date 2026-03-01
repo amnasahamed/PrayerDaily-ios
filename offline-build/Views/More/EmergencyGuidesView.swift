@@ -270,40 +270,38 @@ struct StepRow: View {
     private var cardBg: Color { cs == .dark ? Color(.secondarySystemGroupedBackground) : .white }
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(cardBg)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .stroke(accent.opacity(0.10), lineWidth: 1)
-                )
-
-            VStack(alignment: .leading, spacing: 0) {
-                mainContent
-                if let arabic = step.arabic {
-                    arabicPanel(arabic)
-                }
+        VStack(alignment: .leading, spacing: 0) {
+            mainContent
+            if let arabic = step.arabic {
+                arabicPanel(arabic)
             }
         }
-        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(cardBg)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(accent.opacity(0.12), lineWidth: 1)
+        )
         .animation(.easeInOut(duration: 0.18), value: isMalayalam)
     }
 
     private var mainContent: some View {
         HStack(alignment: .top, spacing: 12) {
             numberBadge
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text(isMalayalam ? step.titleMl : step.title)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
                     .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 Text(isMalayalam ? step.detailMl : step.detail)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .lineSpacing(3)
                     .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(14)
     }
@@ -317,6 +315,7 @@ struct StepRow: View {
                 .font(.system(size: 12, weight: .bold))
                 .foregroundStyle(accent)
         }
+        .frame(width: 28, height: 28)
         .padding(.top, 1)
     }
 

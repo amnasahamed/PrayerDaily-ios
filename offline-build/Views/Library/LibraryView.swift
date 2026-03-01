@@ -154,15 +154,24 @@ struct LibraryView: View {
     private var guidesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             sectionHeader(title: "Islamic Guides", icon: "map.fill")
-            LibraryGuideRow(icon: "cross.case.fill", title: "Emergency Guides",
-                            subtitle: "Janazah, Ruqyah & Nikah procedures",
-                            color: Color(red: 0.8, green: 0.2, blue: 0.25))
-            LibraryGuideRow(icon: "person.fill.questionmark", title: "New Muslim Guide",
-                            subtitle: "Essential knowledge for new Muslims",
-                            color: Color.alehaGreen)
-            LibraryGuideRow(icon: "book.pages.fill", title: "Fiqh Basics",
-                            subtitle: "Practical rulings for everyday life",
-                            color: Color.alehaDarkGreen)
+            NavigationLink(destination: EmergencyGuidesView()) {
+                LibraryGuideRow(icon: "cross.case.fill", title: "Emergency Guides",
+                                subtitle: "Janazah, Ruqyah & Nikah procedures",
+                                color: Color(red: 0.8, green: 0.2, blue: 0.25))
+            }
+            .buttonStyle(SpringPressStyle())
+            NavigationLink(destination: EmergencyGuidesView()) {
+                LibraryGuideRow(icon: "person.fill.questionmark", title: "New Muslim Guide",
+                                subtitle: "Essential knowledge for new Muslims",
+                                color: Color.alehaGreen)
+            }
+            .buttonStyle(SpringPressStyle())
+            NavigationLink(destination: EmergencyGuidesView()) {
+                LibraryGuideRow(icon: "book.pages.fill", title: "Fiqh Basics",
+                                subtitle: "Practical rulings for everyday life",
+                                color: Color.alehaDarkGreen)
+            }
+            .buttonStyle(SpringPressStyle())
         }
         .opacity(appeared ? 1 : 0)
         .offset(y: appeared ? 0 : 16)

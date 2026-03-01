@@ -26,6 +26,22 @@ struct NoorApp: App {
     init() {
         UITabBar.appearance().isHidden = true
         AppReviewManager.incrementSession()
+        configureNavigationBarAppearance()
+    }
+
+    private func configureNavigationBarAppearance() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        // Use the system grouped background so it adapts to light/dark automatically
+        appearance.backgroundColor = UIColor.systemBackground
+        appearance.shadowColor = .clear  // remove the bottom divider line
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.label]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
+
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().tintColor = UIColor(Color.alehaGreen)
     }
 
     var body: some Scene {

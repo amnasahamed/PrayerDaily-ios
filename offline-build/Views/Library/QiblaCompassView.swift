@@ -135,7 +135,7 @@ struct QiblaCompassView: View {
         .navigationTitle("Qibla")
         .navigationBarTitleDisplayMode(.inline)
         .sheetDismissButton()
-        .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+        .toolbarBackground(Color(.systemBackground), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .onAppear { qibla.start(); prepareHaptics() }
         .onDisappear { qibla.stop() }

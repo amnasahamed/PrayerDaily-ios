@@ -17,7 +17,7 @@ struct HadithCollectionDetailView: View {
         .background(Color("NoorSurface").ignoresSafeArea())
         .navigationTitle(collection.name)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+        .toolbarBackground(Color(.systemBackground), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
     }
 

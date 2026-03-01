@@ -134,40 +134,42 @@ struct GuideDetailView: View {
     }
 
     private var heroHeader: some View {
-        ZStack(alignment: .bottom) {
-            // Background gradient
+        VStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(accent.opacity(0.08))
+                    .frame(width: 90, height: 90)
+                Circle()
+                    .fill(accent.opacity(0.15))
+                    .frame(width: 72, height: 72)
+                Image(systemName: icon)
+                    .font(.system(size: 30, weight: .semibold))
+                    .foregroundStyle(accent)
+            }
+            VStack(spacing: 4) {
+                Text(isMalayalam ? guide.titleMl : guide.title)
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.center)
+                Text(isMalayalam ? guide.subtitleMl : guide.subtitle)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            HStack(spacing: 16) {
+                statPill(icon: "list.number", value: "\(totalSteps)", label: "Steps")
+                statPill(icon: "rectangle.grid.1x2", value: "\(guide.sections.count)", label: "Sections")
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 28)
+        .padding(.horizontal, AppTheme.screenPadding)
+        .background(
             LinearGradient(
-                colors: [accent.opacity(0.18), accent.opacity(0.04)],
+                colors: [accent.opacity(0.16), accent.opacity(0.04)],
                 startPoint: .top, endPoint: .bottom
             )
-            .frame(height: 180)
-            VStack(spacing: 12) {
-                ZStack {
-                    Circle()
-                        .fill(accent.opacity(0.15))
-                        .frame(width: 76, height: 76)
-                    Circle()
-                        .fill(accent.opacity(0.08))
-                        .frame(width: 90, height: 90)
-                    Image(systemName: icon)
-                        .font(.system(size: 32, weight: .semibold))
-                        .foregroundStyle(accent)
-                }
-                VStack(spacing: 4) {
-                    Text(isMalayalam ? guide.titleMl : guide.title)
-                        .font(.title3.weight(.bold))
-                        .foregroundStyle(.primary)
-                    Text(isMalayalam ? guide.subtitleMl : guide.subtitle)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                HStack(spacing: 16) {
-                    statPill(icon: "list.number", value: "\(totalSteps)", label: "Steps")
-                    statPill(icon: "rectangle.grid.1x2", value: "\(guide.sections.count)", label: "Sections")
-                }
-            }
-            .padding(.vertical, 24)
-        }
+        )
         .animation(.easeInOut(duration: 0.2), value: isMalayalam)
     }
 
@@ -265,36 +267,45 @@ struct StepRow: View {
     let isMalayalam: Bool
     @Environment(\.colorScheme) var cs
 
+    private var cardBg: Color { cs == .dark ? Color(.secondarySystemGroupedBackground) : .white }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Main content
-            HStack(alignment: .top, spacing: 12) {
-                numberBadge
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(isMalayalam ? step.titleMl : step.title)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
-                    Text(isMalayalam ? step.detailMl : step.detail)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .lineSpacing(3.5)
-                        .fixedSize(horizontal: false, vertical: true)
+        ZStack(alignment: .topLeading) {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(cardBg)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(accent.opacity(0.10), lineWidth: 1)
+                )
+
+            VStack(alignment: .leading, spacing: 0) {
+                mainContent
+                if let arabic = step.arabic {
+                    arabicPanel(arabic)
                 }
             }
-            .padding(14)
-
-            // Arabic panel (if present)
-            if let arabic = step.arabic {
-                arabicPanel(arabic)
-            }
         }
-        .background(cs == .dark ? Color(.secondarySystemGroupedBackground) : .white)
-        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(accent.opacity(0.09), lineWidth: 1)
-        )
+        .fixedSize(horizontal: false, vertical: true)
         .animation(.easeInOut(duration: 0.18), value: isMalayalam)
+    }
+
+    private var mainContent: some View {
+        HStack(alignment: .top, spacing: 12) {
+            numberBadge
+            VStack(alignment: .leading, spacing: 4) {
+                Text(isMalayalam ? step.titleMl : step.title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(isMalayalam ? step.detailMl : step.detail)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .lineSpacing(3)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(14)
     }
 
     private var numberBadge: some View {
@@ -312,19 +323,18 @@ struct StepRow: View {
     @ViewBuilder
     private func arabicPanel(_ text: String) -> some View {
         VStack(spacing: 0) {
-            Divider()
-                .opacity(0.4)
-            HStack {
-                Spacer()
-                Text(text)
-                    .font(.system(size: 19, weight: .regular))
-                    .foregroundStyle(accent)
-                    .multilineTextAlignment(.trailing)
-                    .lineSpacing(6)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-            }
-            .background(accent.opacity(0.05))
+            Rectangle()
+                .fill(accent.opacity(0.12))
+                .frame(height: 1)
+            Text(text)
+                .font(.system(size: 18, weight: .regular))
+                .foregroundStyle(accent)
+                .multilineTextAlignment(.trailing)
+                .lineSpacing(6)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(accent.opacity(0.05))
         }
     }
 }

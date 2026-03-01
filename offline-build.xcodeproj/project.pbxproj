@@ -37,6 +37,7 @@
 		5D4F5CDCC3FCA7AE47B04D80 /* AppModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CC04AFC65AF0D0DF555172 /* AppModels.swift */; };
 		5D5BD7D4BEF1F8385D3193DA /* LanguagePickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508070D1F05B74A4EDA6AB01 /* LanguagePickerSheet.swift */; };
 		5DA8C7675EFE9F582E5D299D /* HadithData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAE9875F88F2F0654DF7E859 /* HadithData.swift */; };
+		5EE9E7BD721C935E186EC127 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181C1BBA0CDBE18DB63DDDF9 /* NotificationService.swift */; };
 		607E5A326D68C124FAB758C7 /* DailyVerseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8FC667B04E20DF47553640C /* DailyVerseService.swift */; };
 		60C5707A6A1C1C1FE1AA176F /* generate_icon.py in Resources */ = {isa = PBXBuildFile; fileRef = 0899B9170F6BDE884758354F /* generate_icon.py */; };
 		766A08823C0E65B6D21E9C14 /* IslamicGuidesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4941607E80CCA0DB347E76 /* IslamicGuidesSection.swift */; };
@@ -79,6 +80,7 @@
 		0602FE3772DF5E17342C27EB /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
 		0899B9170F6BDE884758354F /* generate_icon.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = generate_icon.py; sourceTree = "<group>"; };
 		0BE8EB6653DB527BD0DA8DD7 /* HabitMotivationBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitMotivationBlock.swift; sourceTree = "<group>"; };
+		181C1BBA0CDBE18DB63DDDF9 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		1CD35CC1985099BDF2EE042E /* StreakCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakCard.swift; sourceTree = "<group>"; };
 		24822E4FB602556FE1BF161A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		25C6B014AB1631D63984AE9A /* HeroCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroCardView.swift; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 				7155F88738917606DBDD74FE /* EmergencyGuideData.swift */,
 				CAE9875F88F2F0654DF7E859 /* HadithData.swift */,
 				F6F8C1A15B62A19C52628B25 /* LocalizationManager.swift */,
+				181C1BBA0CDBE18DB63DDDF9 /* NotificationService.swift */,
 				30D0CA0D5E550CD754B92C11 /* OfflineCacheService.swift */,
 				BC60D652FC30F78F0847ADDD /* PrayerTimesService.swift */,
 				984FB2A8B4EFD0849945E2C9 /* QuranAPIService.swift */,
@@ -426,6 +429,7 @@
 				2837887013B7E688727E4B3A /* LocalizationManager.swift in Sources */,
 				2AAD751850D3FDA907E56557 /* MoreView.swift in Sources */,
 				47000118B2BE4AB70CE5FF95 /* NoorApp.swift in Sources */,
+				5EE9E7BD721C935E186EC127 /* NotificationService.swift in Sources */,
 				D5BECDA95CBD92B1CB0E956A /* OfflineCacheService.swift in Sources */,
 				3324AC2F1614F3B20DB2EC02 /* OfflineContentView.swift in Sources */,
 				792F32C96AD755920E02C98B /* OnboardingView.swift in Sources */,

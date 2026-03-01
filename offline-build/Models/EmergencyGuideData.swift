@@ -296,6 +296,110 @@ struct EmergencyGuideData {
             ]
         ),
 
+        // MARK: Ruqyah
+        EmergencyGuide(
+            title: "Ruqyah (Healing Recitation)",
+            titleMl: "റുഖ്‌യ (സൗഖ്യ പ്രാർഥന)",
+            icon: "waveform.path.ecg",
+            color: "NoorBlue",
+            subtitle: "Quranic healing & protection",
+            subtitleMl: "ഖുർആൻ ശിഫ & സംരക്ഷണം",
+            sections: [
+                GuideSection(
+                    heading: "What is Ruqyah?",
+                    headingMl: "റുഖ്‌യ എന്താണ്?",
+                    steps: [
+                        GuideStep(number: 1, title: "Definition", titleMl: "നിർവ്വചനം", detail: "Ruqyah is the practice of reciting specific Quranic verses and authentic duas for healing from illness, evil eye, magic, or distress.", detailMl: "അസുഖം, ദൃഷ്ടിദോഷം, ജാദൂ, ദുരിതം എന്നിവയ്ക്ക് ഖുർആൻ ആയത്തുകളും ദുആകളും ഓതി ഫൂ ചെയ്യുന്ന ചികിത്സ.", arabic: nil),
+                        GuideStep(number: 2, title: "Conditions", titleMl: "നിബന്ധനകൾ", detail: "Must use only Quran and authentic Sunnah. Must be in Arabic. Must not contain shirk or forbidden acts. Must believe Allah alone heals.", detailMl: "ഖുർആനും സ്ഥിരീകൃത സുന്നത്തും മാത്രം ഉപയോഗിക്കണം. അറബിയിൽ ആയിരിക്കണം. ശിർക്ക് ഉണ്ടാകരുത്. അല്ലാഹു മാത്രമേ ശിഫ നൽകൂ എന്ന് വിശ്വസിക്കണം.", arabic: nil)
+                    ]
+                ),
+                GuideSection(
+                    heading: "Core Ruqyah Verses",
+                    headingMl: "പ്രധാന റുഖ്‌യ ആയത്തുകൾ",
+                    steps: [
+                        GuideStep(number: 3, title: "Surah Al-Fatiha", titleMl: "സൂറ അൽ-ഫാതിഹ", detail: "Recite Al-Fatiha 7 times, blowing gently on the affected person or water. The Prophet ﷺ called it 'the greatest cure'.", detailMl: "ഫാതിഹ 7 തവണ ഓതി രോഗിക്ക് / വെള്ളത്തിൽ ഫൂ ചെയ്യുക. നബി ﷺ ഇതിനെ 'ഏറ്റവും വലിയ ശിഫ' എന്ന് വിളിച്ചു.", arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ"),
+                        GuideStep(number: 4, title: "Ayat al-Kursi", titleMl: "ആയതുൽ കുർസി", detail: "Recite once. Greatest verse in the Quran. Provides protection and healing.", detailMl: "ഒരു തവണ ഓതുക. ഖുർആനിലെ ഏറ്റവും ശ്രേഷ്ഠമായ ആയത്ത്. സംരക്ഷണവും ശിഫയും.", arabic: "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ"),
+                        GuideStep(number: 5, title: "Al-Ikhlas, Al-Falaq, An-Nas", titleMl: "ഇഖ്‌ലാസ്, ഫലഖ്, നാസ്", detail: "Recite each 3 times. Blow into hands and wipe over the body morning and evening. The Prophet ﷺ taught this for protection.", detailMl: "ഓരോന്നും 3 തവണ ഓതി ഈ മൂന്നിനും കൈകളിൽ ഫൂ ചെയ്ത് ശരീരത്തിൽ തടവുക. രാവിലെ-സന്ധ്യ.", arabic: "قُلْ هُوَ اللَّهُ أَحَدٌ ۝ قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ قُلْ أَعُوذُ بِرَبِّ النَّاسِ"),
+                        GuideStep(number: 6, title: "Surah Al-Baqarah (Last 2 Verses)", titleMl: "ബഖറ — അവസാന 2 ആയത്ത്", detail: "Recite verses 285–286 of Al-Baqarah. The Prophet ﷺ said: whoever recites them at night, they will suffice him.", detailMl: "ബഖറ 285–286 ആയത്ത് ഓതുക. 'ഒരാൾ ഇവ രാത്രി ഓതിയാൽ അത് അവന് മതി' — നബി ﷺ.", arabic: "آمَنَ الرَّسُولُ بِمَا أُنزِلَ إِلَيْهِ مِن رَّبِّهِ وَالْمُؤْمِنُونَ")
+                    ]
+                ),
+                GuideSection(
+                    heading: "Prophetic Duas for Healing",
+                    headingMl: "ശിഫക്കുള്ള നബവി ദുആകൾ",
+                    steps: [
+                        GuideStep(number: 7, title: "Dua for the Sick", titleMl: "രോഗിക്ക് ദുആ", detail: "Place right hand on the ailing area and recite 7 times for pain relief.", detailMl: "വേദനിക്കുന്ന ഭാഗത്ത് വലത്ത് കൈ വച്ച് 7 തവണ ഓതുക.", arabic: "أَسْأَلُ اللَّهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَن يَشْفِيَكَ"),
+                        GuideStep(number: 8, title: "Dua for Evil Eye", titleMl: "ദൃഷ്ടിദോഷ ദുആ", detail: "Recite this dua to seek protection from the evil eye (hasad).", detailMl: "ദൃഷ്ടിദോഷത്തിൽ (ഹസദ്) നിന്ന് സംരക്ഷണം തേടി ഓതുക.", arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِن كُلِّ شَيْطَانٍ وَهَامَّةٍ وَمِن كُلِّ عَيْنٍ لَامَّةٍ"),
+                        GuideStep(number: 9, title: "General Healing Dua", titleMl: "പൊതു ശിഫ ദുആ", detail: "Dua taught by the Prophet ﷺ for any illness — recite 3 times while touching the affected area.", detailMl: "ഏത് രോഗത്തിനും നബി ﷺ പഠിപ്പിച്ച ദുആ — ഭാഗത്ത് കൈ വച്ച് 3 തവണ ഓതുക.", arabic: "بِسْمِ اللَّهِ أَرْقِيكَ مِن كُلِّ شَيْءٍ يُؤْذِيكَ مِن شَرِّ كُلِّ نَفْسٍ أَوْ عَيْنٍ حَاسِدٍ")
+                    ]
+                ),
+                GuideSection(
+                    heading: "Method of Performing Ruqyah",
+                    headingMl: "റുഖ്‌യ ചെയ്യുന്ന രീതി",
+                    steps: [
+                        GuideStep(number: 10, title: "Be in a state of wudu", titleMl: "വുളൂ ഉണ്ടാകുക", detail: "Both the reciter and the patient should ideally be in a state of wudu.", detailMl: "ഓതുന്ന ആളും രോഗിയും വുളൂ ഉള്ളവരായിരിക്കുന്നത് ഉത്തമം.", arabic: nil),
+                        GuideStep(number: 11, title: "Recite with conviction", titleMl: "ദൃഢ വിശ്വാസത്തോടെ", detail: "Recite clearly, calmly, and with full trust in Allah's power to heal.", detailMl: "അല്ലാഹുവിന്റെ ശക്തിയിൽ ദൃഢ വിശ്വാസത്തോടെ ശാന്തമായി ഓതുക.", arabic: nil),
+                        GuideStep(number: 12, title: "Blow into water or oil", titleMl: "വെള്ളത്തിൽ / എണ്ണയിൽ ഫൂ ചെയ്യുക", detail: "Recite into water and have the patient drink it, or recite into olive oil and apply externally.", detailMl: "വെള്ളത്തിൽ ഓതി ഫൂ ചെയ്ത് കുടിക്കുക, അല്ലെങ്കിൽ ഒലിവ് എണ്ണയിൽ ഓതി ഫൂ ചെയ്ത് ശരീരത്തിൽ പുരട്ടുക.", arabic: nil)
+                    ]
+                )
+            ]
+        ),
+
+        // MARK: Travel Prayer (Qasr)
+        EmergencyGuide(
+            title: "Travel Prayer (Qasr)",
+            titleMl: "യാത്ര നമസ്കാരം (ഖസ്ർ)",
+            icon: "airplane",
+            color: "NoorGreen",
+            subtitle: "Shortened prayer while travelling",
+            subtitleMl: "യാത്രയിൽ ചുരുക്കിയ നമസ്കാരം",
+            sections: [
+                GuideSection(
+                    heading: "What is Qasr?",
+                    headingMl: "ഖസ്ർ എന്താണ്?",
+                    steps: [
+                        GuideStep(number: 1, title: "Definition", titleMl: "നിർവ്വചനം", detail: "Qasr means shortening the 4-rakat prayers (Dhuhr, Asr, Isha) to 2 rakats each when travelling. Fajr (2) and Maghrib (3) remain unchanged.", detailMl: "യാത്രയിൽ 4 റക്അത് നമസ്കാരങ്ങൾ (ദുഹ്ർ, അസ്ർ, ഇശാ) 2 റക്അത്ത് ആക്കി ചുരുക്കുന്നതാണ് ഖസ്ർ. ഫജ്ർ (2), മഗ്‌രിബ് (3) മാറ്റം ഇല്ല.", arabic: nil),
+                        GuideStep(number: 2, title: "Ruling", titleMl: "വിധി", detail: "Qasr is a confirmed sunnah (Sunnah Mu'akkadah) or, according to some scholars, obligatory for travellers. The Prophet ﷺ always shortened prayers during travel.", detailMl: "ഖസ്ർ സ്ഥിരീകൃത സുന്നത്ത് (സുന്നത്ത് മുഅക്കദ) അല്ലെങ്കിൽ ചില പണ്ഡിതർ പ്രകാരം നിർബന്ധം. നബി ﷺ യാത്രയിൽ എപ്പോഴും ഖസ്ർ ചെയ്തു.", arabic: "وَإِذَا ضَرَبْتُمْ فِي الْأَرْضِ فَلَيْسَ عَلَيْكُمْ جُنَاحٌ أَن تَقْصُرُوا مِنَ الصَّلَاةِ")
+                    ]
+                ),
+                GuideSection(
+                    heading: "Conditions for Qasr",
+                    headingMl: "ഖസ്ർ ബാധകമാകാനുള്ള നിബന്ധനകൾ",
+                    steps: [
+                        GuideStep(number: 3, title: "Minimum Distance", titleMl: "ഏറ്റവും കുറഞ്ഞ ദൂരം", detail: "Travel distance must be approximately 80 km (48 miles) or the equivalent of 2 Barid (approx. 88 km per most scholars).", detailMl: "ഏകദേശം 80 കിലോ മീറ്റർ (48 മൈൽ) അല്ലെങ്കിൽ 2 ബറീദ് (ഏകദേശം 88 km — ഭൂരിപക്ഷ പണ്ഡിതർ) ദൂരം ഉണ്ടാകണം.", arabic: nil),
+                        GuideStep(number: 4, title: "Lawful Travel", titleMl: "അനുവദനീയ യാത്ര", detail: "The journey must be for a permissible purpose. Travel for sinful purposes does not qualify for Qasr.", detailMl: "യാത്ര അനുവദനീയ ആവശ്യത്തിനായിരിക്കണം. ഹറാം ആവശ്യത്തിനുള്ള യാത്രക്ക് ഖസ്ർ ബാധകമല്ല.", arabic: nil),
+                        GuideStep(number: 5, title: "Not a resident", titleMl: "സ്ഥിര താമസക്കാരനല്ല", detail: "Qasr applies as long as you have not settled at a destination intending to stay for 4 or more days (majority opinion).", detailMl: "ലക്ഷ്യസ്ഥാനത്ത് 4 ദിവസമോ അതിൽ കൂടുതലോ ഉദ്ദേശിച്ച് ഉദ്ദേശ്യത്തോടെ ഇറങ്ങിയിട്ടില്ല എങ്കിൽ ഖസ്ർ ബാധകം (ഭൂരിഭാഗ്യ അഭിപ്രായം).", arabic: nil)
+                    ]
+                ),
+                GuideSection(
+                    heading: "How to Perform Qasr",
+                    headingMl: "ഖസ്ർ ചെയ്യുന്ന രീതി",
+                    steps: [
+                        GuideStep(number: 6, title: "Dhuhr — 2 rakats", titleMl: "ദുഹ്ർ — 2 റക്അത്", detail: "Perform 2 rakats instead of 4. Make intention for Qasr Dhuhr. Recite Al-Fatiha + Surah in both rakats.", detailMl: "4-ന് പകരം 2 റക്അത്. ഖസ്ർ ദുഹ്ർ നിയ്യത്ത്. ഇരു റക്അതും ഫാതിഹ + സൂറ ഓതുക.", arabic: nil),
+                        GuideStep(number: 7, title: "Asr — 2 rakats", titleMl: "അസ്ർ — 2 റക്അത്", detail: "Perform 2 rakats instead of 4. Intention: Qasr Asr. Follow same method as Dhuhr Qasr.", detailMl: "4-ന് പകരം 2 റക്അത്. നിയ്യത്ത്: ഖസ്ർ അസ്ർ. ദുഹ്ർ ഖസ്ർ പോലെ ചെയ്യുക.", arabic: nil),
+                        GuideStep(number: 8, title: "Isha — 2 rakats", titleMl: "ഇശാ — 2 റക്അത്", detail: "Perform 2 rakats instead of 4. Intention: Qasr Isha. Tashahhud + Tasleem after 2nd rakat.", detailMl: "4-ന് പകരം 2 റക്അത്. നിയ്യത്ത്: ഖസ്ർ ഇശാ. 2-ാം റക്അതിൽ തഷഹ്ഹുദ് + തസ്‌ലീം.", arabic: nil),
+                        GuideStep(number: 9, title: "Fajr & Maghrib unchanged", titleMl: "ഫജ്ർ & മഗ്‌രിബ് — മാറ്റമില്ല", detail: "Fajr remains 2 rakats and Maghrib remains 3 rakats — these are not shortened during travel.", detailMl: "ഫജ്ർ 2 റക്അതും മഗ്‌രിബ് 3 റക്അതും — ഇവ യാത്രയിൽ ചുരുക്കില്ല.", arabic: nil)
+                    ]
+                ),
+                GuideSection(
+                    heading: "Combining Prayers (Jam')",
+                    headingMl: "നമസ്കാരം ഒന്നിച്ച് ചെയ്യൽ (ജംഅ്)",
+                    steps: [
+                        GuideStep(number: 10, title: "What is Jam'?", titleMl: "ജംഅ് എന്താണ്?", detail: "Jam' means combining two prayers together: Dhuhr + Asr, or Maghrib + Isha. Allowed alongside Qasr during travel.", detailMl: "ദുഹ്ർ + അസ്ർ അല്ലെങ്കിൽ മഗ്‌രിബ് + ഇശാ ഒരുമിച്ച് ചെയ്യുന്നതാണ് ജംഅ്. ഖസ്‌റിനൊപ്പം യാത്രയിൽ അനുവദനീയം.", arabic: nil),
+                        GuideStep(number: 11, title: "Jam' Taqdim (Early Combine)", titleMl: "ജംഅ് തഖ്‌ദീം", detail: "Pray both prayers in the time of the first. E.g., pray Dhuhr + Qasr Asr together at Dhuhr time.", detailMl: "ആദ്യ നമസ്കാരത്തിന്റെ സമയത്ത് രണ്ടും ഒരുമിച്ച് ചെയ്യുക. ഉദാ: ദുഹ്ർ സമയത്ത് ഖസ്ർ ദുഹ്ർ + ഖസ്ർ അസ്ർ.", arabic: nil),
+                        GuideStep(number: 12, title: "Jam' Ta'khir (Late Combine)", titleMl: "ജംഅ് താഖീർ", detail: "Delay the first prayer to be combined in the time of the second. E.g., Maghrib + Isha both at Isha time.", detailMl: "ആദ്യ നമസ്കാരം രണ്ടാമത്തേതിന്റെ സമയത്തേക്ക് നീട്ടി ഒരുമിച്ച് ചെയ്യുക. ഉദാ: മഗ്‌രിബ് + ഇശാ ഒരുമിച്ച് ഇശാ സമയത്ത്.", arabic: nil)
+                    ]
+                ),
+                GuideSection(
+                    heading: "Important Notes",
+                    headingMl: "ശ്രദ്ധിക്കേണ്ട കാര്യങ്ങൾ",
+                    steps: [
+                        GuideStep(number: 13, title: "Following an imam", titleMl: "ഇമാമിന് പിന്നിൽ", detail: "If a traveller prays behind a resident imam, complete all 4 rakats — do not shorten.", detailMl: "യാത്രക്കാരൻ സ്ഥിര നിവാസിയായ ഇമാമിന് പിന്നിൽ നമസ്കരിക്കുകയാണെങ്കിൽ 4 റക്അതും പൂർത്തിയാക്കണം.", arabic: nil),
+                        GuideStep(number: 14, title: "When to stop Qasr", titleMl: "ഖസ്ർ അവസാനിക്കുന്നത്", detail: "Qasr ends when you return home or intend to stay at the destination for 4+ days (majority view).", detailMl: "നാട്ടിൽ തിരിച്ചെത്തിയാൽ അല്ലെങ്കിൽ ലക്ഷ്യ സ്ഥലത്ത് 4+ ദിവസം ഉദ്ദേശ്യത്തോടെ ഉദ്ദേശിച്ചാൽ ഖസ്ർ അവസാനിക്കും (ഭൂരിഭാഗ അഭിപ്രായം).", arabic: nil)
+                    ]
+                )
+            ]
+        ),
+
         // MARK: Islamic Inheritance
         EmergencyGuide(
             title: "Islamic Inheritance (Mirath)",

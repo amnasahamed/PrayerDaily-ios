@@ -1,22 +1,22 @@
 import SwiftUI
 
-// MARK: - Shared icon/accent lookup (mirrors IslamicGuidesSection)
+// MARK: - Shared icon/accent lookup
 let guideIconAccentMap: [String: (icon: String, accent: Color)] = [
-    "Wudu (Ablution)":              ("hand.raised.fill",    Color.alehaGreen),
-    "Ghusl (Ritual Bath)":          ("drop.fill",           Color(red: 0.20, green: 0.55, blue: 0.85)),
-    "Tayammum (Dry Ablution)":      ("sun.dust.fill",       Color.alehaAmber),
-    "Salah (Prayer)":               ("figure.stand",        Color(red: 0.42, green: 0.28, blue: 0.82)),
-    "Janazah Prayer":               ("heart.fill",          Color(red: 0.68, green: 0.28, blue: 0.50)),
-    "Zakat Calculation":            ("banknote.fill",       Color(red: 0.18, green: 0.55, blue: 0.42)),
-    "Islamic Inheritance (Mirath)": ("scroll.fill",         Color(red: 0.75, green: 0.42, blue: 0.18)),
-    "Essential Duas":               ("hands.sparkles.fill", Color(red: 0.80, green: 0.36, blue: 0.20)),
+    "Wudu (Ablution)":              ("hand.raised.fill",       Color(red: 0.14, green: 0.65, blue: 0.45)),
+    "Ghusl (Ritual Bath)":          ("drop.fill",              Color(red: 0.20, green: 0.50, blue: 0.88)),
+    "Tayammum (Dry Ablution)":      ("sun.dust.fill",          Color(red: 0.82, green: 0.60, blue: 0.18)),
+    "Salah (Prayer)":               ("figure.stand",           Color(red: 0.45, green: 0.30, blue: 0.85)),
+    "Janazah Prayer":               ("heart.fill",             Color(red: 0.70, green: 0.28, blue: 0.52)),
+    "Zakat Calculation":            ("banknote.fill",          Color(red: 0.16, green: 0.58, blue: 0.40)),
+    "Islamic Inheritance (Mirath)": ("scroll.fill",            Color(red: 0.72, green: 0.40, blue: 0.16)),
+    "Essential Duas":               ("hands.sparkles.fill",    Color(red: 0.78, green: 0.34, blue: 0.22)),
 ]
 
 // MARK: - Guide List
 struct EmergencyGuidesView: View {
     var body: some View {
         ScrollView {
-            VStack(spacing: 12) {
+            VStack(spacing: 10) {
                 ForEach(EmergencyGuideData.allGuides) { guide in
                     NavigationLink(destination: GuideDetailView(guide: guide)) {
                         GuideCard(guide: guide)
@@ -24,64 +24,69 @@ struct EmergencyGuidesView: View {
                     .buttonStyle(.plain)
                 }
             }
-            .padding(AppTheme.screenPadding)
-            .padding(.bottom, 20)
+            .padding(.horizontal, AppTheme.screenPadding)
+            .padding(.vertical, 16)
         }
-        .background(Color("NoorSurface").ignoresSafeArea())
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
         .navigationTitle("Islamic Guides")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
+// MARK: - Guide Card
 struct GuideCard: View {
     let guide: EmergencyGuide
     @Environment(\.colorScheme) var cs
 
     private var icon: String { guideIconAccentMap[guide.title]?.icon ?? guide.icon }
-    private var accent: Color { guideIconAccentMap[guide.title]?.accent ?? Color.alehaGreen }
+    private var accent: Color { guideIconAccentMap[guide.title]?.accent ?? .green }
     private var stepCount: Int { guide.sections.flatMap(\.steps).count }
+    private var sectionCount: Int { guide.sections.count }
 
     var body: some View {
         HStack(spacing: 14) {
             ZStack {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(accent.opacity(0.12))
-                    .frame(width: 50, height: 50)
+                RoundedRectangle(cornerRadius: 13, style: .continuous)
+                    .fill(accent.opacity(0.13))
+                    .frame(width: 52, height: 52)
                 Image(systemName: icon)
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.system(size: 22, weight: .semibold))
                     .foregroundStyle(accent)
             }
             VStack(alignment: .leading, spacing: 3) {
                 Text(guide.title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.body.weight(.semibold))
                     .foregroundStyle(.primary)
                 Text(guide.subtitle)
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                HStack(spacing: 6) {
+                    Label("\(stepCount) steps", systemImage: "list.number")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(accent)
+                    Text("·")
+                        .font(.caption2)
+                        .foregroundStyle(.quaternary)
+                    Label("\(sectionCount) sections", systemImage: "rectangle.grid.1x2")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.top, 2)
             }
             Spacer()
-            VStack(alignment: .trailing, spacing: 2) {
-                Text("\(stepCount)")
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(accent)
-                Text("steps")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
             Image(systemName: "chevron.right")
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.tertiary)
-                .padding(.leading, 4)
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(cs == .dark ? Color(.systemGray6) : .white)
-                .shadow(color: accent.opacity(cs == .dark ? 0 : 0.08), radius: 8, y: 3)
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(cs == .dark ? Color(.secondarySystemGroupedBackground) : .white)
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(accent.opacity(0.1), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(accent.opacity(0.10), lineWidth: 1)
         )
     }
 }
@@ -90,23 +95,32 @@ struct GuideCard: View {
 struct GuideDetailView: View {
     let guide: EmergencyGuide
     @State private var isMalayalam = false
+    @Environment(\.colorScheme) var cs
 
     private var icon: String { guideIconAccentMap[guide.title]?.icon ?? guide.icon }
-    private var accent: Color { guideIconAccentMap[guide.title]?.accent ?? Color.alehaGreen }
+    private var accent: Color { guideIconAccentMap[guide.title]?.accent ?? .green }
     private var totalSteps: Int { guide.sections.flatMap(\.steps).count }
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                headerBanner
-                ForEach(guide.sections) { section in
-                    SectionBlock(section: section, accent: accent, isMalayalam: isMalayalam)
+            VStack(spacing: 0) {
+                heroHeader
+                    .padding(.bottom, 24)
+                VStack(alignment: .leading, spacing: 28) {
+                    ForEach(Array(guide.sections.enumerated()), id: \.element.id) { idx, section in
+                        SectionBlock(
+                            section: section,
+                            sectionIndex: idx,
+                            accent: accent,
+                            isMalayalam: isMalayalam
+                        )
+                    }
                 }
+                .padding(.horizontal, AppTheme.screenPadding)
+                .padding(.bottom, 48)
             }
-            .padding(AppTheme.screenPadding)
-            .padding(.bottom, 40)
         }
-        .background(Color("NoorSurface").ignoresSafeArea())
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
         .navigationTitle(isMalayalam ? guide.titleMl : guide.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -116,38 +130,58 @@ struct GuideDetailView: View {
         }
     }
 
-    private var headerBanner: some View {
-        HStack(spacing: 16) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(accent.opacity(0.12))
-                    .frame(width: 64, height: 64)
-                Image(systemName: icon)
-                    .font(.system(size: 26, weight: .semibold))
-                    .foregroundStyle(accent)
-            }
-            VStack(alignment: .leading, spacing: 4) {
-                Text(isMalayalam ? guide.titleMl : guide.title)
-                    .font(.title3.weight(.bold))
-                Text(isMalayalam ? guide.subtitleMl : guide.subtitle)
-                    .font(.subheadline).foregroundStyle(.secondary)
-                HStack(spacing: 4) {
-                    Image(systemName: "list.number")
-                        .font(.caption2)
-                        .foregroundStyle(accent)
-                    Text("\(totalSteps) steps · \(guide.sections.count) sections")
-                        .font(.caption)
+    private var heroHeader: some View {
+        ZStack(alignment: .bottom) {
+            // Background gradient
+            LinearGradient(
+                colors: [accent.opacity(0.18), accent.opacity(0.04)],
+                startPoint: .top, endPoint: .bottom
+            )
+            .frame(height: 180)
+            VStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(accent.opacity(0.15))
+                        .frame(width: 76, height: 76)
+                    Circle()
+                        .fill(accent.opacity(0.08))
+                        .frame(width: 90, height: 90)
+                    Image(systemName: icon)
+                        .font(.system(size: 32, weight: .semibold))
                         .foregroundStyle(accent)
                 }
-                .padding(.top, 2)
+                VStack(spacing: 4) {
+                    Text(isMalayalam ? guide.titleMl : guide.title)
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(.primary)
+                    Text(isMalayalam ? guide.subtitleMl : guide.subtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                HStack(spacing: 16) {
+                    statPill(icon: "list.number", value: "\(totalSteps)", label: "Steps")
+                    statPill(icon: "rectangle.grid.1x2", value: "\(guide.sections.count)", label: "Sections")
+                }
             }
-            Spacer()
+            .padding(.vertical, 24)
         }
-        .padding(16)
-        .background(accent.opacity(0.06))
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(accent.opacity(0.12), lineWidth: 1))
         .animation(.easeInOut(duration: 0.2), value: isMalayalam)
+    }
+
+    @ViewBuilder
+    private func statPill(icon: String, value: String, label: String) -> some View {
+        HStack(spacing: 5) {
+            Image(systemName: icon)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(accent)
+            Text("\(value) \(label)")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(accent)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(accent.opacity(0.10))
+        .clipShape(Capsule())
     }
 }
 
@@ -157,16 +191,18 @@ struct BilingualToggle: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            langButton(label: "EN", active: !isMalayalam) { isMalayalam = false }
-            langButton(label: "മ", active: isMalayalam) { isMalayalam = true }
+            langBtn("EN", active: !isMalayalam) { isMalayalam = false }
+            langBtn("മ", active: isMalayalam)  { isMalayalam = true }
         }
         .background(Color(.systemGray5))
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
     @ViewBuilder
-    private func langButton(label: String, active: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: { withAnimation(.easeInOut(duration: 0.2)) { action() } }) {
+    private func langBtn(_ label: String, active: Bool, action: @escaping () -> Void) -> some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.18)) { action() }
+        } label: {
             Text(label)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(active ? .white : .secondary)
@@ -178,69 +214,114 @@ struct BilingualToggle: View {
     }
 }
 
+// MARK: - Section Block
 struct SectionBlock: View {
     let section: GuideSection
+    let sectionIndex: Int
     let accent: Color
     let isMalayalam: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 8) {
-                RoundedRectangle(cornerRadius: 2, style: .continuous)
-                    .fill(accent)
-                    .frame(width: 3, height: 16)
-                Text(isMalayalam ? section.headingMl : section.heading)
-                    .font(.headline.weight(.bold))
+        VStack(alignment: .leading, spacing: 12) {
+            sectionHeader
+            VStack(spacing: 10) {
+                ForEach(Array(section.steps.enumerated()), id: \.element.id) { idx, step in
+                    StepRow(
+                        step: step,
+                        globalIndex: idx,
+                        accent: accent,
+                        isMalayalam: isMalayalam
+                    )
+                }
+            }
+        }
+    }
+
+    private var sectionHeader: some View {
+        HStack(spacing: 10) {
+            ZStack {
+                Circle()
+                    .fill(accent.opacity(0.15))
+                    .frame(width: 28, height: 28)
+                Text("\(sectionIndex + 1)")
+                    .font(.caption.weight(.bold))
                     .foregroundStyle(accent)
             }
-            ForEach(section.steps) { step in
-                StepRow(step: step, accent: accent, isMalayalam: isMalayalam)
-            }
+            Text(isMalayalam ? section.headingMl : section.heading)
+                .font(.headline.weight(.bold))
+                .foregroundStyle(.primary)
         }
     }
 }
 
+// MARK: - Step Row
 struct StepRow: View {
     let step: GuideStep
+    let globalIndex: Int
     let accent: Color
     let isMalayalam: Bool
     @Environment(\.colorScheme) var cs
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 0) {
+            // Main content
             HStack(alignment: .top, spacing: 12) {
-                Text("\(step.number)")
-                    .font(.caption2.weight(.bold))
-                    .foregroundStyle(.white)
-                    .frame(width: 22, height: 22)
-                    .background(accent)
-                    .clipShape(Circle())
-                    .padding(.top, 1)
-                VStack(alignment: .leading, spacing: 4) {
+                numberBadge
+                VStack(alignment: .leading, spacing: 5) {
                     Text(isMalayalam ? step.titleMl : step.title)
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.primary)
                     Text(isMalayalam ? step.detailMl : step.detail)
-                        .font(.caption)
+                        .font(.footnote)
                         .foregroundStyle(.secondary)
-                        .lineSpacing(3)
+                        .lineSpacing(3.5)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
+            .padding(14)
+
+            // Arabic panel (if present)
             if let arabic = step.arabic {
-                Text(arabic)
-                    .font(.system(size: 18))
-                    .foregroundStyle(accent)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(12)
-                    .background(accent.opacity(0.07))
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                arabicPanel(arabic)
             }
         }
-        .padding(14)
-        .background(cs == .dark ? Color(.systemGray6) : .white)
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(accent.opacity(0.08), lineWidth: 1))
-        .animation(.easeInOut(duration: 0.2), value: isMalayalam)
+        .background(cs == .dark ? Color(.secondarySystemGroupedBackground) : .white)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(accent.opacity(0.09), lineWidth: 1)
+        )
+        .animation(.easeInOut(duration: 0.18), value: isMalayalam)
+    }
+
+    private var numberBadge: some View {
+        ZStack {
+            Circle()
+                .fill(accent.opacity(0.13))
+                .frame(width: 28, height: 28)
+            Text("\(step.number)")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundStyle(accent)
+        }
+        .padding(.top, 1)
+    }
+
+    @ViewBuilder
+    private func arabicPanel(_ text: String) -> some View {
+        VStack(spacing: 0) {
+            Divider()
+                .opacity(0.4)
+            HStack {
+                Spacer()
+                Text(text)
+                    .font(.system(size: 19, weight: .regular))
+                    .foregroundStyle(accent)
+                    .multilineTextAlignment(.trailing)
+                    .lineSpacing(6)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+            }
+            .background(accent.opacity(0.05))
+        }
     }
 }

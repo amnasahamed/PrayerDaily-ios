@@ -9,28 +9,23 @@ private struct GuideCategory: Identifiable {
 
 // MARK: - Category assignment
 private let categoryMap: [String: String] = [
-    "Wudu (Ablution)":            "Purification",
-    "Ghusl (Ritual Bath)":        "Purification",
-    "Tayammum (Dry Ablution)":    "Purification",
-    "Salah (Prayer)":             "Prayer",
-    "Janazah Prayer":             "Prayer",
-    "Zakat Calculation":          "Finance & Fiqh",
+    "Wudu (Ablution)":              "Purification",
+    "Ghusl (Ritual Bath)":          "Purification",
+    "Tayammum (Dry Ablution)":      "Purification",
+    "Salah (Prayer)":               "Prayer",
+    "Janazah Prayer":               "Prayer",
+    "Zakat Calculation":            "Finance & Fiqh",
     "Islamic Inheritance (Mirath)": "Finance & Fiqh",
-    "Essential Duas":             "Supplications",
+    "Essential Duas":               "Supplications",
 ]
 
 private let categoryOrder: [String] = ["Purification", "Prayer", "Finance & Fiqh", "Supplications"]
 
-// MARK: - Per-guide icon + accent (all valid SF Symbols)
-private let guideIconMap: [String: (icon: String, accent: Color)] = [
-    "Wudu (Ablution)":              ("hand.raised.fill",       Color.alehaGreen),
-    "Ghusl (Ritual Bath)":          ("drop.fill",              Color(red: 0.20, green: 0.55, blue: 0.85)),
-    "Tayammum (Dry Ablution)":      ("sun.dust.fill",          Color.alehaAmber),
-    "Salah (Prayer)":               ("figure.stand",           Color(red: 0.42, green: 0.28, blue: 0.82)),
-    "Janazah Prayer":               ("heart.fill",             Color(red: 0.68, green: 0.28, blue: 0.50)),
-    "Zakat Calculation":            ("banknote.fill",          Color(red: 0.18, green: 0.55, blue: 0.42)),
-    "Islamic Inheritance (Mirath)": ("scroll.fill",            Color(red: 0.75, green: 0.42, blue: 0.18)),
-    "Essential Duas":               ("hands.sparkles.fill",    Color(red: 0.80, green: 0.36, blue: 0.20)),
+private let categoryIcons: [String: String] = [
+    "Purification":    "drop.fill",
+    "Prayer":          "figure.stand",
+    "Finance & Fiqh":  "banknote.fill",
+    "Supplications":   "hands.sparkles.fill",
 ]
 
 // MARK: - Main Section
@@ -56,25 +51,26 @@ struct IslamicGuidesSection: View {
     }
 }
 
-// MARK: - One horizontal shelf per category
+// MARK: - Horizontal shelf per category
 private struct CategoryShelf: View {
     let category: GuideCategory
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            // Category header
             HStack {
-                Text(category.title.uppercased())
-                    .font(.system(size: 11, weight: .bold))
-                    .kerning(1.0)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 6) {
+                    Image(systemName: categoryIcons[category.title] ?? "book.fill")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(.secondary)
+                    Text(category.title.uppercased())
+                        .font(.system(size: 11, weight: .bold))
+                        .kerning(0.8)
+                        .foregroundStyle(.secondary)
+                }
                 Spacer()
-                Text("See all →")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(Color.alehaGreen)
             }
+            .padding(.horizontal, AppTheme.screenPadding)
 
-            // Horizontal scroll — breaks out of parent horizontal padding
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
                     ForEach(category.guides) { guide in
@@ -85,80 +81,66 @@ private struct CategoryShelf: View {
                     }
                 }
                 .padding(.horizontal, AppTheme.screenPadding)
-                .padding(.vertical, 3)
+                .padding(.vertical, 4)
             }
             .padding(.horizontal, -AppTheme.screenPadding)
         }
     }
 }
 
-// MARK: - Individual guide card (uniform size)
+// MARK: - Individual guide card
 private struct GuideShelfCard: View {
     let guide: EmergencyGuide
     @Environment(\.colorScheme) var cs
 
-    private var accent: Color {
-        guideIconMap[guide.title]?.accent ?? Color.alehaGreen
-    }
-    private var icon: String {
-        guideIconMap[guide.title]?.icon ?? guide.icon
-    }
-    private var stepCount: Int {
-        guide.sections.flatMap(\.steps).count
-    }
-    private var readTime: String {
-        let mins = max(1, stepCount / 3)
-        return "\(mins) min"
-    }
+    private var accent: Color { guideIconAccentMap[guide.title]?.accent ?? .green }
+    private var icon: String   { guideIconAccentMap[guide.title]?.icon ?? guide.icon }
+    private var stepCount: Int { guide.sections.flatMap(\.steps).count }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Icon area
+            // Icon
             ZStack {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(accent.opacity(0.12))
-                    .frame(width: 44, height: 44)
+                    .fill(accent.opacity(0.13))
+                    .frame(width: 46, height: 46)
                 Image(systemName: icon)
-                    .font(.system(size: 19, weight: .semibold))
+                    .font(.system(size: 20, weight: .semibold))
                     .foregroundStyle(accent)
             }
-            .padding(.bottom, 12)
+            .padding(.bottom, 10)
 
             // Title
             Text(guide.title)
-                .font(.system(size: 13, weight: .bold))
+                .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.primary)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            Spacer(minLength: 8)
+            Spacer(minLength: 10)
 
-            // Footer: steps + read time
+            // Footer
             HStack(spacing: 4) {
+                Image(systemName: "list.number")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(accent)
                 Text("\(stepCount) steps")
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(accent)
-                Text("·")
-                    .font(.system(size: 11))
-                    .foregroundStyle(.quaternary)
-                Text(readTime)
-                    .font(.system(size: 11))
-                    .foregroundStyle(.secondary)
             }
+            .padding(.top, 2)
         }
         .padding(14)
-        .frame(width: 130, height: 140)
+        .frame(width: 132, height: 145)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(cs == .dark ? Color(.systemGray6) : .white)
-                .shadow(color: accent.opacity(cs == .dark ? 0.0 : 0.10), radius: 8, y: 3)
+                .fill(cs == .dark ? Color(.secondarySystemGroupedBackground) : .white)
+                .shadow(color: accent.opacity(cs == .dark ? 0 : 0.10), radius: 8, y: 3)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(accent.opacity(0.12), lineWidth: 1)
+                .stroke(accent.opacity(0.10), lineWidth: 1)
         )
     }
 }
-
-

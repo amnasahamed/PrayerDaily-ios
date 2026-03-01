@@ -43,13 +43,54 @@ class QuranStore: ObservableObject {
     private var player: AVPlayer?
     private var playerObserver: Any?
 
+    private static let bookmarksKey   = "quran_bookmarks"
+    private static let lastReadKey    = "quran_lastRead"
+    private static let progressKey    = "quran_progress"
+
     static let shared = QuranStore()
+
+    init() {
+        // Load bookmarks
+        if let arr = UserDefaults.standard.array(forKey: Self.bookmarksKey) as? [String] {
+            bookmarks = Set(arr)
+        }
+        // Load lastRead
+        if let arr = UserDefaults.standard.array(forKey: Self.lastReadKey) as? [Int], arr.count == 2 {
+            lastRead = (arr[0], arr[1])
+        }
+        // Load progress
+        if let data = UserDefaults.standard.data(forKey: Self.progressKey),
+           let decoded = try? JSONDecoder().decode([Int: Double].self, from: data) {
+            surahProgress = decoded
+        }
+    }
+
+    private func saveBookmarks() {
+        UserDefaults.standard.set(Array(bookmarks), forKey: Self.bookmarksKey)
+    }
+
+    private func saveLastRead() {
+        if let lr = lastRead {
+            UserDefaults.standard.set([lr.surahId, lr.verse], forKey: Self.lastReadKey)
+        } else {
+            UserDefaults.standard.removeObject(forKey: Self.lastReadKey)
+        }
+    }
+
+    private func saveProgress() {
+        if let data = try? JSONEncoder().encode(surahProgress) {
+            UserDefaults.standard.set(data, forKey: Self.progressKey)
+        }
+    }
 
     func updateProgress(surahId: Int, verse: Int, totalVerses: Int) {
         guard totalVerses > 0 else { return }
         let current = surahProgress[surahId] ?? 0.0
         let newProgress = Double(verse) / Double(totalVerses)
-        if newProgress > current { surahProgress[surahId] = newProgress }
+        if newProgress > current {
+            surahProgress[surahId] = newProgress
+            saveProgress()
+        }
     }
 
     func progress(for surahId: Int) -> Double {
@@ -70,7 +111,6 @@ class QuranStore: ObservableObject {
             generator.impactOccurred()
         } else {
             bookmarks.insert(key)
-            // Double tap pattern: two quick medium impacts for "saved" confirmation
             let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.prepare()
             generator.impactOccurred()
@@ -78,6 +118,7 @@ class QuranStore: ObservableObject {
                 generator.impactOccurred(intensity: 0.6)
             }
         }
+        saveBookmarks()
     }
 
     func isBookmarked(surahId: Int, verse: Int) -> Bool {
@@ -86,6 +127,7 @@ class QuranStore: ObservableObject {
 
     func setLastRead(surahId: Int, verse: Int) {
         lastRead = (surahId, verse)
+        saveLastRead()
     }
 
     func resetAll() {
@@ -93,6 +135,9 @@ class QuranStore: ObservableObject {
         lastRead = nil
         surahProgress = [:]
         stopAudio()
+        UserDefaults.standard.removeObject(forKey: Self.bookmarksKey)
+        UserDefaults.standard.removeObject(forKey: Self.lastReadKey)
+        UserDefaults.standard.removeObject(forKey: Self.progressKey)
     }
 
     // MARK: - Audio

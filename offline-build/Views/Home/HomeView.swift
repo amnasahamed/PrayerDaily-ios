@@ -93,11 +93,12 @@ struct HomeView: View {
     }
 
     private var verseCard: some View {
-        VerseShareCard(
-            arabic: SampleData.dailyAyah.arabic,
-            translation: SampleData.dailyAyah.translation,
-            reference: SampleData.dailyAyah.reference,
-            tafsir: SampleData.dailyAyah.tafsir
+        let verse = DailyVerseService.shared.todaysVerse
+        return VerseShareCard(
+            arabic: verse.arabic,
+            translation: verse.translation,
+            reference: verse.reference,
+            tafsir: verse.tafsir
         )
         .staggerAppear(appeared, index: 4)
     }

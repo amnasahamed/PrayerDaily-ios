@@ -9,6 +9,7 @@ struct NoorApp: App {
     @AppStorage("arabicFontSize") private var arabicFontSize: Double = 28
     @AppStorage("translationEnabled") private var translationEnabled: Bool = true
     @AppStorage("transliterationEnabled") private var transliterationEnabled: Bool = true
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
 
     private var preferredColorScheme: ColorScheme? {
         switch appearanceMode {
@@ -20,38 +21,57 @@ struct NoorApp: App {
 
     init() {
         UITabBar.appearance().isHidden = true
+        AppReviewManager.incrementSession()
     }
 
     var body: some Scene {
         WindowGroup {
-            ZStack(alignment: .bottom) {
-                TabView(selection: $selectedTab) {
-                    NavigationStack { HomeView() }
-                        .tag(AppTab.home)
-                    SurahListView()
-                        .tag(AppTab.quran)
-                    SalahDashboard()
-                        .tag(AppTab.salah)
-                    LibraryView()
-                        .tag(AppTab.library)
-                    MoreView()
-                        .tag(AppTab.more)
+            Group {
+                if hasCompletedOnboarding {
+                    mainApp
+                } else {
+                    OnboardingView(hasCompletedOnboarding: $hasCompletedOnboarding)
+                        .transition(.opacity)
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.spring(response: 0.38, dampingFraction: 0.85), value: selectedTab)
-                // Re-key the entire UI on reset so all @AppStorage bindings refresh
-                .id(salahStore.resetTrigger)
-
-                FloatingTabBar(selectedTab: $selectedTab)
             }
-            .ignoresSafeArea(.keyboard)
-            .environmentObject(salahStore)
-            .environmentObject(localization)
+            .animation(.easeInOut(duration: 0.4), value: hasCompletedOnboarding)
             .preferredColorScheme(preferredColorScheme)
-            .environment(\.arabicFontSize, arabicFontSize)
-            .environment(\.translationEnabled, translationEnabled)
-            .environment(\.transliterationEnabled, transliterationEnabled)
-            .environment(\.localization, localization)
+        }
+    }
+
+    private var mainApp: some View {
+        ZStack(alignment: .bottom) {
+            TabView(selection: $selectedTab) {
+                NavigationStack { HomeView() }
+                    .tag(AppTab.home)
+                SurahListView()
+                    .tag(AppTab.quran)
+                SalahDashboard()
+                    .tag(AppTab.salah)
+                LibraryView()
+                    .tag(AppTab.library)
+                MoreView()
+                    .tag(AppTab.more)
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .animation(.spring(response: 0.38, dampingFraction: 0.85), value: selectedTab)
+            .id(salahStore.resetTrigger)
+
+            FloatingTabBar(selectedTab: $selectedTab)
+        }
+        .ignoresSafeArea(.keyboard)
+        .environmentObject(salahStore)
+        .environmentObject(localization)
+        .environment(\.arabicFontSize, arabicFontSize)
+        .environment(\.translationEnabled, translationEnabled)
+        .environment(\.transliterationEnabled, transliterationEnabled)
+        .environment(\.localization, localization)
+        .onAppear {
+            AppReviewManager.requestReviewIfAppropriate()
+        }
+        .onChange(of: salahStore.resetTrigger) { _, _ in
+            // Also reset onboarding flag so re-onboarding is possible after full reset
+            // (user can choose to re-onboard; we keep it completed after reset for UX)
         }
     }
 }

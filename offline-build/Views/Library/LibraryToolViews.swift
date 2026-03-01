@@ -41,8 +41,8 @@ struct LibraryHijriView: View {
                     islamicMonthsCard
                 }
                 .padding(.horizontal, AppTheme.screenPadding)
-                .padding(.top, 8)
-                .padding(.bottom, 80)
+                .padding(.top, 16)
+                .padding(.bottom, 120)
             }
         }
         .navigationTitle("Hijri Calendar")
@@ -331,8 +331,8 @@ struct LibraryPrayerTrackerView: View {
                     todayPrayers
                 }
                 .padding(.horizontal, AppTheme.screenPadding)
-                .padding(.top, 8)
-                .padding(.bottom, 60)
+                .padding(.top, 16)
+                .padding(.bottom, 120)
             }
         }
         .navigationTitle("Prayer Tracker")

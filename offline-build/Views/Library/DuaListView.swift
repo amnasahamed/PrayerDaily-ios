@@ -17,8 +17,8 @@ struct DuaListView: View {
                 duaList
             }
             .padding(.horizontal, AppTheme.screenPadding)
-            .padding(.bottom, 100)
-            .padding(.top, 8)
+            .padding(.bottom, 120)
+            .padding(.top, 16)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(CalmingBackground())

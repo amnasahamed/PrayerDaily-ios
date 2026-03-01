@@ -11,8 +11,8 @@ struct HadithCollectionDetailView: View {
                 chaptersContent
             }
             .padding(.horizontal, AppTheme.screenPadding)
-            .padding(.top, 12)
-            .padding(.bottom, 100)
+            .padding(.top, 16)
+            .padding(.bottom, 120)
         }
         .background(Color("NoorSurface").ignoresSafeArea())
         .navigationTitle(collection.name)

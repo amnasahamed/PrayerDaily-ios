@@ -135,7 +135,8 @@ struct QiblaCompassView: View {
         .navigationTitle("Qibla")
         .navigationBarTitleDisplayMode(.inline)
         .sheetDismissButton()
-        .toolbarBackground(.hidden, for: .navigationBar)
+        .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .onAppear { qibla.start(); prepareHaptics() }
         .onDisappear { qibla.stop() }
         .onReceive(NotificationCenter.default.publisher(for: .qiblaCalibrated)) { _ in
@@ -182,7 +183,7 @@ struct QiblaCompassView: View {
             calibrationIndicator
         }
         .padding(.horizontal, 20)
-        .padding(.top, 8)
+        .padding(.top, 16)
     }
 
     private var calibrationIndicator: some View {

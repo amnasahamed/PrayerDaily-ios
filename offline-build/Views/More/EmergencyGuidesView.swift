@@ -28,11 +28,14 @@ struct EmergencyGuidesView: View {
                 }
             }
             .padding(.horizontal, AppTheme.screenPadding)
-            .padding(.vertical, 16)
+            .padding(.top, 16)
+            .padding(.bottom, 120)
         }
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
         .navigationTitle("Islamic Guides")
         .navigationBarTitleDisplayMode(.large)
+        .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
     }
 }
 
@@ -120,12 +123,14 @@ struct GuideDetailView: View {
                     }
                 }
                 .padding(.horizontal, AppTheme.screenPadding)
-                .padding(.bottom, 48)
+                .padding(.bottom, 120)
             }
         }
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
         .navigationTitle(isMalayalam ? guide.titleMl : guide.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 BilingualToggle(isMalayalam: $isMalayalam)

@@ -32,9 +32,8 @@ struct NoorApp: App {
     private func configureNavigationBarAppearance() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        // Use the system grouped background so it adapts to light/dark automatically
-        appearance.backgroundColor = UIColor.systemBackground
-        appearance.shadowColor = .clear  // remove the bottom divider line
+        appearance.backgroundColor = .systemBackground
+        appearance.shadowColor = .clear
         appearance.titleTextAttributes = [.foregroundColor: UIColor.label]
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
 
@@ -62,7 +61,7 @@ struct NoorApp: App {
     private var mainApp: some View {
         ZStack(alignment: .bottom) {
             TabView(selection: $selectedTab) {
-                NavigationStack { HomeView() }
+                HomeView()
                     .tag(AppTab.home)
                 SurahListView()
                     .tag(AppTab.quran)

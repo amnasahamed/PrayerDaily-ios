@@ -31,6 +31,7 @@ struct SalahDashboard: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(CalmingBackground())
             .navigationTitle(l10n.t(.salahTitle))
+            .navigationBarTitleDisplayMode(.inline)
             .modifier(AlehaNavStyle())
         }
         .environmentObject(store)

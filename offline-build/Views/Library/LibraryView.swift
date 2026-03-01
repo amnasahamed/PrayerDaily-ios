@@ -29,6 +29,7 @@ struct LibraryView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(CalmingBackground())
             .navigationTitle(l10n.t(.libraryTitle))
+            .navigationBarTitleDisplayMode(.inline)
             .modifier(AlehaNavStyle())
             .searchable(text: $searchText, prompt: l10n.t(.quranSearchPrompt))
             .onAppear {

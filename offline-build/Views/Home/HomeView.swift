@@ -12,11 +12,6 @@ struct HomeView: View {
             CalmingBackground()
             mainScroll
         }
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar { ToolbarItem(placement: .principal) { navLogo } }
-        .toolbarBackground(Color(.systemBackground), for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
         .onAppear {
             prayerService.requestLocation()
             withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.05)) {
@@ -40,18 +35,8 @@ struct HomeView: View {
                 verseCard
             }
             .padding(.horizontal, AppTheme.screenPadding)
-            .padding(.top, 4)
+            .padding(.top, 8)
             .padding(.bottom, 120)
-        }
-    }
-
-    // MARK: - Nav Logo
-    private var navLogo: some View {
-        HStack(spacing: 6) {
-            AlehaLogoMark(size: 20)
-            Text("aleha")
-                .font(.system(size: 17, weight: .bold, design: .rounded))
-                .foregroundStyle(Color.alehaGreen)
         }
     }
 

@@ -27,6 +27,7 @@ struct MoreView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(CalmingBackground())
             .navigationTitle(localization.t(.moreTitle))
+            .navigationBarTitleDisplayMode(.inline)
             .modifier(AlehaNavStyle())
             .sheet(isPresented: $showStreakHistory) { StreakHistorySheet(store: store) }
             .sheet(isPresented: $showDataExport) { DataExportSheet(store: store) }

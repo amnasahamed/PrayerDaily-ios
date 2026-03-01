@@ -8,6 +8,7 @@ struct NoorApp: App {
     @State private var selectedTab: AppTab = .home
     @StateObject private var salahStore = SalahStore()
     @StateObject private var localization = LocalizationManager.shared
+    @StateObject private var networkMonitor = NetworkMonitor.shared
     @AppStorage("appearanceMode") private var appearanceMode: String = "system"
     @AppStorage("arabicFontSize") private var arabicFontSize: Double = 28
     @AppStorage("translationEnabled") private var translationEnabled: Bool = true
@@ -85,6 +86,7 @@ struct NoorApp: App {
         .environment(\.translationEnabled, translationEnabled)
         .environment(\.transliterationEnabled, transliterationEnabled)
         .environment(\.localization, localization)
+        .environmentObject(networkMonitor)
         .onAppear {
             AppReviewManager.requestReviewIfAppropriate()
         }

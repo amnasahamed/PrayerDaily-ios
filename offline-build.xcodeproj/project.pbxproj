@@ -10,6 +10,7 @@
 		0011D2A9A44DA9CEEDF790AB /* PrayerTrackerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F27A462BD711D77AA544F8EF /* PrayerTrackerCard.swift */; };
 		02230DC1CA3972C8E42906C5 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0602FE3772DF5E17342C27EB /* LibraryView.swift */; };
 		0B3F8709297C304B9C22758A /* EmergencyGuideData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7155F88738917606DBDD74FE /* EmergencyGuideData.swift */; };
+		109B178FA425DDFA18236ECE /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E7E12B21F080FF84202C7E /* NetworkMonitor.swift */; };
 		1231E2248728021C214FEEEA /* QuickAccessSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5FA503527474C0588A09DC5 /* QuickAccessSection.swift */; };
 		1302F3D4DE28D68ABC28FFA9 /* SalahStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E59B4CC6ECBD6C58AF2E87 /* SalahStore.swift */; };
 		1889D2D2D0613C27325EB5B5 /* ColorAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC4AD52DF8E393B67B40BAF /* ColorAssets.swift */; };
@@ -127,6 +128,7 @@
 		C7BD2ED725AC55AAFB63F842 /* ReadingModeBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingModeBar.swift; sourceTree = "<group>"; };
 		CAE9875F88F2F0654DF7E859 /* HadithData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HadithData.swift; sourceTree = "<group>"; };
 		D13E789698BE43AB9C2E89A1 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		D3E7E12B21F080FF84202C7E /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		D5F30F31FE2D60F945FC0754 /* SurahReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurahReaderView.swift; sourceTree = "<group>"; };
 		D72465DDEA7D6011D81F3420 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		D82953705DD4A007FE12CA61 /* CompactDhikrCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactDhikrCard.swift; sourceTree = "<group>"; };
@@ -312,6 +314,7 @@
 				7155F88738917606DBDD74FE /* EmergencyGuideData.swift */,
 				CAE9875F88F2F0654DF7E859 /* HadithData.swift */,
 				F6F8C1A15B62A19C52628B25 /* LocalizationManager.swift */,
+				D3E7E12B21F080FF84202C7E /* NetworkMonitor.swift */,
 				181C1BBA0CDBE18DB63DDDF9 /* NotificationService.swift */,
 				30D0CA0D5E550CD754B92C11 /* OfflineCacheService.swift */,
 				BC60D652FC30F78F0847ADDD /* PrayerTimesService.swift */,
@@ -428,6 +431,7 @@
 				02230DC1CA3972C8E42906C5 /* LibraryView.swift in Sources */,
 				2837887013B7E688727E4B3A /* LocalizationManager.swift in Sources */,
 				2AAD751850D3FDA907E56557 /* MoreView.swift in Sources */,
+				109B178FA425DDFA18236ECE /* NetworkMonitor.swift in Sources */,
 				47000118B2BE4AB70CE5FF95 /* NoorApp.swift in Sources */,
 				5EE9E7BD721C935E186EC127 /* NotificationService.swift in Sources */,
 				D5BECDA95CBD92B1CB0E956A /* OfflineCacheService.swift in Sources */,

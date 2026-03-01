@@ -15,6 +15,7 @@ struct SurahReaderView: View {
     @Environment(\.arabicFontSize) private var arabicFontSize
     @Environment(\.translationEnabled) private var translationEnabled
     @Environment(\.transliterationEnabled) private var transliterationEnabled
+    @EnvironmentObject private var network: NetworkMonitor
 
     private var showArabic: Bool { readingMode != .translationOnly }
     private var showTranslation: Bool {
@@ -38,6 +39,11 @@ struct SurahReaderView: View {
         .toolbar { toolbarItems }
         .task { await loadVerses() }
         .onDisappear { store.stopAudio() }
+        .safeAreaInset(edge: .top) {
+            if !network.isConnected && !isCached {
+                offlineBanner
+            }
+        }
         .onAppear {
             withAnimation(.spring(response: 0.5, dampingFraction: 0.82).delay(0.05)) { appeared = true }
         }
@@ -67,14 +73,35 @@ struct SurahReaderView: View {
     }
 
     private func errorView(_ msg: String) -> some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 20) {
             Spacer()
-            Image(systemName: "wifi.slash").font(.system(size: 40)).foregroundStyle(.secondary)
-            Text(msg).font(.subheadline).foregroundStyle(.secondary).multilineTextAlignment(.center)
-            Button("Retry") { Task { await loadVerses() } }
-                .buttonStyle(.borderedProminent).tint(Color("NoorPrimary"))
+            Image(systemName: "wifi.exclamationmark")
+                .font(.system(size: 44))
+                .foregroundStyle(Color("NoorGold"))
+            Text("Connection Issue")
+                .font(.headline.weight(.semibold))
+            Text(msg)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+            HStack(spacing: 12) {
+                Button {
+                    Task { await loadVerses() }
+                } label: {
+                    Label("Retry", systemImage: "arrow.clockwise")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 12)
+                        .background(Color("NoorPrimary"))
+                        .clipShape(Capsule())
+                }
+                .buttonStyle(SpringPressStyle())
+            }
             Spacer()
-        }.padding()
+        }
+        .padding()
     }
 
     // MARK: - Verses
@@ -192,6 +219,22 @@ struct SurahReaderView: View {
                     .foregroundStyle(Color("NoorGold"))
             }
         }
+    }
+
+    // MARK: - Offline Banner
+    private var offlineBanner: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "wifi.slash").font(.caption2.weight(.bold))
+            Text("You're offline — connect to load this surah")
+                .font(.caption2.weight(.medium))
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 7)
+        .background(Color.orange)
+        .clipShape(Capsule())
+        .padding(.top, 8)
+        .transition(.move(edge: .top).combined(with: .opacity))
     }
 
     // MARK: - Data

@@ -39,6 +39,9 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         LSRequiresIPhoneOS: true
         NSLocationWhenInUseUsageDescription: "Aleha needs your location to calculate accurate prayer times for your area."
+        NSMicrophoneUsageDescription: "Aleha does not use the microphone."
+        NSCameraUsageDescription: "Aleha does not use the camera."
+        NSUserNotificationsUsageDescription: "Aleha sends prayer time reminders and a daily Quran verse."
         UIBackgroundModes:
           - fetch
           - processing

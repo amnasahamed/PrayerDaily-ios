@@ -26,8 +26,14 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Aleha does not use the camera.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Aleha needs your location to calculate accurate prayer times for your area.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Aleha does not use the microphone.</string>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>Aleha sends prayer time reminders and a daily Quran verse.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SalahDashboard: View {
-    @StateObject private var store = SalahStore()
+    @EnvironmentObject private var store: SalahStore
     @Environment(\.localization) var l10n
     @State private var selectedSection: SalahSection = .today
     @Namespace private var pillNS
@@ -34,7 +34,6 @@ struct SalahDashboard: View {
             .navigationBarTitleDisplayMode(.inline)
             .modifier(AlehaNavStyle())
         }
-        .environmentObject(store)
     }
 
     private var sectionPicker: some View {

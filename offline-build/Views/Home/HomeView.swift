@@ -8,9 +8,12 @@ struct HomeView: View {
     @State private var appeared = false
 
     var body: some View {
-        ZStack {
-            CalmingBackground()
-            mainScroll
+        NavigationStack {
+            ZStack {
+                CalmingBackground()
+                mainScroll
+            }
+            .navigationBarHidden(true)
         }
         .onAppear {
             prayerService.requestLocation()

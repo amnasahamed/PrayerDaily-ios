@@ -1,5 +1,38 @@
 import SwiftUI
 
+// MARK: - Reusable Sheet Dismiss Button (Apple-standard xmark.circle.fill)
+struct SheetCloseButton: View {
+    let action: () -> Void
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "xmark.circle.fill")
+                .symbolRenderingMode(.hierarchical)
+                .font(.system(size: 28, weight: .regular))
+                .foregroundStyle(Color(.secondaryLabel))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Close")
+    }
+}
+
+/// Convenience ViewModifier that injects the close button into .topBarTrailing
+struct SheetDismissModifier: ViewModifier {
+    @Environment(\.dismiss) private var dismiss
+    func body(content: Content) -> some View {
+        content.toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                SheetCloseButton { dismiss() }
+            }
+        }
+    }
+}
+
+extension View {
+    func sheetDismissButton() -> some View {
+        modifier(SheetDismissModifier())
+    }
+}
+
 struct FloatingTabBar: View {
     @Binding var selectedTab: AppTab
     @Environment(\.colorScheme) var cs

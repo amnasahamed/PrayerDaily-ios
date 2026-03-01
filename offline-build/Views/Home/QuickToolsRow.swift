@@ -130,7 +130,14 @@ private struct ToolGridCard: View {
 private struct DhikrSheetWrapper: View {
     @StateObject private var store = SalahStore()
     var body: some View {
-        NavigationStack { DhikrCounterView().environmentObject(store) }
+        NavigationStack {
+            DhikrCounterView()
+                .environmentObject(store)
+                .navigationTitle("Dhikr")
+                .navigationBarTitleDisplayMode(.inline)
+                .sheetDismissButton()
+                .toolbarBackground(.hidden, for: .navigationBar)
+        }
     }
 }
 
@@ -167,7 +174,7 @@ private struct QuranQuickSheet: View {
             }
             .navigationTitle("Quran")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } } }
+            .sheetDismissButton()
         }
     }
 }
@@ -195,7 +202,7 @@ private struct HijriDateSheet: View {
             .padding(.top, 40)
             .navigationTitle("Islamic Calendar")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } } }
+            .sheetDismissButton()
         }
     }
 
@@ -252,11 +259,7 @@ struct DuasCategorySheet: View {
             .background(CalmingBackground())
             .navigationTitle("Duas")
             .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }.foregroundStyle(Color("NoorPrimary"))
-                }
-            }
+            .sheetDismissButton()
             .navigationDestination(item: $selectedCategory) { cat in
                 DuaListView(category: cat)
             }

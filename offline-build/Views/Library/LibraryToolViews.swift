@@ -47,6 +47,7 @@ struct LibraryHijriView: View {
         }
         .navigationTitle("Hijri Calendar")
         .navigationBarTitleDisplayMode(.inline)
+        .sheetDismissButton()
         .modifier(AlehaNavStyle())
         .onAppear { prayerService.requestLocation() }
     }

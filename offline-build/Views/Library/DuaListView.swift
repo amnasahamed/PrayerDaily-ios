@@ -225,11 +225,7 @@ struct DuaDetailSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Done") { dismiss() }
-                        .foregroundStyle(color)
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    HStack(spacing: 16) {
+                    HStack(spacing: 14) {
                         Button(action: { copied = true; UIPasteboard.general.string = dua.arabic }) {
                             Image(systemName: copied ? "checkmark" : "doc.on.doc")
                                 .font(.subheadline)
@@ -241,6 +237,9 @@ struct DuaDetailSheet: View {
                                 .foregroundStyle(isFavorite ? Color.red : color)
                         }
                     }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    SheetCloseButton { dismiss() }
                 }
             }
         }

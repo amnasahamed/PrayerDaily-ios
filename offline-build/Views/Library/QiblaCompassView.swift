@@ -121,11 +121,9 @@ struct QiblaCompassView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            // Full-bleed background
             backgroundLayer.ignoresSafeArea()
-
             VStack(spacing: 0) {
-                topBar
+                locationBadge
                 Spacer()
                 compassDialView
                 Spacer()
@@ -134,6 +132,10 @@ struct QiblaCompassView: View {
                     .padding(.bottom, 12)
             }
         }
+        .navigationTitle("Qibla")
+        .navigationBarTitleDisplayMode(.inline)
+        .sheetDismissButton()
+        .toolbarBackground(.hidden, for: .navigationBar)
         .onAppear { qibla.start(); prepareHaptics() }
         .onDisappear { qibla.stop() }
         .onReceive(NotificationCenter.default.publisher(for: .qiblaCalibrated)) { _ in
@@ -158,28 +160,22 @@ struct QiblaCompassView: View {
         }
     }
 
-    // MARK: - Top Bar
-    private var topBar: some View {
-        HStack {
-            Button { dismiss() } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 28))
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            VStack(spacing: 2) {
-                HStack(spacing: 5) {
-                    Image(systemName: "location.fill")
-                        .font(.caption2)
-                        .foregroundStyle(Color(hex: "#2E8B42"))
+    // MARK: - Location Badge (replaces old topBar)
+    private var locationBadge: some View {
+        HStack(spacing: 16) {
+            HStack(spacing: 5) {
+                Image(systemName: "location.fill")
+                    .font(.caption2)
+                    .foregroundStyle(Color(hex: "#2E8B42"))
+                VStack(alignment: .leading, spacing: 1) {
                     Text(qibla.locationName)
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.primary)
-                }
-                if !qibla.distanceToMakkah.isEmpty {
-                    Text(qibla.distanceToMakkah)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                    if !qibla.distanceToMakkah.isEmpty {
+                        Text(qibla.distanceToMakkah)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             Spacer()

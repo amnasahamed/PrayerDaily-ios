@@ -45,6 +45,7 @@
 		8371841C3B5AA5AAE4DFBB82 /* QuranData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45DC1FDB35BF68B1EE40BF1 /* QuranData.swift */; };
 		89AEF3F444E116743C514104 /* SmartHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF4D6C2A7EA1E2B0A0E1B469 /* SmartHeaderView.swift */; };
 		8D125E6185BE90486F2DF300 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7A6EADD77F6AF34431D8FD /* AppTheme.swift */; };
+		957B15FBFB0CC69FECAA17D2 /* PrayerTimelineCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C63C87E338358A0CB63EDD7 /* PrayerTimelineCard.swift */; };
 		9AF4038EEB79C5056E73C51B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13E789698BE43AB9C2E89A1 /* HomeView.swift */; };
 		9FFD64F830052B6B7E481B01 /* PrayerTimesCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA636EFB3034323CE98D3FF /* PrayerTimesCard.swift */; };
 		A10DED2B350D9B1479DC6DCA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BECBD7E784FDB27DDA19174B /* LaunchScreen.storyboard */; };
@@ -102,6 +103,7 @@
 		68D760A3B1F653F159F534B6 /* TodayPrayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayPrayerView.swift; sourceTree = "<group>"; };
 		714D8D90C5223D5BB9A3B50C /* LibraryToolViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryToolViews.swift; sourceTree = "<group>"; };
 		7155F88738917606DBDD74FE /* EmergencyGuideData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyGuideData.swift; sourceTree = "<group>"; };
+		7C63C87E338358A0CB63EDD7 /* PrayerTimelineCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimelineCard.swift; sourceTree = "<group>"; };
 		84121A68DA3813799CFBBEF1 /* QuranStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranStore.swift; sourceTree = "<group>"; };
 		845269B2933C0CB461C8D555 /* PrayerSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerSettingsView.swift; sourceTree = "<group>"; };
 		86CC04AFC65AF0D0DF555172 /* AppModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModels.swift; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				D13E789698BE43AB9C2E89A1 /* HomeView.swift */,
 				9C4941607E80CCA0DB347E76 /* IslamicGuidesSection.swift */,
 				EEF306CACD4538FBBFB1448C /* PrayerActionBlock.swift */,
+				7C63C87E338358A0CB63EDD7 /* PrayerTimelineCard.swift */,
 				3AA636EFB3034323CE98D3FF /* PrayerTimesCard.swift */,
 				F27A462BD711D77AA544F8EF /* PrayerTrackerCard.swift */,
 				E5FA503527474C0588A09DC5 /* QuickAccessSection.swift */,
@@ -413,6 +416,7 @@
 				1C535E083C00EE95C01AB535 /* PlaceholderViews.swift in Sources */,
 				4B170E221B8941C43A1CB184 /* PrayerActionBlock.swift in Sources */,
 				2C9AE9372D1626AC76FF746C /* PrayerSettingsView.swift in Sources */,
+				957B15FBFB0CC69FECAA17D2 /* PrayerTimelineCard.swift in Sources */,
 				9FFD64F830052B6B7E481B01 /* PrayerTimesCard.swift in Sources */,
 				FA55D6DA9608BEF9C7E713DF /* PrayerTimesService.swift in Sources */,
 				0011D2A9A44DA9CEEDF790AB /* PrayerTrackerCard.swift in Sources */,

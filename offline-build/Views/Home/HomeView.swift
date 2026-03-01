@@ -32,8 +32,6 @@ struct HomeView: View {
                 headerSection
                 sectionLabel("moon.stars.fill", l10n.t(.homeSalah))
                 prayerBlock
-                habitsHeader
-                habitBlock
                 sectionLabel("bolt.fill", l10n.t(.homeQuickTools))
                 quickTools
                 sectionLabel("book.closed.fill", "Islamic Guides")
@@ -72,26 +70,6 @@ struct HomeView: View {
         .padding(.top, 10)
     }
 
-    // MARK: - Habits Header
-    private var habitsHeader: some View {
-        HStack {
-            HStack(spacing: 7) {
-                Image(systemName: "chart.bar.fill")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color.alehaGreen)
-                Text("HABITS".uppercased())
-                    .font(.system(size: 11, weight: .bold))
-                    .kerning(1.1)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            Text("This week")
-                .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(Color.alehaGreen)
-        }
-        .padding(.top, 10)
-    }
-
     // MARK: - Sections
     private var headerSection: some View {
         SmartHeaderView(service: prayerService)
@@ -99,24 +77,19 @@ struct HomeView: View {
     }
 
     private var prayerBlock: some View {
-        PrayerActionBlock(service: prayerService, prayers: $todayPrayers)
-            .staggerAppear(appeared, index: 1)
-    }
-
-    private var habitBlock: some View {
-        HabitMotivationBlock()
+        PrayerTimelineCard(service: prayerService, prayers: $todayPrayers)
             .environmentObject(salahStore)
-            .staggerAppear(appeared, index: 2)
+            .staggerAppear(appeared, index: 1)
     }
 
     private var quickTools: some View {
         QuickToolsRow(service: prayerService)
-            .staggerAppear(appeared, index: 3)
+            .staggerAppear(appeared, index: 2)
     }
 
     private var guidesSection: some View {
         IslamicGuidesSection()
-            .staggerAppear(appeared, index: 4)
+            .staggerAppear(appeared, index: 3)
     }
 
     private var verseCard: some View {
@@ -126,6 +99,6 @@ struct HomeView: View {
             reference: SampleData.dailyAyah.reference,
             tafsir: SampleData.dailyAyah.tafsir
         )
-        .staggerAppear(appeared, index: 5)
+        .staggerAppear(appeared, index: 4)
     }
 }

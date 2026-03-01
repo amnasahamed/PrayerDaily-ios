@@ -1,29 +1,33 @@
 import SwiftUI
 
-// MARK: - Quick Tools Horizontal Scroll Row
+// MARK: - Quick Tools 2×2 Grid
 struct QuickToolsRow: View {
     @ObservedObject var service: PrayerTimesService
 
-    private let tools: [QuickTool] = [
-        QuickTool(id: "qibla",  icon: "location.north.fill",  label: "Qibla",  color: Color.alehaGreen),
-        QuickTool(id: "dhikr",  icon: "hand.raised.fill",     label: "Dhikr",  color: Color.alehaAmber),
-        QuickTool(id: "quran",  icon: "book.fill",            label: "Quran",  color: Color(red: 0.2, green: 0.6, blue: 0.45)),
-        QuickTool(id: "hijri",  icon: "calendar",             label: "Hijri",  color: Color(red: 0.4, green: 0.3, blue: 0.8)),
-        QuickTool(id: "duas",   icon: "hands.sparkles.fill",  label: "Duas",   color: Color(red: 0.8, green: 0.4, blue: 0.2)),
-    ]
-
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 6) {
-                ForEach(tools) { tool in
-                    ToolPill(tool: tool, service: service)
-                }
+        let tools = makeTools()
+        LazyVGrid(
+            columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)],
+            spacing: 12
+        ) {
+            ForEach(tools) { tool in
+                ToolGridCard(tool: tool, service: service)
             }
-            .padding(.horizontal, AppTheme.screenPadding)
-            .padding(.vertical, 6)
         }
-        .padding(.horizontal, -AppTheme.screenPadding)
     }
+
+    private func makeTools() -> [QuickTool] {[
+        QuickTool(id: "qibla",  icon: "location.north.fill",  label: "Qibla",
+                  accent: Color.alehaGreen,    subtitle: nil),
+        QuickTool(id: "hijri",  icon: "moon.stars.fill",      label: "Hijri Calendar",
+                  accent: Color(red: 0.42, green: 0.28, blue: 0.82), subtitle: service.hijriDateShort),
+        QuickTool(id: "dhikr",  icon: "hand.raised.fill",     label: "Dhikr Counter",
+                  accent: Color.alehaAmber,    subtitle: nil),
+        QuickTool(id: "quran",  icon: "book.fill",            label: "Quran",
+                  accent: Color(red: 0.18, green: 0.55, blue: 0.42), subtitle: nil),
+        QuickTool(id: "duas",   icon: "hands.sparkles.fill",  label: "Duas",
+                  accent: Color(red: 0.82, green: 0.38, blue: 0.20), subtitle: nil),
+    ]}
 }
 
 // MARK: - Tool Model
@@ -31,11 +35,12 @@ struct QuickTool: Identifiable {
     let id: String
     let icon: String
     let label: String
-    let color: Color
+    let accent: Color
+    let subtitle: String?
 }
 
-// MARK: - Tool Pill Button
-private struct ToolPill: View {
+// MARK: - Grid Card
+private struct ToolGridCard: View {
     let tool: QuickTool
     @ObservedObject var service: PrayerTimesService
     @Environment(\.colorScheme) var cs
@@ -48,58 +53,67 @@ private struct ToolPill: View {
     @State private var pressed    = false
 
     var body: some View {
-        Button { handleTap() } label: {
-            VStack(spacing: 8) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(
-                            LinearGradient(
-                                colors: [tool.color.opacity(pressed ? 0.38 : 0.22), tool.color.opacity(pressed ? 0.20 : 0.10)],
-                                startPoint: .topLeading, endPoint: .bottomTrailing
-                            )
-                        )
-                        .frame(width: 50, height: 50)
-                        .shadow(color: tool.color.opacity(pressed ? 0.35 : 0.15), radius: pressed ? 8 : 5, y: 3)
-                    Image(systemName: tool.icon)
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundStyle(tool.color)
-                        .scaleEffect(pressed ? 1.15 : 1.0)
-                }
+        Button { handleTap() } label: { cardLabel }
+            .buttonStyle(.plain)
+            .scaleEffect(pressed ? 0.94 : 1.0)
+            .animation(.spring(response: 0.22, dampingFraction: 0.62), value: pressed)
+            .sheet(isPresented: $showQibla) { QiblaCompassView() }
+            .sheet(isPresented: $showDhikr) { DhikrSheetWrapper() }
+            .sheet(isPresented: $showHijri) { HijriDateSheet(hijriDate: service.hijriDate) }
+            .sheet(isPresented: $showDuas)  { DuasSheet() }
+            .sheet(isPresented: $showQuran) { QuranQuickSheet() }
+    }
+
+    private var cardLabel: some View {
+        HStack(spacing: 12) {
+            // Icon badge
+            ZStack {
+                RoundedRectangle(cornerRadius: 11, style: .continuous)
+                    .fill(tool.accent.opacity(0.15))
+                    .frame(width: 42, height: 42)
+                Image(systemName: tool.icon)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(tool.accent)
+            }
+
+            // Labels
+            VStack(alignment: .leading, spacing: 2) {
                 Text(tool.label)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(.primary)
-                if let sub = subtitle {
+                    .lineLimit(1)
+                if let sub = tool.subtitle {
                     Text(sub)
-                        .font(.system(size: 9))
-                        .foregroundStyle(.secondary)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(tool.accent)
                         .lineLimit(1)
                 }
             }
-            .frame(width: 70)
-            .padding(.vertical, 4)
-            .scaleEffect(pressed ? 0.93 : 1.0)
-        }
-        .buttonStyle(.plain)
-        .animation(.spring(response: 0.22, dampingFraction: 0.60), value: pressed)
-        .sheet(isPresented: $showQibla) { QiblaCompassView() }
-        .sheet(isPresented: $showDhikr) { DhikrSheetWrapper() }
-        .sheet(isPresented: $showHijri) { HijriDateSheet(hijriDate: service.hijriDate) }
-        .sheet(isPresented: $showDuas)  { DuasSheet() }
-        .sheet(isPresented: $showQuran) { QuranQuickSheet() }
-    }
 
-    private var subtitle: String? {
-        switch tool.id {
-        case "hijri": return service.hijriDate.components(separatedBy: "—").first?.trimmingCharacters(in: .whitespaces)
-        default: return nil
+            Spacer(minLength: 0)
+
+            Image(systemName: "chevron.right")
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(.quaternary)
         }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 13)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(cs == .dark ? Color(.systemGray6) : .white)
+                .shadow(color: tool.accent.opacity(cs == .dark ? 0.0 : 0.08), radius: 6, y: 3)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(tool.accent.opacity(0.10), lineWidth: 1)
+        )
     }
 
     private func handleTap() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        withAnimation(.spring(response: 0.22, dampingFraction: 0.5)) { pressed = true }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.65)) { pressed = false }
+        withAnimation { pressed = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.16) {
+            withAnimation { pressed = false }
             switch tool.id {
             case "qibla": showQibla = true
             case "dhikr": showDhikr = true
@@ -112,7 +126,7 @@ private struct ToolPill: View {
     }
 }
 
-// MARK: - Dhikr Sheet Wrapper
+// MARK: - Dhikr Wrapper
 private struct DhikrSheetWrapper: View {
     @StateObject private var store = SalahStore()
     var body: some View {
@@ -120,10 +134,9 @@ private struct DhikrSheetWrapper: View {
     }
 }
 
-// MARK: - Quran Quick Sheet (opens Surah list)
+// MARK: - Quran Quick Sheet
 private struct QuranQuickSheet: View {
     @Environment(\.dismiss) var dismiss
-    @StateObject private var store = QuranStore.shared
     private let featured = Array(QuranData.allSurahs.prefix(10))
 
     var body: some View {
@@ -143,8 +156,7 @@ private struct QuranQuickSheet: View {
                             Text(surah.nameTransliteration)
                                 .font(.subheadline.weight(.semibold))
                             Text("\(surah.verses) verses · \(surah.type)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(.caption).foregroundStyle(.secondary)
                         }
                         Spacer()
                         Text(surah.nameArabic)
@@ -174,27 +186,21 @@ private struct HijriDateSheet: View {
                 Text("Hijri Date")
                     .font(.title2.weight(.bold))
                 Text(hijriDate.isEmpty ? "Loading…" : hijriDate)
-                    .font(.title3)
-                    .foregroundStyle(Color.alehaGreen)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
+                    .font(.title3).foregroundStyle(Color.alehaGreen)
+                    .multilineTextAlignment(.center).padding(.horizontal)
                 Text(gregorianDate)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.subheadline).foregroundStyle(.secondary)
                 Spacer()
             }
             .padding(.top, 40)
             .navigationTitle("Islamic Calendar")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .topBarTrailing) {
-                Button("Done") { dismiss() }
-            }}
+            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } } }
         }
     }
 
     private var gregorianDate: String {
-        let f = DateFormatter(); f.dateStyle = .full
-        return f.string(from: Date())
+        let f = DateFormatter(); f.dateStyle = .full; return f.string(from: Date())
     }
 }
 
@@ -207,22 +213,17 @@ private struct DuasSheet: View {
         NavigationStack {
             List(duas) { dua in
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(dua.title)
-                        .font(.subheadline.weight(.semibold))
+                    Text(dua.title).font(.subheadline.weight(.semibold))
                     Text(dua.arabic)
                         .font(.system(size: 18, design: .serif))
                         .foregroundStyle(Color.alehaGreen)
-                    Text(dua.translation)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text(dua.translation).font(.caption).foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 4)
             }
             .navigationTitle("Duas")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .topBarTrailing) {
-                Button("Done") { dismiss() }
-            }}
+            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } } }
         }
     }
 }

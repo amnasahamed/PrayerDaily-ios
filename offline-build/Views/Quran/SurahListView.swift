@@ -67,7 +67,8 @@ struct SurahListView: View {
             }
             .searchable(text: $searchText, prompt: "Search surahs...")
             .navigationTitle(LocalizationManager.shared.t(.quranTitle))
-            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
         }
     }
 

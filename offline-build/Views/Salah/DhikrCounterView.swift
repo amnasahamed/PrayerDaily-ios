@@ -31,6 +31,8 @@ struct DhikrCounterView: View {
                 bottomActions
             }
             .padding(.horizontal, AppTheme.screenPadding)
+            .padding(.top, 12)
+            .padding(.bottom, 100)
         }
         .sheet(isPresented: $showOverview) {
             DhikrOverviewSheet(store: store, currentIndex: $currentIndex)

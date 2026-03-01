@@ -18,7 +18,8 @@ struct CalendarPrayerView: View {
                 selectedDayDetail
             }
             .padding(.horizontal, AppTheme.screenPadding)
-            .padding(.bottom, 30)
+            .padding(.top, 12)
+            .padding(.bottom, 120)
         }
     }
 

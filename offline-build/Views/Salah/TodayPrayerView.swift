@@ -23,8 +23,8 @@ struct TodayPrayerView: View {
                     shareProgressButton.slideUp(appeared, delay: 0.30)
                 }
                 .padding(.horizontal, AppTheme.screenPadding)
-                .padding(.top, 4)
-                .padding(.bottom, 30)
+                .padding(.top, 12)
+                .padding(.bottom, 120)
             }
             ConfettiBurst(trigger: $confettiBurst)
         }

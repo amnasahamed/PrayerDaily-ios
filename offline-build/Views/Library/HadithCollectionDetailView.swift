@@ -11,11 +11,14 @@ struct HadithCollectionDetailView: View {
                 chaptersContent
             }
             .padding(.horizontal, AppTheme.screenPadding)
-            .padding(.bottom, 30)
+            .padding(.top, 12)
+            .padding(.bottom, 100)
         }
         .background(Color("NoorSurface").ignoresSafeArea())
         .navigationTitle(collection.name)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
     }
 
     // MARK: - Header

@@ -200,7 +200,8 @@ struct CalmingBackground: View {
 struct AlehaNavStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
     }
 }
 

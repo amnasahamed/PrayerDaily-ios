@@ -96,13 +96,6 @@ struct MoreView: View {
             }
             .buttonStyle(.plain)
 
-            NavigationLink(destination: EmergencyGuidesView()) {
-                MoreMenuRow(icon: "cross.case.fill", title: localization.t(.moreEmergency),
-                            subtitle: "Janazah, Ruqyah, Nikah & Travel",
-                            color: Color.alehaAmber, showDivider: true)
-            }
-            .buttonStyle(.plain)
-
             Button { showStreakHistory = true } label: {
                 MoreMenuRow(icon: "flame.fill", title: localization.t(.moreStreakHistory),
                             subtitle: "View your prayer consistency over time",

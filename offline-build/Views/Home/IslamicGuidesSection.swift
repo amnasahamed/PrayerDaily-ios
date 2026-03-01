@@ -1,7 +1,7 @@
 import SwiftUI
 
-// Priority order: Wudu, Salah, Ghusl, Essential Duas, Tayammum, Janazah, Zakat, Inheritance
-private let priorityOrder = [
+// Priority order — drives hero card selection and grid ordering
+private let priorityOrder: [String] = [
     "Wudu (Ablution)",
     "Salah (Prayer)",
     "Ghusl (Ritual Bath)",
@@ -23,13 +23,13 @@ struct IslamicGuidesSection: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            topGuides
-            moreGuidesGrid
+            heroRow
+            gridRows
         }
     }
 
-    // MARK: - Top 2 featured cards (Wudu & Salah)
-    private var topGuides: some View {
+    // MARK: - Top 2 hero cards
+    private var heroRow: some View {
         HStack(spacing: 12) {
             ForEach(sortedGuides.prefix(2)) { guide in
                 NavigationLink(destination: GuideDetailView(guide: guide)) {
@@ -40,10 +40,13 @@ struct IslamicGuidesSection: View {
         }
     }
 
-    // MARK: - Remaining guides in a 2-col grid of compact rows
-    private var moreGuidesGrid: some View {
+    // MARK: - All remaining guides in 2-col grid
+    private var gridRows: some View {
         let remaining = Array(sortedGuides.dropFirst(2))
-        return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+        return LazyVGrid(
+            columns: [GridItem(.flexible()), GridItem(.flexible())],
+            spacing: 10
+        ) {
             ForEach(remaining) { guide in
                 NavigationLink(destination: GuideDetailView(guide: guide)) {
                     CompactGuideCell(guide: guide)
@@ -60,6 +63,7 @@ struct FeaturedGuideCard: View {
     @Environment(\.colorScheme) var cs
 
     var body: some View {
+        let stepCount = guide.sections.flatMap(\.steps).count
         VStack(alignment: .leading, spacing: 8) {
             ZStack {
                 Circle()
@@ -79,7 +83,7 @@ struct FeaturedGuideCard: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(2)
             HStack {
-                Text("\(guide.sections.flatMap(\.steps).count) steps")
+                Text("\(stepCount) steps")
                     .font(.caption2.weight(.medium))
                     .foregroundStyle(Color(guide.color))
                 Spacer()
@@ -108,6 +112,7 @@ struct CompactGuideCell: View {
     @Environment(\.colorScheme) var cs
 
     var body: some View {
+        let stepCount = guide.sections.flatMap(\.steps).count
         HStack(spacing: 10) {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
@@ -122,7 +127,7 @@ struct CompactGuideCell: View {
                     .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(.primary)
                     .lineLimit(2)
-                Text("\(guide.sections.flatMap(\.steps).count) steps")
+                Text("\(stepCount) steps")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }

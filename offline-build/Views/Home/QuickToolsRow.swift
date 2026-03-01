@@ -57,10 +57,10 @@ private struct ToolGridCard: View {
             .buttonStyle(.plain)
             .scaleEffect(pressed ? 0.94 : 1.0)
             .animation(.spring(response: 0.22, dampingFraction: 0.62), value: pressed)
-            .sheet(isPresented: $showQibla) { QiblaCompassView() }
+            .sheet(isPresented: $showQibla) { NavigationStack { QiblaCompassView() } }
             .sheet(isPresented: $showDhikr) { DhikrSheetWrapper() }
-            .sheet(isPresented: $showHijri) { HijriDateSheet(hijriDate: service.hijriDate) }
-            .sheet(isPresented: $showDuas)  { DuasSheet() }
+            .sheet(isPresented: $showHijri) { NavigationStack { LibraryHijriView() } }
+            .sheet(isPresented: $showDuas)  { DuasCategorySheet() }
             .sheet(isPresented: $showQuran) { QuranQuickSheet() }
     }
 
@@ -204,26 +204,62 @@ private struct HijriDateSheet: View {
     }
 }
 
-// MARK: - Duas Sheet
-private struct DuasSheet: View {
+// MARK: - Duas Category Sheet
+struct DuasCategorySheet: View {
     @Environment(\.dismiss) var dismiss
-    private let duas = SampleData.duas
+    @State private var selectedCategory: DuaCategory? = nil
+    private let categories = DuaDatabase.all
 
     var body: some View {
         NavigationStack {
-            List(duas) { dua in
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(dua.title).font(.subheadline.weight(.semibold))
-                    Text(dua.arabic)
-                        .font(.system(size: 18, design: .serif))
-                        .foregroundStyle(Color.alehaGreen)
-                    Text(dua.translation).font(.caption).foregroundStyle(.secondary)
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 12) {
+                    ForEach(categories) { cat in
+                        Button { selectedCategory = cat } label: {
+                            HStack(spacing: 14) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(cat.color.opacity(0.15))
+                                        .frame(width: 48, height: 48)
+                                    Image(systemName: cat.icon)
+                                        .font(.system(size: 20))
+                                        .foregroundStyle(cat.color)
+                                }
+                                VStack(alignment: .leading, spacing: 3) {
+                                    Text(cat.title)
+                                        .font(.subheadline.weight(.semibold))
+                                        .foregroundStyle(.primary)
+                                    Text("\(cat.duas.count) duas")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.tertiary)
+                            }
+                            .padding(14)
+                            .background(Color(.systemGray6).opacity(0.5))
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                        }
+                        .buttonStyle(.plain)
+                    }
                 }
-                .padding(.vertical, 4)
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 40)
             }
+            .background(CalmingBackground())
             .navigationTitle("Duas")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } } }
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }.foregroundStyle(Color("NoorPrimary"))
+                }
+            }
+            .navigationDestination(item: $selectedCategory) { cat in
+                DuaListView(category: cat)
+            }
         }
     }
 }

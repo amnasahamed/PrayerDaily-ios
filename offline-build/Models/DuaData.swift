@@ -1,7 +1,7 @@
 import SwiftUI
 
 // MARK: - Dua Category
-struct DuaCategory: Identifiable {
+struct DuaCategory: Identifiable, Hashable {
     let id = UUID()
     let title: String
     let titleMl: String
@@ -12,6 +12,9 @@ struct DuaCategory: Identifiable {
     func localizedTitle(isMalayalam: Bool) -> String {
         isMalayalam ? titleMl : title
     }
+
+    static func == (lhs: DuaCategory, rhs: DuaCategory) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }
 
 struct DuaEntry: Identifiable {

@@ -19,21 +19,30 @@ struct LibraryDhikrView: View {
 // MARK: - Library Hijri Calendar View
 struct LibraryHijriView: View {
     @StateObject private var prayerService = PrayerTimesService.shared
-    @State private var selectedDate = Date()
+    @State private var displayedMonthOffset: Int = 0
     @Environment(\.colorScheme) var cs
+
+    private let hijriCal = Calendar(identifier: .islamicUmmAlQura)
+    private let gregCal = Calendar.current
+
+    private var displayedGregorianMonth: Date {
+        gregCal.date(byAdding: .month, value: displayedMonthOffset, to: Date()) ?? Date()
+    }
 
     var body: some View {
         ZStack {
             CalmingBackground()
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 20) {
-                    hijriTodayCard
-                    converterCard
-                    monthInfoCard
+                    todayBanner
+                    monthNavigator
+                    calendarGrid
+                    islamicEventsCard
+                    islamicMonthsCard
                 }
                 .padding(.horizontal, AppTheme.screenPadding)
                 .padding(.top, 8)
-                .padding(.bottom, 60)
+                .padding(.bottom, 80)
             }
         }
         .navigationTitle("Hijri Calendar")
@@ -42,92 +51,181 @@ struct LibraryHijriView: View {
         .onAppear { prayerService.requestLocation() }
     }
 
-    // MARK: - Today Card
-    private var hijriTodayCard: some View {
-        VStack(spacing: 14) {
+    // MARK: - Today Banner
+    private var todayBanner: some View {
+        HStack(spacing: 16) {
             ZStack {
-                Circle()
-                    .fill(Color.alehaDarkGreen.opacity(0.12))
-                    .frame(width: 72, height: 72)
-                Image(systemName: "moon.fill")
-                    .font(.system(size: 32, weight: .medium))
+                Circle().fill(Color.alehaDarkGreen.opacity(0.12)).frame(width: 52, height: 52)
+                Image(systemName: "moon.stars.fill")
+                    .font(.system(size: 22))
                     .foregroundStyle(Color.alehaDarkGreen)
             }
-            VStack(spacing: 6) {
-                Text("Today's Hijri Date")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 3) {
                 Text(prayerService.hijriDate.isEmpty ? "Loading…" : prayerService.hijriDate)
                     .font(.title3.weight(.bold))
                     .foregroundStyle(Color.alehaDarkGreen)
-                    .multilineTextAlignment(.center)
                 Text(gregorianToday)
-                    .font(.subheadline)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(currentHijriMonthName)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.alehaDarkGreen)
+                Text("AH \(currentHijriYear)")
+                    .font(.caption2)
                     .foregroundStyle(.secondary)
             }
         }
-        .frame(maxWidth: .infinity)
-        .noorCard()
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(LinearGradient(
+                    colors: [Color.alehaDarkGreen.opacity(cs == .dark ? 0.2 : 0.08), Color.alehaDarkGreen.opacity(0.03)],
+                    startPoint: .leading, endPoint: .trailing
+                ))
+        )
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.alehaDarkGreen.opacity(0.15), lineWidth: 1))
     }
 
-    // MARK: - Converter Card
-    private var converterCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
+    // MARK: - Month Navigator
+    private var monthNavigator: some View {
+        HStack {
+            Button { withAnimation(.spring(response: 0.3)) { displayedMonthOffset -= 1 } } label: {
+                Image(systemName: "chevron.left").font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Color.alehaDarkGreen)
+                    .frame(width: 36, height: 36)
+                    .background(Color.alehaDarkGreen.opacity(0.1))
+                    .clipShape(Circle())
+            }
+            Spacer()
+            VStack(spacing: 2) {
+                Text(monthYearString(displayedGregorianMonth))
+                    .font(.headline.weight(.bold))
+                Text(hijriMonthYearString(displayedGregorianMonth))
+                    .font(.caption)
+                    .foregroundStyle(Color.alehaDarkGreen)
+            }
+            Spacer()
+            Button { withAnimation(.spring(response: 0.3)) { displayedMonthOffset += 1 } } label: {
+                Image(systemName: "chevron.right").font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Color.alehaDarkGreen)
+                    .frame(width: 36, height: 36)
+                    .background(Color.alehaDarkGreen.opacity(0.1))
+                    .clipShape(Circle())
+            }
+        }
+        .padding(.horizontal, 4)
+    }
+
+    // MARK: - Calendar Grid
+    private var calendarGrid: some View {
+        VStack(spacing: 12) {
+            // Day headers
+            HStack(spacing: 0) {
+                ForEach(["Su","Mo","Tu","We","Th","Fr","Sa"], id: \.self) { d in
+                    Text(d)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(d == "Fr" ? Color.alehaDarkGreen : .secondary)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            // Day cells
+            let days = daysInMonth(displayedGregorianMonth)
+            let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: 7)
+            LazyVGrid(columns: columns, spacing: 6) {
+                ForEach(days, id: \.self) { date in
+                    if let date = date {
+                        dayCellView(date)
+                    } else {
+                        Color.clear.frame(height: 48)
+                    }
+                }
+            }
+        }
+        .padding(16)
+        .background(RoundedRectangle(cornerRadius: 16).fill(cs == .dark ? Color(.systemGray6) : Color.white))
+        .shadow(color: .black.opacity(0.04), radius: 8, y: 2)
+    }
+
+    private func dayCellView(_ date: Date) -> some View {
+        let isToday = gregCal.isDateInToday(date)
+        let hijriDay = hijriCal.component(.day, from: date)
+        let gregDay = gregCal.component(.day, from: date)
+        let event = islamicEventForDate(date)
+        return VStack(spacing: 2) {
+            ZStack {
+                if isToday {
+                    Circle()
+                        .fill(Color.alehaDarkGreen)
+                        .frame(width: 32, height: 32)
+                } else if event != nil {
+                    Circle()
+                        .fill(Color.alehaAmber.opacity(0.2))
+                        .frame(width: 32, height: 32)
+                }
+                VStack(spacing: 0) {
+                    Text("\(gregDay)")
+                        .font(.system(size: 13, weight: isToday ? .bold : .regular))
+                        .foregroundStyle(isToday ? .white : .primary)
+                    Text("\(hijriDay)")
+                        .font(.system(size: 8, weight: .medium))
+                        .foregroundStyle(isToday ? .white.opacity(0.8) : Color.alehaDarkGreen.opacity(0.7))
+                }
+            }
+            .frame(height: 38)
+            if event != nil {
+                Circle().fill(Color.alehaAmber).frame(width: 4, height: 4)
+            } else {
+                Color.clear.frame(height: 4)
+            }
+        }
+    }
+
+    // MARK: - Events Card
+    private var islamicEventsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
-                RoundedRectangle(cornerRadius: 2).fill(Color.alehaDarkGreen).frame(width: 4, height: 18)
-                Text("Date Converter")
+                RoundedRectangle(cornerRadius: 2).fill(Color.alehaAmber).frame(width: 4, height: 18)
+                Text("Upcoming Islamic Events")
                     .font(.headline.weight(.bold))
                 Spacer()
             }
-
-            DatePicker("Select Gregorian Date", selection: $selectedDate, displayedComponents: .date)
-                .datePickerStyle(.graphical)
-                .tint(Color.alehaDarkGreen)
-
-            VStack(spacing: 8) {
-                HStack {
-                    Text("Gregorian").font(.caption).foregroundStyle(.secondary)
+            ForEach(upcomingEvents, id: \.0) { event in
+                HStack(spacing: 12) {
+                    Text(event.2).font(.title3)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(event.0).font(.subheadline.weight(.semibold))
+                        Text(event.1).font(.caption).foregroundStyle(.secondary)
+                    }
                     Spacer()
-                    Text(formatDate(selectedDate)).font(.subheadline.weight(.semibold))
                 }
-                Divider()
-                HStack {
-                    Text("Hijri").font(.caption).foregroundStyle(.secondary)
-                    Spacer()
-                    Text(hijriForDate(selectedDate))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Color.alehaDarkGreen)
-                }
+                .padding(.vertical, 4)
+                if event.0 != upcomingEvents.last?.0 { Divider() }
             }
-            .noorCard()
         }
         .noorCard()
     }
 
-    // MARK: - Month Info
-    private var monthInfoCard: some View {
+    // MARK: - Islamic Months Reference
+    private var islamicMonthsCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 RoundedRectangle(cornerRadius: 2).fill(Color.alehaDarkGreen).frame(width: 4, height: 18)
-                Text("Islamic Months")
-                    .font(.headline.weight(.bold))
+                Text("Islamic Months").font(.headline.weight(.bold))
                 Spacer()
             }
             ForEach(islamicMonths, id: \.0) { month in
                 HStack {
-                    Text(month.0)
-                        .font(.subheadline.weight(.medium))
+                    Text(month.0).font(.subheadline.weight(.medium))
                     Spacer()
                     if !month.1.isEmpty {
-                        Text(month.1)
-                            .font(.caption)
-                            .foregroundStyle(Color.alehaDarkGreen)
+                        Text(month.1).font(.caption).foregroundStyle(Color.alehaDarkGreen)
                     }
                 }
                 .padding(.vertical, 3)
-                if month.0 != islamicMonths.last?.0 {
-                    Divider()
-                }
+                if month.0 != islamicMonths.last?.0 { Divider() }
             }
         }
         .noorCard()
@@ -135,27 +233,66 @@ struct LibraryHijriView: View {
 
     // MARK: - Helpers
     private var gregorianToday: String {
-        let f = DateFormatter(); f.dateStyle = .full
-        return f.string(from: Date())
+        let f = DateFormatter(); f.dateStyle = .full; return f.string(from: Date())
     }
 
-    private func formatDate(_ date: Date) -> String {
-        let f = DateFormatter(); f.dateStyle = .long
-        return f.string(from: date)
+    private var currentHijriMonthName: String {
+        let m = hijriCal.component(.month, from: Date())
+        return hijriMonthNames[safe: m - 1] ?? "—"
     }
 
-    private func hijriForDate(_ date: Date) -> String {
-        let cal = Calendar(identifier: .islamicUmmAlQura)
-        let components = cal.dateComponents([.year, .month, .day], from: date)
-        guard let year = components.year, let month = components.month, let day = components.day else {
-            return "—"
+    private var currentHijriYear: Int {
+        hijriCal.component(.year, from: Date())
+    }
+
+    private func monthYearString(_ date: Date) -> String {
+        let f = DateFormatter(); f.dateFormat = "MMMM yyyy"; return f.string(from: date)
+    }
+
+    private func hijriMonthYearString(_ date: Date) -> String {
+        let m = hijriCal.component(.month, from: date)
+        let y = hijriCal.component(.year, from: date)
+        let name = hijriMonthNames[safe: m - 1] ?? "—"
+        return "\(name) \(y) AH"
+    }
+
+    private func daysInMonth(_ date: Date) -> [Date?] {
+        guard let range = gregCal.range(of: .day, in: .month, for: date),
+              let first = gregCal.date(from: gregCal.dateComponents([.year, .month], from: date))
+        else { return [] }
+        let weekday = (gregCal.component(.weekday, from: first) - 1 + 7) % 7
+        var days: [Date?] = Array(repeating: nil, count: weekday)
+        for d in range {
+            days.append(gregCal.date(byAdding: .day, value: d - 1, to: first))
         }
-        let monthNames = ["Muharram", "Safar", "Rabi al-Awwal", "Rabi al-Thani",
-                          "Jumada al-Awwal", "Jumada al-Thani", "Rajab", "Sha'ban",
-                          "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"]
-        let monthName = month >= 1 && month <= 12 ? monthNames[month - 1] : "\(month)"
-        return "\(day) \(monthName) \(year) AH"
+        return days
     }
+
+    private func islamicEventForDate(_ date: Date) -> String? {
+        let hijriMonth = hijriCal.component(.month, from: date)
+        let hijriDay = hijriCal.component(.day, from: date)
+        let key = "\(hijriMonth)-\(hijriDay)"
+        return islamicEventMap[key]
+    }
+
+    private let islamicEventMap: [String: String] = [
+        "1-1": "Islamic New Year", "1-10": "Ashura",
+        "3-12": "Mawlid al-Nabi ﷺ", "7-27": "Isra & Mi'raj",
+        "8-15": "Night of Bara'ah", "9-1": "Ramadan Begins",
+        "9-27": "Laylat al-Qadr", "10-1": "Eid al-Fitr",
+        "12-8": "Hajj begins", "12-9": "Day of Arafah", "12-10": "Eid al-Adha"
+    ]
+
+    private let upcomingEvents: [(String, String, String)] = [
+        ("Laylat al-Qadr", "27 Ramadan", "🌙"),
+        ("Eid al-Fitr", "1 Shawwal", "🌙"),
+        ("Day of Arafah", "9 Dhu al-Hijjah", "🕋"),
+        ("Eid al-Adha", "10 Dhu al-Hijjah", "🐏")
+    ]
+
+    private let hijriMonthNames = ["Muharram","Safar","Rabi al-Awwal","Rabi al-Thani",
+                                    "Jumada al-Awwal","Jumada al-Thani","Rajab","Sha'ban",
+                                    "Ramadan","Shawwal","Dhu al-Qi'dah","Dhu al-Hijjah"]
 
     private let islamicMonths: [(String, String)] = [
         ("1. Muharram", "Sacred month"),
@@ -171,6 +308,12 @@ struct LibraryHijriView: View {
         ("11. Dhu al-Qi'dah", "Sacred month"),
         ("12. Dhu al-Hijjah", "Hajj & Eid al-Adha")
     ]
+}
+
+private extension Array {
+    subscript(safe index: Int) -> Element? {
+        indices.contains(index) ? self[index] : nil
+    }
 }
 
 // MARK: - Library Prayer Tracker View (wraps full Salah dashboard)

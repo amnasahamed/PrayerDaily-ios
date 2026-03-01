@@ -25,6 +25,7 @@ struct SurahListView: View {
     @State private var searchText = ""
     @State private var activeFilter: SurahFilter = .all
     @State private var selectedJuz: Int = 1
+    @Environment(\.colorScheme) var colorScheme
 
     private var filteredSurahs: [SurahInfo] {
         var list = QuranData.allSurahs
@@ -49,7 +50,7 @@ struct SurahListView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color("NoorSurface").ignoresSafeArea()
+                parchmentBackground.ignoresSafeArea()
                 ScrollView {
                     LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
                         continueReadingCard
@@ -67,6 +68,19 @@ struct SurahListView: View {
             .searchable(text: $searchText, prompt: "Search surahs...")
             .navigationTitle(LocalizationManager.shared.t(.quranTitle))
             .toolbarBackground(.hidden, for: .navigationBar)
+        }
+    }
+
+    private var parchmentBackground: some View {
+        Group {
+            if colorScheme == .dark {
+                Color("NoorSurface")
+            } else {
+                LinearGradient(
+                    colors: [Color(red: 0.99, green: 0.97, blue: 0.93), Color(red: 0.97, green: 0.95, blue: 0.90)],
+                    startPoint: .top, endPoint: .bottom
+                )
+            }
         }
     }
 
@@ -162,7 +176,7 @@ struct SurahListView: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
         }
-        .background(Color("NoorSurface").opacity(0.98))
+        .background(Color("NoorSurface").opacity(0.96))
     }
 
     private func filterChip(_ filter: SurahFilter) -> some View {
@@ -259,7 +273,13 @@ struct SurahRowView: View {
     }
 
     private var rowBg: some View {
-        colorScheme == .dark ? Color(.systemGray6) : Color.white
+        Group {
+            if colorScheme == .dark {
+                Color(.systemGray6)
+            } else {
+                Color(red: 0.99, green: 0.98, blue: 0.95)
+            }
+        }
     }
 
     private var surahNumber: some View {
@@ -279,11 +299,14 @@ struct SurahRowView: View {
             Text(surah.nameEnglish)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.primary)
-            HStack(spacing: 6) {
+            HStack(spacing: 5) {
+                Circle()
+                    .fill(surah.type == "Meccan" ? Color("NoorGold") : Color("NoorAccent"))
+                    .frame(width: 6, height: 6)
                 Text(surah.type)
                     .font(.caption2.weight(.medium))
-                    .foregroundStyle(surah.type == "Meccan" ? Color("NoorGold") : Color("NoorAccent"))
-                Text("•")
+                    .foregroundStyle(.secondary)
+                Text("·")
                     .font(.caption2).foregroundStyle(.tertiary)
                 Text("\(surah.verses) Ayahs")
                     .font(.caption2).foregroundStyle(.secondary)

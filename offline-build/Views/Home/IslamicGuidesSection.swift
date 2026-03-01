@@ -9,21 +9,25 @@ private struct GuideCategory: Identifiable {
 
 // MARK: - Category assignment
 private let categoryMap: [String: String] = [
-    "Wudu (Ablution)":              "Purification",
-    "Ghusl (Ritual Bath)":          "Purification",
-    "Tayammum (Dry Ablution)":      "Purification",
-    "Salah (Prayer)":               "Prayer",
-    "Janazah Prayer":               "Prayer",
-    "Zakat Calculation":            "Finance & Fiqh",
-    "Islamic Inheritance (Mirath)": "Finance & Fiqh",
-    "Essential Duas":               "Supplications",
+    "Wudu (Ablution)":                "Purification",
+    "Ghusl (Ritual Bath)":            "Purification",
+    "Tayammum (Dry Ablution)":        "Purification",
+    "Salah (Prayer)":                 "Prayer",
+    "Janazah Prayer":                 "Prayer",
+    "Travel Prayer (Qasr)":           "Prayer",
+    "Ruqyah (Healing Recitation)":    "Supplications",
+    "Essential Duas":                 "Supplications",
+    "Fasting (Sawm)":                 "Worship",
+    "Zakat Calculation":              "Finance & Fiqh",
+    "Islamic Inheritance (Mirath)":   "Finance & Fiqh",
 ]
 
-private let categoryOrder: [String] = ["Purification", "Prayer", "Finance & Fiqh", "Supplications"]
+private let categoryOrder: [String] = ["Purification", "Prayer", "Worship", "Finance & Fiqh", "Supplications"]
 
 private let categoryIcons: [String: String] = [
     "Purification":    "drop.fill",
     "Prayer":          "figure.stand",
+    "Worship":         "moon.stars.fill",
     "Finance & Fiqh":  "banknote.fill",
     "Supplications":   "hands.sparkles.fill",
 ]

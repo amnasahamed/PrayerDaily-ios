@@ -12,6 +12,7 @@ let guideIconAccentMap: [String: (icon: String, accent: Color)] = [
     "Essential Duas":               ("hands.sparkles.fill",    Color(red: 0.78, green: 0.34, blue: 0.22)),
     "Ruqyah (Healing Recitation)":  ("waveform.path.ecg",      Color(red: 0.20, green: 0.50, blue: 0.88)),
     "Travel Prayer (Qasr)":         ("airplane",               Color(red: 0.14, green: 0.65, blue: 0.45)),
+    "Fasting (Sawm)":               ("moon.stars.fill",        Color(red: 0.52, green: 0.22, blue: 0.78)),
 ]
 
 // MARK: - Guide List

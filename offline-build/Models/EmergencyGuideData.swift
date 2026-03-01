@@ -400,6 +400,65 @@ struct EmergencyGuideData {
             ]
         ),
 
+        // MARK: Fasting (Sawm)
+        EmergencyGuide(
+            title: "Fasting (Sawm)",
+            titleMl: "നോമ്പ് (സൗം)",
+            icon: "moon.stars.fill",
+            color: "NoorPurple",
+            subtitle: "Rules of fasting in Islam",
+            subtitleMl: "ഇസ്‌ലാമിക നോമ്പിന്റെ നിയമങ്ങൾ",
+            sections: [
+                GuideSection(
+                    heading: "What is Sawm?",
+                    headingMl: "സൗം എന്താണ്?",
+                    steps: [
+                        GuideStep(number: 1, title: "Definition", titleMl: "നിർവ്വചനം", detail: "Sawm is the 4th Pillar of Islam — abstaining from food, drink, and marital relations from Fajr (dawn) to Maghrib (sunset) with sincere intention.", detailMl: "ഇസ്‌ലാമിന്റെ നാലാം സ്തംഭം — ഫജ്‌ർ മുതൽ മഗ്‌രിബ് വരെ ഭക്ഷണം, പാനീയം, ദാമ്പത്യ ബന്ധം എന്നിവ ഉദ്ദേശ്യത്തോടെ ഒഴിവാക്കൽ.", arabic: nil),
+                        GuideStep(number: 2, title: "Obligation", titleMl: "നിർബന്ധം", detail: "Fasting Ramadan is obligatory on every Muslim adult who is sane, healthy, and not travelling. The Quran commands it in 2:183.", detailMl: "ബുദ്ധിയും ആരോഗ്യവുമുള്ള, യാത്രയിലല്ലാത്ത ഓരോ മുസ്‌ലിം പ്രായപൂർത്തിയായ ആൾക്കും റമദാൻ നോമ്പ് നിർബന്ധം. ഖുർആൻ 2:183.", arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ كَمَا كُتِبَ عَلَى الَّذِينَ مِن قَبْلِكُمْ"),
+                        GuideStep(number: 3, title: "Intention (Niyyah)", titleMl: "നിയ്യത്ത്", detail: "Make intention each night before Fajr for the following day's fast. For Ramadan, a single intention at the start of the month is sufficient per some scholars.", detailMl: "ഓരോ ദിവസത്തെ നോമ്പിനും ഫജ്‌റിന് മുൻപ് രാത്രി നിയ്യത്ത് ചെയ്യുക. ചില പണ്ഡിതർ പ്രകാരം റമദാൻ ആദ്യത്തിൽ ഒരു നിയ്യത്ത് മതി.", arabic: "نَوَيْتُ صَوْمَ غَدٍ عَن أَدَاءِ فَرْضِ رَمَضَانَ هَذِهِ السَّنَةِ لِلَّهِ تَعَالَى")
+                    ]
+                ),
+                GuideSection(
+                    heading: "Suhoor & Iftar",
+                    headingMl: "സുഹൂർ & ഇഫ്താർ",
+                    steps: [
+                        GuideStep(number: 4, title: "Suhoor (Pre-dawn meal)", titleMl: "സുഹൂർ", detail: "Eating Suhoor before Fajr is a Sunnah and carries great blessing (barakah). The Prophet ﷺ said: 'Eat Suhoor, for indeed there is blessing in it.'", detailMl: "ഫജ്‌റിന് മുൻപ് ഭക്ഷണം കഴിക്കൽ സുന്നത്തും ബറകത്തുള്ളതുമാണ്. 'സുഹൂർ കഴിക്കൂ, അതിൽ ബറകത്ത് ഉണ്ട്' — നബി ﷺ.", arabic: nil),
+                        GuideStep(number: 5, title: "Iftar Dua", titleMl: "ഇഫ്താർ ദുആ", detail: "Break the fast at Maghrib time — immediately upon hearing the adhan. Recite this dua before breaking fast.", detailMl: "മഗ്‌രിബ് അദ്ദാൻ കേൾക്കുമ്പോൾ ഉടൻ നോമ്പ് തുറക്കുക. നോമ്പ് തുറക്കുന്നതിന് മുൻപ് ഈ ദുആ ഓതുക.", arabic: "اللَّهُمَّ لَكَ صُمْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ"),
+                        GuideStep(number: 6, title: "Break with dates & water", titleMl: "ഈത്തപ്പഴം & വെള്ളം", detail: "The Sunnah is to break the fast with fresh or dried dates (odd number) or water if dates are unavailable.", detailMl: "ഈത്തപ്പഴം (ഒറ്റ അക്കം) അല്ലെങ്കിൽ ലഭ്യമല്ലെങ്കിൽ വെള്ളം കൊണ്ട് ഇഫ്താർ ചെയ്യൽ സുന്നത്ത്.", arabic: nil)
+                    ]
+                ),
+                GuideSection(
+                    heading: "What Breaks the Fast",
+                    headingMl: "നോമ്പ് മുറിക്കുന്ന കാര്യങ്ങൾ",
+                    steps: [
+                        GuideStep(number: 7, title: "Eating or drinking intentionally", titleMl: "ഉദ്ദേശ്യത്തോടെ ഭക്ഷണം/പാനീയം", detail: "Consuming anything by mouth intentionally invalidates the fast. Forgetting does NOT break the fast — continue fasting.", detailMl: "ഉദ്ദേശ്യത്തോടെ വല്ലതും കഴിക്കൽ/കുടിക്കൽ നോമ്പ് മുറിക്കും. മറന്ന് കഴിച്ചാൽ — നോമ്പ് മുറിയില്ല, തുടരണം.", arabic: nil),
+                        GuideStep(number: 8, title: "Marital relations", titleMl: "ദാമ്പത്യ ബന്ധം", detail: "Intentional marital relations during fasting hours is a major invalidator requiring both Qadha AND Kaffarah.", detailMl: "ഉദ്ദേശ്യത്തോടെ ദാമ്പത്യ ബന്ധം — ഖദ്ദാ + കഫ്ഫാറ ഒരുമിച്ച് നിർബന്ധം.", arabic: nil),
+                        GuideStep(number: 9, title: "Intentional vomiting", titleMl: "ഉദ്ദേശ്യ ഛർദ്ദി", detail: "Deliberately inducing vomiting breaks the fast. Involuntary vomiting does NOT break the fast.", detailMl: "ഉദ്ദേശ്യത്തോടെ ഛർദ്ദിക്കൽ നോമ്പ് മുറിക്കും. അനിയന്ത്രിത ഛർദ്ദി — നോമ്പ് മുറിയില്ല.", arabic: nil),
+                        GuideStep(number: 10, title: "Menstruation / Post-natal bleeding", titleMl: "ഹൈദ് / നിഫാസ്", detail: "Women experiencing menstruation or post-natal bleeding cannot fast and must make up the missed days later.", detailMl: "ഹൈദ് / നിഫാസ് ഉള്ള സ്ത്രീകൾ നോമ്പ് ആചരിക്കരുത്, ഒഴിഞ്ഞ ദിവസങ്ങൾ പിന്നീട് ഖദ്ദാ ചെയ്യണം.", arabic: nil)
+                    ]
+                ),
+                GuideSection(
+                    heading: "Who is Exempt?",
+                    headingMl: "ആർക്ക് ഒഴിവ് ഉണ്ട്?",
+                    steps: [
+                        GuideStep(number: 11, title: "Traveller", titleMl: "യാത്രക്കാരൻ", detail: "A traveller may skip fasting and make up the missed days after Ramadan. It is preferred to fast if it causes no hardship.", detailMl: "യാത്രക്കാരന് നോമ്പ് ഒഴിവ് ആകാം, റമദാൻ ശേഷം ഖദ്ദാ ചെയ്യണം. ബുദ്ധിമുട്ടില്ലെങ്കിൽ നോൽക്കൽ ഉത്തമം.", arabic: nil),
+                        GuideStep(number: 12, title: "Illness", titleMl: "അസുഖം", detail: "Those who are ill may break the fast if fasting is harmful and must make up the days later when recovered.", detailMl: "ഉപവസിക്കൽ ഉപദ്രവകരമെങ്കിൽ രോഗി നോമ്പ് ഒഴിവാക്കാം, ആരോഗ്യം ലഭിച്ചശേഷം ഖദ്ദാ ചെയ്യണം.", arabic: nil),
+                        GuideStep(number: 13, title: "Pregnancy & Breastfeeding", titleMl: "ഗർഭം & മുലയൂട്ടൽ", detail: "Pregnant or breastfeeding women may skip fasting if it harms them or their child. They make up the days or pay Fidyah per scholarly opinion.", detailMl: "ഗർഭിണികൾക്കും മുലയൂട്ടുന്ന അമ്മമാർക്കും ഉപദ്രവമെങ്കിൽ ഒഴിവ്. ഖദ്ദാ അല്ലെങ്കിൽ ഫിദ്‌യ — പണ്ഡിത അഭിപ്രായം.", arabic: nil),
+                        GuideStep(number: 14, title: "Elderly (unable)", titleMl: "വൃദ്ധർ (കഴിവില്ലാത്തവർ)", detail: "Elderly who are permanently unable to fast pay Fidyah: feeding one poor person for each day missed.", detailMl: "ശാശ്വതമായി നോൽക്കാൻ കഴിയാത്ത വൃദ്ധർ — ഓരോ ദിവസത്തിനും ഒരു ദരിദ്രന് ഭക്ഷണം നൽകൽ (ഫിദ്‌യ).", arabic: nil)
+                    ]
+                ),
+                GuideSection(
+                    heading: "Making Up Missed Days (Qadha)",
+                    headingMl: "ഒഴിഞ്ഞ നോമ്പ് ഖദ്ദാ ചെയ്യൽ",
+                    steps: [
+                        GuideStep(number: 15, title: "Obligation to make up", titleMl: "ഖദ്ദാ നിർബന്ധം", detail: "Every missed Ramadan fast (due to illness, travel, menstruation etc.) must be made up before the next Ramadan arrives.", detailMl: "അസുഖം, യാത്ര, ഹൈദ് തുടങ്ങിയ കാരണങ്ങളാൽ ഒഴിഞ്ഞ ഓരോ നോമ്പും അടുത്ത റമദാൻ വരുന്നതിന് മുൻപ് ഖദ്ദാ ചെയ്തിരിക്കണം.", arabic: nil),
+                        GuideStep(number: 16, title: "Kaffarah for intentional break", titleMl: "ഉദ്ദേശ്യ ഖണ്ഡനത്തിന് കഫ്ഫാറ", detail: "Breaking the fast intentionally without valid excuse requires: freeing a slave (not possible today) → fasting 60 consecutive days → feeding 60 poor people.", detailMl: "ന്യായ കാരണം കൂടാതെ ഉദ്ദേശ്യത്തോടെ ഒടിച്ചാൽ: അടിമ മോചനം (ഇന്ന് ബാധകമല്ല) → 60 ദിവസം തുടർ നോമ്പ് → 60 ദരിദ്രരെ ഊട്ടൽ.", arabic: nil),
+                        GuideStep(number: 17, title: "Fidyah for chronic inability", titleMl: "ഫിദ്‌യ", detail: "Those permanently unable to fast (chronic illness, old age) pay Fidyah: the equivalent of one meal for each missed day to a poor person.", detailMl: "ശാശ്വതമായി നോൽക്കാൻ കഴിയാത്തവർ — ഓരോ ദിവസത്തിനും ഒരു ദരിദ്രന് ഒരു നേരത്തെ ഭക്ഷണം ഫിദ്‌യ നൽകുക.", arabic: nil)
+                    ]
+                )
+            ]
+        ),
+
         // MARK: Islamic Inheritance
         EmergencyGuide(
             title: "Islamic Inheritance (Mirath)",

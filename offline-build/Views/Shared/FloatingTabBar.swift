@@ -54,24 +54,31 @@ private struct TabItem: View {
             VStack(spacing: 3) {
                 ZStack {
                     if isSelected {
-                        Capsule()
-                            .fill(Color.alehaGreen.opacity(0.14))
-                            .frame(width: 40, height: 26)
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Color.alehaGreen.opacity(0.13))
+                            .frame(width: 44, height: 30)
                             .matchedGeometryEffect(id: "tabPill", in: ns)
                     }
                     Image(systemName: isSelected ? tab.iconFilled : tab.icon)
                         .font(.system(size: 17, weight: isSelected ? .semibold : .regular))
-                        .foregroundStyle(isSelected ? Color.alehaGreen : Color.secondary.opacity(0.6))
-                        .scaleEffect(isSelected ? 1.08 : 1.0)
+                        .foregroundStyle(isSelected ? Color.alehaGreen : Color.secondary.opacity(0.45))
+                        .scaleEffect(isSelected ? 1.05 : 1.0)
                         .symbolEffect(.bounce, value: isSelected)
                 }
-                .frame(height: 28)
+                .frame(height: 30)
 
                 Text(label)
                     .font(.system(size: 9, weight: isSelected ? .bold : .medium))
-                    .foregroundStyle(isSelected ? Color.alehaGreen : Color.secondary.opacity(0.6))
+                    .foregroundStyle(isSelected ? Color.alehaGreen : Color.secondary.opacity(0.45))
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
+
+                // Dot indicator under active tab
+                Circle()
+                    .fill(isSelected ? Color.alehaGreen : Color.clear)
+                    .frame(width: 4, height: 4)
+                    .matchedGeometryEffect(id: "tabDot", in: ns)
+                    .animation(.spring(response: 0.32, dampingFraction: 0.72), value: isSelected)
             }
             .frame(maxWidth: .infinity)
         }

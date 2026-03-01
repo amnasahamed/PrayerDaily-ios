@@ -32,24 +32,7 @@ struct PrayerActionBlock: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            countPill
         }
-    }
-
-    private var countPill: some View {
-        HStack(spacing: 3) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 11))
-                .foregroundStyle(Color.alehaGreen)
-            Text("\(completedCount) / 5")
-                .font(.caption.weight(.bold))
-                .foregroundStyle(Color.alehaGreen)
-                .contentTransition(.numericText())
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(Color.alehaGreen.opacity(0.10))
-        .clipShape(Capsule())
     }
 
     // MARK: - Ring + Prayer List Side by Side
@@ -142,20 +125,41 @@ struct PrayerRowItem: View {
             }
         } label: {
             ZStack {
-                Circle()
-                    .fill(entry.completed ? Color.alehaActiveGreen : Color(.systemGray5).opacity(0.6))
-                    .frame(width: 30, height: 30)
-                    .shadow(color: entry.completed ? Color.alehaActiveGreen.opacity(0.45) : .clear, radius: 7)
                 if entry.completed {
+                    Circle()
+                        .fill(Color.alehaActiveGreen)
+                        .frame(width: 30, height: 30)
+                        .shadow(color: Color.alehaActiveGreen.opacity(0.45), radius: 7)
                     Image(systemName: "checkmark")
                         .font(.system(size: 12, weight: .heavy))
                         .foregroundStyle(.white)
                         .transition(.scale.combined(with: .opacity))
+                } else if isPast {
+                    // Missed – solid gray circle (no checkmark)
+                    Circle()
+                        .fill(Color(.systemGray4).opacity(0.7))
+                        .frame(width: 30, height: 30)
+                } else {
+                    // Upcoming – dashed outline with clock icon
+                    Circle()
+                        .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [4, 3]))
+                        .foregroundStyle(Color.alehaGreen.opacity(0.55))
+                        .frame(width: 30, height: 30)
+                    Image(systemName: "clock")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(Color.alehaGreen.opacity(0.70))
                 }
             }
             .scaleEffect(bounceScale)
         }
         .buttonStyle(.plain)
+    }
+
+    // Determines if a prayer's scheduled time has passed
+    private var isPast: Bool {
+        let hour = Calendar.current.component(.hour, from: Date())
+        let thresholds: [Prayer: Int] = [.fajr: 6, .dhuhr: 13, .asr: 17, .maghrib: 20, .isha: 24]
+        return hour >= (thresholds[entry.prayer] ?? 24)
     }
 
     private func handleSwipe(translation: CGFloat) {

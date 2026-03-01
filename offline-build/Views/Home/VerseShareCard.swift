@@ -85,14 +85,27 @@ struct VerseShareCard: View {
 
     // MARK: - Action Row
     private var actionRow: some View {
-        HStack(spacing: 8) {
-            saveButton
-            shareButton
-            tafsirButton
+        VStack(spacing: 10) {
+            pageIndicator
+            HStack(spacing: 8) {
+                saveButton
+                shareButton
+                tafsirButton
+            }
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 18)
         .padding(.top, 4)
+    }
+
+    private var pageIndicator: some View {
+        HStack(spacing: 5) {
+            ForEach(0..<3, id: \.self) { i in
+                Capsule()
+                    .fill(i == 0 ? Color.alehaAmber : Color.white.opacity(0.30))
+                    .frame(width: i == 0 ? 18 : 6, height: 5)
+            }
+        }
     }
 
     private var saveButton: some View {

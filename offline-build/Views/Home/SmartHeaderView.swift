@@ -1,6 +1,6 @@
 import SwiftUI
 
-// MARK: - Smart Compact Header
+// MARK: - Compact Prayer-Time Header (~90px)
 struct SmartHeaderView: View {
     @ObservedObject var service: PrayerTimesService
     @Environment(\.colorScheme) var cs
@@ -9,139 +9,102 @@ struct SmartHeaderView: View {
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        ZStack {
-            heroBackground
-            VStack(spacing: 0) {
-                mosqueImageLayer
-                contentOverlay
+        HStack(spacing: 14) {
+            leftGreeting
+            Spacer()
+            if let next = service.nextPrayer {
+                nextPrayerPill(next)
             }
+            crescentBadge
         }
-        .frame(height: 200)
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .shadow(color: Color.alehaGreen.opacity(0.22), radius: 18, y: 8)
+        .padding(.horizontal, 18)
+        .padding(.vertical, 16)
+        .background(headerBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .shadow(color: Color.alehaGreen.opacity(cs == .dark ? 0.22 : 0.14), radius: 14, y: 6)
         .onAppear { updateCountdown() }
         .onReceive(timer) { _ in updateCountdown() }
     }
 
-    // MARK: - Hero Background
-    private var heroBackground: some View {
-        ZStack {
-            LinearGradient(
-                colors: [
-                    Color(red: 0.04, green: 0.10, blue: 0.08),
-                    Color(red: 0.06, green: 0.20, blue: 0.13),
-                    Color(red: 0.10, green: 0.30, blue: 0.18)
-                ],
-                startPoint: .topLeading, endPoint: .bottomTrailing
-            )
-            // Subtle star canvas
-            Canvas { context, size in
-                let stars: [(CGFloat, CGFloat, CGFloat)] = [
-                    (0.12, 0.18, 1.3), (0.30, 0.10, 1.8), (0.55, 0.20, 1.1),
-                    (0.72, 0.08, 1.6), (0.88, 0.22, 1.2), (0.45, 0.06, 1.4),
-                    (0.65, 0.14, 0.9), (0.20, 0.30, 1.0), (0.82, 0.28, 1.5)
-                ]
-                for (x, y, r) in stars {
-                    let pt = CGPoint(x: size.width * x, y: size.height * y * 0.55)
-                    let rect = CGRect(x: pt.x - r, y: pt.y - r, width: r * 2, height: r * 2)
-                    context.fill(Path(ellipseIn: rect), with: .color(.white.opacity(0.55)))
-                }
-            }
-            .allowsHitTesting(false)
-            // Green glow orb
-            Circle()
-                .fill(Color.alehaGreen.opacity(0.14))
-                .frame(width: 180, height: 180)
-                .blur(radius: 60)
-                .offset(x: 80, y: -60)
-            // Amber glow
-            Circle()
-                .fill(Color.alehaAmber.opacity(0.08))
-                .frame(width: 100, height: 100)
-                .blur(radius: 40)
-                .offset(x: -80, y: -50)
-        }
-    }
-
-    // MARK: - Mosque Silhouette Image Layer
-    private var mosqueImageLayer: some View {
-        GeometryReader { geo in
-            ZStack(alignment: .bottom) {
-                // Try to load a bundled image; fall back to drawn silhouette
-                MosqueSilhouette()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color(red: 0.03, green: 0.12, blue: 0.07).opacity(0.95),
-                                Color(red: 0.02, green: 0.08, blue: 0.05)
-                            ],
-                            startPoint: .top, endPoint: .bottom
-                        )
-                    )
-                    .frame(width: geo.size.width, height: geo.size.height * 0.52)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-            }
-        }
-    }
-
-    // MARK: - Content Overlay
-    private var contentOverlay: some View {
-        HStack(alignment: .top) {
-            leftContent
-            Spacer()
-            rightContent
-        }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 16)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-    }
-
-    private var leftContent: some View {
-        VStack(alignment: .leading, spacing: 5) {
+    // MARK: - Left: greeting + arabic
+    private var leftGreeting: some View {
+        VStack(alignment: .leading, spacing: 3) {
             Text(greetingText)
                 .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(.white.opacity(0.60))
+                .foregroundStyle(.white.opacity(0.65))
             Text("السلام عليكم")
-                .font(.system(size: 24, weight: .bold, design: .serif))
+                .font(.system(size: 20, weight: .bold, design: .serif))
                 .foregroundStyle(.white)
-            if let next = service.nextPrayer {
-                nextPrayerBadge(next)
-            } else {
-                Text(service.hijriDate.isEmpty ? "Loading…" : service.hijriDate)
-                    .font(.system(size: 10))
-                    .foregroundStyle(.white.opacity(0.40))
-                    .lineLimit(1)
-            }
         }
-        .offset(y: 0)
     }
 
-    private func nextPrayerBadge(_ next: PrayerTime) -> some View {
-        HStack(spacing: 5) {
+    // MARK: - Next prayer pill
+    private func nextPrayerPill(_ next: PrayerTime) -> some View {
+        HStack(spacing: 6) {
             Circle()
                 .fill(Color.alehaGreen)
-                .frame(width: 6, height: 6)
+                .frame(width: 7, height: 7)
                 .opacity(pulseOpacity)
                 .animation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true), value: pulseOpacity)
                 .onAppear { pulseOpacity = 0.25 }
-            Text("Next: \(next.prayer.rawValue) · \(countdown)")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(Color.alehaGreen)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(next.prayer.rawValue)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.white)
+                Text(countdown)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(Color.alehaGreen)
+            }
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 5)
-        .background(Color.alehaGreen.opacity(0.15))
-        .clipShape(Capsule())
+        .padding(.horizontal, 12)
+        .padding(.vertical, 9)
+        .background(.white.opacity(0.10))
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(Color.alehaGreen.opacity(0.30), lineWidth: 1)
+        )
     }
 
-    private var rightContent: some View {
+    // MARK: - Crescent moon badge
+    private var crescentBadge: some View {
         ZStack {
             Circle()
-                .fill(.white.opacity(0.07))
-                .frame(width: 44, height: 44)
+                .fill(.white.opacity(0.09))
+                .frame(width: 38, height: 38)
             CrescentShape()
-                .fill(Color.alehaAmber.opacity(0.88))
-                .frame(width: 20, height: 20)
+                .fill(Color.alehaAmber.opacity(0.90))
+                .frame(width: 18, height: 18)
+        }
+    }
+
+    // MARK: - Background (dark green + stars canvas)
+    private var headerBackground: some View {
+        ZStack {
+            LinearGradient(
+                colors: [
+                    Color(red: 0.04, green: 0.13, blue: 0.09),
+                    Color(red: 0.07, green: 0.22, blue: 0.14)
+                ],
+                startPoint: .topLeading, endPoint: .bottomTrailing
+            )
+            Canvas { context, size in
+                let stars: [(CGFloat, CGFloat, CGFloat)] = [
+                    (0.08, 0.22, 1.2), (0.22, 0.60, 0.9), (0.40, 0.18, 1.4),
+                    (0.60, 0.70, 1.0), (0.78, 0.28, 1.3), (0.92, 0.62, 1.1)
+                ]
+                for (x, y, r) in stars {
+                    let pt = CGPoint(x: size.width * x, y: size.height * y)
+                    let rect = CGRect(x: pt.x - r, y: pt.y - r, width: r * 2, height: r * 2)
+                    context.fill(Path(ellipseIn: rect), with: .color(.white.opacity(0.45)))
+                }
+            }
+            .allowsHitTesting(false)
+            Circle()
+                .fill(Color.alehaGreen.opacity(0.12))
+                .frame(width: 120, height: 120)
+                .blur(radius: 45)
+                .offset(x: 60, y: -20)
         }
     }
 

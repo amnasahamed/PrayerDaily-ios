@@ -14,13 +14,13 @@ struct QuickToolsRow: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
+            HStack(spacing: 6) {
                 ForEach(tools) { tool in
                     ToolPill(tool: tool, service: service)
                 }
             }
             .padding(.horizontal, AppTheme.screenPadding)
-            .padding(.vertical, 2)
+            .padding(.vertical, 6)
         }
         .padding(.horizontal, -AppTheme.screenPadding)
     }
@@ -49,36 +49,35 @@ private struct ToolPill: View {
 
     var body: some View {
         Button { handleTap() } label: {
-            HStack(spacing: 8) {
+            VStack(spacing: 8) {
                 ZStack {
-                    Circle()
-                        .fill(tool.color.opacity(pressed ? 0.28 : 0.15))
-                        .frame(width: 32, height: 32)
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [tool.color.opacity(pressed ? 0.38 : 0.22), tool.color.opacity(pressed ? 0.20 : 0.10)],
+                                startPoint: .topLeading, endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 50, height: 50)
+                        .shadow(color: tool.color.opacity(pressed ? 0.35 : 0.15), radius: pressed ? 8 : 5, y: 3)
                     Image(systemName: tool.icon)
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.system(size: 20, weight: .semibold))
                         .foregroundStyle(tool.color)
                         .scaleEffect(pressed ? 1.15 : 1.0)
                 }
                 Text(tool.label)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(.primary)
                 if let sub = subtitle {
                     Text(sub)
-                        .font(.system(size: 10))
+                        .font(.system(size: 9))
                         .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.88))
-            .clipShape(Capsule())
-            .overlay(Capsule().stroke(
-                pressed ? tool.color.opacity(0.45) : (cs == .dark ? Color.white.opacity(0.10) : Color.white.opacity(0.6)),
-                lineWidth: pressed ? 1 : 0.5
-            ))
-            .shadow(color: pressed ? tool.color.opacity(0.25) : .black.opacity(0.05),
-                    radius: pressed ? 10 : 6, y: 3)
-            .scaleEffect(pressed ? 0.95 : 1.0)
+            .frame(width: 70)
+            .padding(.vertical, 4)
+            .scaleEffect(pressed ? 0.93 : 1.0)
         }
         .buttonStyle(.plain)
         .animation(.spring(response: 0.22, dampingFraction: 0.60), value: pressed)

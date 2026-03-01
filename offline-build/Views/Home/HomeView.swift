@@ -32,7 +32,7 @@ struct HomeView: View {
                 headerSection
                 sectionLabel("moon.stars.fill", l10n.t(.homeSalah))
                 prayerBlock
-                sectionLabel("chart.bar.fill", l10n.t(.homeHabits))
+                habitsHeader
                 habitBlock
                 sectionLabel("bolt.fill", l10n.t(.homeQuickTools))
                 quickTools
@@ -59,16 +59,37 @@ struct HomeView: View {
 
     // MARK: - Section Label
     private func sectionLabel(_ icon: String, _ title: String) -> some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 7) {
             Image(systemName: icon)
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(Color.alehaGreen)
-            Text(title)
                 .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Color.alehaGreen)
+            Text(title.uppercased())
+                .font(.system(size: 11, weight: .bold))
+                .kerning(1.1)
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, 2)
+        .padding(.top, 10)
+    }
+
+    // MARK: - Habits Header
+    private var habitsHeader: some View {
+        HStack {
+            HStack(spacing: 7) {
+                Image(systemName: "chart.bar.fill")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Color.alehaGreen)
+                Text("HABITS".uppercased())
+                    .font(.system(size: 11, weight: .bold))
+                    .kerning(1.1)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text("This week")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(Color.alehaGreen)
+        }
+        .padding(.top, 10)
     }
 
     // MARK: - Sections

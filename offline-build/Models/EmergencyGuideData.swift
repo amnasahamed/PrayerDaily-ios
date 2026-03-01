@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - Guide Models
-struct EmergencyGuide: Identifiable {
+struct EmergencyGuide: Identifiable, Hashable {
     let id = UUID()
     let title: String
     let titleMl: String
@@ -11,20 +11,26 @@ struct EmergencyGuide: Identifiable {
     let subtitleMl: String
     let sections: [GuideSection]
 
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+    static func == (lhs: EmergencyGuide, rhs: EmergencyGuide) -> Bool { lhs.id == rhs.id }
+
     func localizedTitle(isMalayalam: Bool) -> String { isMalayalam ? titleMl : title }
     func localizedSubtitle(isMalayalam: Bool) -> String { isMalayalam ? subtitleMl : subtitle }
 }
 
-struct GuideSection: Identifiable {
+struct GuideSection: Identifiable, Hashable {
     let id = UUID()
     let heading: String
     let headingMl: String
     let steps: [GuideStep]
 
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+    static func == (lhs: GuideSection, rhs: GuideSection) -> Bool { lhs.id == rhs.id }
+
     func localizedHeading(isMalayalam: Bool) -> String { isMalayalam ? headingMl : heading }
 }
 
-struct GuideStep: Identifiable {
+struct GuideStep: Identifiable, Hashable {
     let id = UUID()
     let number: Int
     let title: String
@@ -32,6 +38,9 @@ struct GuideStep: Identifiable {
     let detail: String
     let detailMl: String
     let arabic: String?
+
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+    static func == (lhs: GuideStep, rhs: GuideStep) -> Bool { lhs.id == rhs.id }
 
     func localizedTitle(isMalayalam: Bool) -> String { isMalayalam ? titleMl : title }
     func localizedDetail(isMalayalam: Bool) -> String { isMalayalam ? detailMl : detail }

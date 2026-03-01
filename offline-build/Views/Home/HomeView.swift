@@ -8,21 +8,19 @@ struct HomeView: View {
     @State private var appeared = false
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                CalmingBackground()
-                mainScroll
-            }
-            .navigationTitle("")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .principal) { navLogo } }
-            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .onAppear {
-                prayerService.requestLocation()
-                withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.05)) {
-                    appeared = true
-                }
+        ZStack {
+            CalmingBackground()
+            mainScroll
+        }
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar { ToolbarItem(placement: .principal) { navLogo } }
+        .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .onAppear {
+            prayerService.requestLocation()
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.05)) {
+                appeared = true
             }
         }
     }
@@ -38,6 +36,8 @@ struct HomeView: View {
                 habitBlock
                 sectionLabel("bolt.fill", l10n.t(.homeQuickTools))
                 quickTools
+                sectionLabel("book.closed.fill", "Islamic Guides")
+                guidesSection
                 sectionLabel("text.quote", l10n.t(.homeVerseOfDay))
                 verseCard
             }
@@ -93,6 +93,11 @@ struct HomeView: View {
             .staggerAppear(appeared, index: 3)
     }
 
+    private var guidesSection: some View {
+        IslamicGuidesSection()
+            .staggerAppear(appeared, index: 4)
+    }
+
     private var verseCard: some View {
         VerseShareCard(
             arabic: SampleData.dailyAyah.arabic,
@@ -100,6 +105,6 @@ struct HomeView: View {
             reference: SampleData.dailyAyah.reference,
             tafsir: SampleData.dailyAyah.tafsir
         )
-        .staggerAppear(appeared, index: 4)
+        .staggerAppear(appeared, index: 5)
     }
 }

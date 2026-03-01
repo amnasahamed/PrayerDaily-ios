@@ -26,7 +26,7 @@ struct NoorApp: App {
         WindowGroup {
             ZStack(alignment: .bottom) {
                 TabView(selection: $selectedTab) {
-                    HomeView()
+                    NavigationStack { HomeView() }
                         .tag(AppTab.home)
                     SurahListView()
                         .tag(AppTab.quran)

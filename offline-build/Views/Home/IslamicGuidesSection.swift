@@ -21,16 +21,16 @@ private let categoryMap: [String: String] = [
 
 private let categoryOrder: [String] = ["Purification", "Prayer", "Finance & Fiqh", "Supplications"]
 
-// MARK: - Per-guide icon + accent
+// MARK: - Per-guide icon + accent (all valid SF Symbols)
 private let guideIconMap: [String: (icon: String, accent: Color)] = [
-    "Wudu (Ablution)":              ("hand.raised.fill",     Color.alehaGreen),
-    "Ghusl (Ritual Bath)":          ("drop.fill",            Color(red: 0.20, green: 0.55, blue: 0.85)),
-    "Tayammum (Dry Ablution)":      ("sun.dust.fill",        Color.alehaAmber),
-    "Salah (Prayer)":               ("moon.fill",            Color(red: 0.42, green: 0.28, blue: 0.82)),
-    "Janazah Prayer":               ("heart.fill",           Color(red: 0.68, green: 0.28, blue: 0.50)),
-    "Zakat Calculation":            ("banknote.fill",        Color(red: 0.18, green: 0.55, blue: 0.42)),
-    "Islamic Inheritance (Mirath)": ("scroll.fill",          Color(red: 0.75, green: 0.42, blue: 0.18)),
-    "Essential Duas":               ("hands.sparkles.fill",  Color(red: 0.80, green: 0.36, blue: 0.20)),
+    "Wudu (Ablution)":              ("hand.raised.fill",       Color.alehaGreen),
+    "Ghusl (Ritual Bath)":          ("drop.fill",              Color(red: 0.20, green: 0.55, blue: 0.85)),
+    "Tayammum (Dry Ablution)":      ("sun.dust.fill",          Color.alehaAmber),
+    "Salah (Prayer)":               ("figure.stand",           Color(red: 0.42, green: 0.28, blue: 0.82)),
+    "Janazah Prayer":               ("heart.fill",             Color(red: 0.68, green: 0.28, blue: 0.50)),
+    "Zakat Calculation":            ("banknote.fill",          Color(red: 0.18, green: 0.55, blue: 0.42)),
+    "Islamic Inheritance (Mirath)": ("scroll.fill",            Color(red: 0.75, green: 0.42, blue: 0.18)),
+    "Essential Duas":               ("hands.sparkles.fill",    Color(red: 0.80, green: 0.36, blue: 0.20)),
 ]
 
 // MARK: - Main Section

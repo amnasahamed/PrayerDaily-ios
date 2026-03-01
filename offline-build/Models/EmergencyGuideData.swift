@@ -94,25 +94,66 @@ struct EmergencyGuideData {
         EmergencyGuide(
             title: "Salah (Prayer)",
             titleMl: "നമസ്കാരം",
-            icon: "star.and.crescent",
+            icon: "figure.stand",
             color: "NoorGold",
             subtitle: "How to perform the daily prayers",
             subtitleMl: "ദൈനദിന നമസ്കാരം",
             sections: [
                 GuideSection(
-                    heading: "Standing (Qiyam)",
-                    headingMl: "നിൽക്കൽ (ക്വിയാം)",
+                    heading: "Before You Begin",
+                    headingMl: "തുടങ്ങുന്നതിന് മുൻപ്",
                     steps: [
-                        GuideStep(number: 1, title: "Takbir al-Ihram", titleMl: "തക്ബീറതുൽ ഇഹ്‌റാം", detail: "Raise hands to ears and say Allahu Akbar.", detailMl: "ചെവി വരെ കൈ ഉയർത്തി 'അല്ലാഹു അക്ബർ' ചൊല്ലുക.", arabic: "اللَّهُ أَكْبَرُ"),
-                        GuideStep(number: 2, title: "Recite Al-Fatiha", titleMl: "ഫാതിഹ പാരായണം", detail: "Recite Surah Al-Fatiha followed by any surah.", detailMl: "സൂറ അൽ-ഫാതിഹ ഓതി ഏതെങ്കിലും സൂറ ചേർക്കുക.", arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
+                        GuideStep(number: 1, title: "Wudu (Ablution)", titleMl: "വുളൂ ചെയ്യുക", detail: "Ensure you have valid wudu. Perform it if needed before starting prayer.", detailMl: "നമസ്കാരം ആരംഭിക്കുന്നതിന് മുൻപ് വുളൂ ഉണ്ടെന്ന് ഉറപ്പ് വരുത്തുക.", arabic: nil),
+                        GuideStep(number: 2, title: "Face the Qibla", titleMl: "ഖിബ്‌ലയ്ക്ക് അഭിമുഖമായി നിൽക്കുക", detail: "Face the direction of the Kaaba in Makkah.", detailMl: "മക്കയിലെ കഅ്ബയ്ക്ക് അഭിമുഖമായി നിൽക്കുക.", arabic: nil),
+                        GuideStep(number: 3, title: "Niyyah (Intention)", titleMl: "നിയ്യത്ത്", detail: "Make intention in your heart for the specific prayer you are about to perform.", detailMl: "ഏത് നമസ്കാരം ചെയ്യാൻ പോകുന്നുവോ അതിനുള്ള നിയ്യത്ത് മനസ്സിൽ ചെയ്യുക.", arabic: nil)
                     ]
                 ),
                 GuideSection(
-                    heading: "Ruku & Sujood",
-                    headingMl: "റുകൂ & സുജൂദ്",
+                    heading: "Standing (Qiyam)",
+                    headingMl: "നിൽക്കൽ (ക്വിയാം)",
                     steps: [
-                        GuideStep(number: 3, title: "Ruku (Bowing)", titleMl: "റുകൂ", detail: "Bow with hands on knees and say SubhanAllah 3 times.", detailMl: "കൈ മുട്ടിൽ വച്ച് കുനിഞ്ഞ് 'സുബ്ഹാനല്ലാഹ്' മൂന്ന് തവണ ചൊല്ലുക.", arabic: "سُبْحَانَ رَبِّيَ الْعَظِيمِ"),
-                        GuideStep(number: 4, title: "Sujood (Prostration)", titleMl: "സുജൂദ്", detail: "Prostrate on 7 body parts and say SubhanAllah 3 times.", detailMl: "ഏഴ് അവയവം ഉപയോഗിച്ച് സുജൂദ് ചെയ്ത് മൂന്ന് തവണ ചൊല്ലുക.", arabic: "سُبْحَانَ رَبِّيَ الْأَعْلَى")
+                        GuideStep(number: 4, title: "Takbir al-Ihram", titleMl: "തക്ബീറതുൽ ഇഹ്‌റാം", detail: "Raise both hands to your ears (men) or shoulders (women) and say Allahu Akbar to open the prayer.", detailMl: "കൈ ചെവി വരെ (പുരുഷൻ) അല്ലെങ്കിൽ തോൾ വരെ (സ്ത്രീ) ഉയർത്തി 'അല്ലാഹു അക്ബർ' ചൊല്ലി നമസ്കാരം ആരംഭിക്കുക.", arabic: "اللَّهُ أَكْبَرُ"),
+                        GuideStep(number: 5, title: "Opening Dua (Thana)", titleMl: "ആരംഭ ദുആ (തനാ)", detail: "Recite the opening supplication quietly after Takbir.", detailMl: "തക്ബീറിന് ശേഷം ഉള്ളിൽ ആരംഭ ദുആ ഓതുക.", arabic: "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَهَ غَيْرُكَ"),
+                        GuideStep(number: 6, title: "Recite Al-Fatiha", titleMl: "ഫാതിഹ പാരായണം", detail: "Recite Surah Al-Fatiha in every rakat. It is a pillar of prayer.", detailMl: "ഓരോ റക്അതിലും സൂറ അൽ-ഫാതിഹ ഓതുക. ഇത് നമസ്കാരത്തിന്റെ ഒരു റുക്നാണ്.", arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ"),
+                        GuideStep(number: 7, title: "Recite Additional Surah", titleMl: "അധിക സൂറ ഓതുക", detail: "After Al-Fatiha in the first two rakats, recite any surah or verses from the Quran.", detailMl: "ആദ്യ രണ്ട് റക്അതുകളിൽ ഫാതിഹക്ക് ശേഷം ഖുർആനിൽ നിന്ന് ഏതെങ്കിലും സൂറ ഓതുക.", arabic: nil)
+                    ]
+                ),
+                GuideSection(
+                    heading: "Ruku (Bowing)",
+                    headingMl: "റുകൂ",
+                    steps: [
+                        GuideStep(number: 8, title: "Go into Ruku", titleMl: "റുകൂ ചെയ്യുക", detail: "Bow forward with a straight back, placing both hands firmly on your knees.", detailMl: "നടുവ് നേരെ നിർത്തി രണ്ട് കൈയും മുട്ടിൽ ഉറപ്പിച്ച് കുനിയുക.", arabic: nil),
+                        GuideStep(number: 9, title: "Tasbih in Ruku", titleMl: "റുകൂ തസ്ബീഹ്", detail: "Say SubhanAllah Rabbi al-Azim at least 3 times while bowing.", detailMl: "കുനിഞ്ഞ് 'സുബ്ഹാന റബ്ബിയൽ അദ്‌വീം' കുറഞ്ഞത് മൂന്ന് തവണ ചൊല്ലുക.", arabic: "سُبْحَانَ رَبِّيَ الْعَظِيمِ"),
+                        GuideStep(number: 10, title: "Rise from Ruku", titleMl: "റുകൂ വിടുക", detail: "Rise saying Sami Allahu liman hamidah, then stand fully and say Rabbana lakal hamd.", detailMl: "'സമിഅ അല്ലാഹു ലിമൻ ഹമിദഹ്' ചൊല്ലി നിവർന്ന് 'റബ്ബനാ ലകൽ ഹംദ്' ചൊല്ലുക.", arabic: "سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ۝ رَبَّنَا وَلَكَ الْحَمْدُ")
+                    ]
+                ),
+                GuideSection(
+                    heading: "Sujood (Prostration)",
+                    headingMl: "സുജൂദ്",
+                    steps: [
+                        GuideStep(number: 11, title: "Go into Sujood", titleMl: "സുജൂദ് ചെയ്യുക", detail: "Prostrate on 7 body parts: forehead & nose, both palms, both knees, both feet.", detailMl: "ഏഴ് അവയവം — നെറ്റി & മൂക്ക്, ഇരു കൈകൾ, ഇരു മുട്ടുകൾ, ഇരു കാലടി — ഉപയോഗിച്ച് സുജൂദ് ചെയ്യുക.", arabic: nil),
+                        GuideStep(number: 12, title: "Tasbih in Sujood", titleMl: "സുജൂദ് തസ്ബീഹ്", detail: "Say SubhanAllah Rabbi al-Ala at least 3 times while prostrating.", detailMl: "സുജൂദിൽ 'സുബ്ഹാന റബ്ബിയൽ അഅ്‌ലാ' കുറഞ്ഞത് മൂന്ന് തവണ ചൊല്ലുക.", arabic: "سُبْحَانَ رَبِّيَ الْأَعْلَى"),
+                        GuideStep(number: 13, title: "Sit between Sujood", titleMl: "ഇരട്ട സുജൂദ് ഇടവേള", detail: "Rise from first sujood, sit briefly saying Rabbighfirli, then perform a second sujood.", detailMl: "ആദ്യ സുജൂദിൽ നിന്ന് ഉയർന്ന് 'റബ്ബിഗ്ഫിർലി' ചൊല്ലി ഇരുന്ന ശേഷം രണ്ടാം സുജൂദ് ചെയ്യുക.", arabic: "رَبِّ اغْفِرْ لِي")
+                    ]
+                ),
+                GuideSection(
+                    heading: "Tashahhud & Closing",
+                    headingMl: "തഷഹ്ഹുദ് & അവസാനം",
+                    steps: [
+                        GuideStep(number: 14, title: "Tashahhud (Sitting)", titleMl: "തഷഹ്ഹുദ്", detail: "In the final rakat, sit and recite Tashahhud, raising the index finger on 'illa Allah'.", detailMl: "അവസാന റക്അതിൽ ഇരുന്ന് തഷഹ്ഹുദ് ഓതുക. 'ഇല്ലല്ലാഹ്' ൽ ചൂണ്ടുവിരൽ ഉയർത്തുക.", arabic: "التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ"),
+                        GuideStep(number: 15, title: "Salawat (Durood)", titleMl: "ദുറൂദ് ഓതുക", detail: "After Tashahhud, send blessings on the Prophet ﷺ and Ibrahim ﷺ (Durood Ibrahim).", detailMl: "തഷഹ്ഹുദിന് ശേഷം നബി ﷺ, ഇബ്‌റാഹിം ﷺ എന്നിവർക്ക് ദുറൂദ് ചൊല്ലുക.", arabic: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ"),
+                        GuideStep(number: 16, title: "Tasleem (Salaam)", titleMl: "തസ്‌ലീം (സലാം)", detail: "End the prayer by turning your head right then left, saying As-salamu Alaykum wa Rahmatullah each time.", detailMl: "വലത്തോട്ടും ഇടത്തോട്ടും 'അസ്സലാമു അലൈക്കും വ റഹ്മതുള്ളാഹ്' ചൊല്ലി നമസ്കാരം അവസാനിപ്പിക്കുക.", arabic: "السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ")
+                    ]
+                ),
+                GuideSection(
+                    heading: "Number of Rakats",
+                    headingMl: "റക്അതുകളുടെ എണ്ണം",
+                    steps: [
+                        GuideStep(number: 17, title: "Fajr — 2 rakats", titleMl: "ഫജ്ർ — 2 റക്അത്", detail: "2 obligatory (fard) rakats. Performed at dawn before sunrise.", detailMl: "2 ഫർദ് റക്അത്. സൂര്യോദയത്തിന് മുൻപ് ഉഷസ്സ് വേളയിൽ.", arabic: nil),
+                        GuideStep(number: 18, title: "Dhuhr — 4 rakats", titleMl: "ദുഹ്ർ — 4 റക്അത്", detail: "4 fard rakats. Performed at noon after the sun passes its zenith.", detailMl: "4 ഫർദ് റക്അത്. ഉച്ചക്ക് സൂര്യൻ ഉച്ചസ്ഥാനം കഴിഞ്ഞ ശേഷം.", arabic: nil),
+                        GuideStep(number: 19, title: "Asr — 4 rakats", titleMl: "അസ്ർ — 4 റക്അത്", detail: "4 fard rakats. Performed in the afternoon.", detailMl: "4 ഫർദ് റക്അത്. ഉച്ചതിരിഞ്ഞ്.", arabic: nil),
+                        GuideStep(number: 20, title: "Maghrib — 3 rakats", titleMl: "മഗ്‌രിബ് — 3 റക്അത്", detail: "3 fard rakats. Performed immediately after sunset.", detailMl: "3 ഫർദ് റക്അത്. സൂര്യാസ്തമനത്തിന് ഉടൻ ശേഷം.", arabic: nil),
+                        GuideStep(number: 21, title: "Isha — 4 rakats", titleMl: "ഇശാ — 4 റക്അത്", detail: "4 fard rakats. Performed at night after twilight disappears.", detailMl: "4 ഫർദ് റക്അത്. രാത്രി സന്ധ്യ ഇരുൾ മറഞ്ഞ ശേഷം.", arabic: nil)
                     ]
                 )
             ]

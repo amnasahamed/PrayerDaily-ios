@@ -1,23 +1,35 @@
 import SwiftUI
 
+// MARK: - Language Picker — Apple Settings style
 struct LanguagePickerSheet: View {
     @EnvironmentObject var localization: LocalizationManager
     @Environment(\.dismiss) var dismiss
+    @Environment(\.colorScheme) var cs
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                CalmingBackground().ignoresSafeArea()
-                VStack(spacing: 28) {
-                    languageIcon
-                    headerText
-                    languageCards
-                    Spacer()
-                    footerNote
+            List {
+                Section {
+                    ForEach(AppLanguage.allCases, id: \.rawValue) { lang in
+                        LanguageRow(
+                            lang: lang,
+                            isSelected: localization.currentLanguage == lang
+                        ) {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                localization.currentLanguage = lang
+                            }
+                            UISelectionFeedbackGenerator().selectionChanged()
+                        }
+                    }
+                } header: {
+                    Text("PREFERRED LANGUAGE")
+                } footer: {
+                    Text(localization.currentLanguage == .malayalam
+                         ? "ഖുർആൻ പരിഭാഷ ഇംഗ്ലീഷിൽ തന്നെ തുടരും."
+                         : "Quran translation remains in English.")
                 }
-                .padding(AppTheme.screenPadding)
-                .padding(.top, 8)
             }
+            .listStyle(.insetGrouped)
             .navigationTitle(localization.t(.moreLanguage))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -29,104 +41,40 @@ struct LanguagePickerSheet: View {
             }
         }
     }
-
-    private var languageIcon: some View {
-        ZStack {
-            Circle()
-                .fill(LinearGradient(
-                    colors: [Color.alehaGreen.opacity(0.15), Color.alehaAmber.opacity(0.10)],
-                    startPoint: .topLeading, endPoint: .bottomTrailing))
-                .frame(width: 80, height: 80)
-            Text("🌐")
-                .font(.system(size: 38))
-        }
-    }
-
-    private var headerText: some View {
-        VStack(spacing: 6) {
-            Text(localization.t(.moreLanguage))
-                .font(.title2.weight(.bold))
-            Text("English · മലയാളം")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private var languageCards: some View {
-        VStack(spacing: 12) {
-            ForEach(AppLanguage.allCases, id: \.rawValue) { lang in
-                LanguageCard(language: lang, isSelected: localization.currentLanguage == lang) {
-                    withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
-                        localization.currentLanguage = lang
-                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                    }
-                }
-            }
-        }
-    }
-
-    private var footerNote: some View {
-        Text(localization.currentLanguage == .malayalam
-             ? "ഖുർആൻ പരിഭാഷ സ്ഥിരസ്ഥിതിയിൽ ഇംഗ്ലീഷിൽ തന്നെ."
-             : "Quran translation remains in English.")
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .multilineTextAlignment(.center)
-            .padding(.bottom, 20)
-    }
 }
 
-// MARK: - Language Card
-private struct LanguageCard: View {
-    let language: AppLanguage
+// MARK: - Language Row
+private struct LanguageRow: View {
+    let lang: AppLanguage
     let isSelected: Bool
     let onTap: () -> Void
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 16) {
-                // Flag circle
-                ZStack {
-                    Circle()
-                        .fill(isSelected ? Color.alehaGreen.opacity(0.12) : Color(.systemGray6))
-                        .frame(width: 50, height: 50)
-                    Text(language.flag)
-                        .font(.system(size: 26))
-                }
+            HStack(spacing: 12) {
+                Text(lang.flag)
+                    .font(.system(size: 28))
+                    .frame(width: 36)
 
-                // Language info
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(language.displayName)
-                        .font(.body.weight(.semibold))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(lang.displayName)
+                        .font(.body)
                         .foregroundStyle(.primary)
-                    Text(language == .english ? "English" : "Malayalam")
-                        .font(.caption)
+                    Text(lang == .english ? "English" : "Malayalam")
+                        .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
 
                 Spacer()
 
-                // Checkmark
-                ZStack {
-                    Circle()
-                        .fill(isSelected ? Color.alehaGreen : Color(.systemGray5))
-                        .frame(width: 26, height: 26)
+                if isSelected {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(.white)
-                        .opacity(isSelected ? 1 : 0)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(Color.alehaGreen)
                 }
             }
-            .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(isSelected ? Color.alehaGreen.opacity(0.6) : Color.clear, lineWidth: 1.5)
-                    )
-            )
+            .contentShape(Rectangle())
         }
-        .buttonStyle(SpringPressStyle())
+        .buttonStyle(.plain)
     }
 }

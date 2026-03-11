@@ -5,29 +5,22 @@ import UserNotifications
 struct NoorApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    @State private var selectedTab: AppTab = .home
-    @StateObject private var salahStore = SalahStore()
-    @StateObject private var localization = LocalizationManager.shared
-    @StateObject private var networkMonitor = NetworkMonitor.shared
-    @AppStorage("appearanceMode") private var appearanceMode: String = "system"
-    @AppStorage("arabicFontSize") private var arabicFontSize: Double = 28
-    @AppStorage("translationEnabled") private var translationEnabled: Bool = true
-    @AppStorage("transliterationEnabled") private var transliterationEnabled: Bool = true
-    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
-    @AppStorage("notificationsEnabled") private var notificationsEnabled: Bool = false
-
-    private var preferredColorScheme: ColorScheme? {
-        switch appearanceMode {
-        case "light": return .light
-        case "dark":  return .dark
-        default:      return nil
-        }
-    }
-
     init() {
-        UITabBar.appearance().isHidden = true
+        // Hide the system tab bar — we use a custom FloatingTabBar overlay.
+        // On iOS 26+ the .page TabViewStyle has no system bar, so this is a no-op there.
+        if #available(iOS 26.0, *) {
+            // iOS 26 renders TabView(.page) without a system bar by default; no action needed.
+        } else {
+            UITabBar.appearance().isHidden = true
+        }
         AppReviewManager.incrementSession()
         configureNavigationBarAppearance()
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            AppRootView()
+        }
     }
 
     private func configureNavigationBarAppearance() {
@@ -43,20 +36,49 @@ struct NoorApp: App {
         UINavigationBar.appearance().compactAppearance = appearance
         UINavigationBar.appearance().tintColor = UIColor(Color.alehaGreen)
     }
+}
 
-    var body: some Scene {
-        WindowGroup {
-            Group {
-                if hasCompletedOnboarding {
-                    mainApp
-                } else {
-                    OnboardingView(hasCompletedOnboarding: $hasCompletedOnboarding)
-                        .transition(.opacity)
-                }
-            }
-            .animation(.easeInOut(duration: 0.4), value: hasCompletedOnboarding)
-            .preferredColorScheme(preferredColorScheme)
+// MARK: - App Root View
+// Lives as a proper SwiftUI View so @AppStorage reactivity is guaranteed:
+// View state changes trigger an immediate render cycle, ensuring
+// preferredColorScheme updates in the exact same frame as the user's tap.
+// No window-level overrideUserInterfaceStyle is used — the hosting controller
+// propagates the trait to all UIKit descendants automatically.
+struct AppRootView: View {
+    @State private var selectedTab: AppTab = .home
+    @StateObject private var salahStore = SalahStore()
+    @StateObject private var localization = LocalizationManager.shared
+    @StateObject private var networkMonitor = NetworkMonitor.shared
+
+    @AppStorage("appearanceMode")          private var appearanceMode: String  = "system"
+    @AppStorage("arabicFontSize")          private var arabicFontSize: Double  = 28
+    @AppStorage("translationEnabled")      private var translationEnabled: Bool = true
+    @AppStorage("transliterationEnabled")  private var transliterationEnabled: Bool = true
+    @AppStorage("hasCompletedOnboarding")  private var hasCompletedOnboarding: Bool = false
+    @AppStorage("notificationsEnabled")    private var notificationsEnabled: Bool = false
+
+    private var preferredColorScheme: ColorScheme? {
+        switch appearanceMode {
+        case "light": return .light
+        case "dark":  return .dark
+        default:      return nil
         }
+    }
+
+    var body: some View {
+        Group {
+            if hasCompletedOnboarding {
+                mainApp
+            } else {
+                OnboardingView(hasCompletedOnboarding: $hasCompletedOnboarding)
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut(duration: 0.4), value: hasCompletedOnboarding)
+        // Single mechanism — no window-level override needed.
+        // The hosting controller propagates this to every UIKit descendant
+        // (nav bars, sheets, alerts) in the same render frame.
+        .preferredColorScheme(preferredColorScheme)
     }
 
     private var mainApp: some View {
@@ -95,6 +117,22 @@ struct NoorApp: App {
                 selectedTab = .salah
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .didTapQuickAccess)) { note in
+            if let tab = note.object as? AppTab {
+                selectedTab = tab
+            }
+        }
+        // Synchronously propagate trait to ALL UIPageViewController child HCs,
+        // avoiding the async traitCollectionDidChange lag on tab-page hosting controllers.
+        .onChange(of: appearanceMode) { _, newMode in
+            let style: UIUserInterfaceStyle =
+                newMode == "dark"  ? .dark  :
+                newMode == "light" ? .light : .unspecified
+            UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .flatMap { $0.windows }
+                .forEach { $0.overrideUserInterfaceStyle = style }
+        }
     }
 }
 
@@ -104,12 +142,15 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self
-        // Re-schedule notifications if permission was previously granted
+        // Re-schedule notifications if permission was previously granted and not already scheduled today
         NotificationService.shared.checkStatus { status in
-            if status == .authorized {
-                NotificationService.shared.scheduleDailyPrayerReminders()
-                NotificationService.shared.scheduleDailyVerseNotification()
-            }
+            guard status == .authorized else { return }
+            let today = Calendar.current.startOfDay(for: Date())
+            let lastScheduled = UserDefaults.standard.object(forKey: "lastNotifScheduleDate") as? Date
+            guard lastScheduled.map({ Calendar.current.startOfDay(for: $0) }) != today else { return }
+            NotificationService.shared.scheduleDailyPrayerReminders()
+            NotificationService.shared.scheduleDailyVerseNotification()
+            UserDefaults.standard.set(Date(), forKey: "lastNotifScheduleDate")
         }
         return true
     }
@@ -127,7 +168,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                                  withCompletionHandler completionHandler: @escaping () -> Void) {
         let id = response.notification.request.identifier
         NSLog("[Notifications] Tapped notification: \(id)")
-        // Post a notification so the app can navigate if needed
         NotificationCenter.default.post(name: .didTapPrayerNotification, object: id)
         completionHandler()
     }
@@ -135,6 +175,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
 extension Notification.Name {
     static let didTapPrayerNotification = Notification.Name("didTapPrayerNotification")
+    static let didTapQuickAccess = Notification.Name("didTapQuickAccess")
 }
 
 // MARK: - Environment Keys for global settings

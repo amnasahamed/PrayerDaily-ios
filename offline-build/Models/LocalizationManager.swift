@@ -82,6 +82,7 @@ enum LocalizedKey {
     // Library
     case libraryTitle, libraryKnowledge, libraryDuas, libraryTools, libraryGuides
     case libraryContinueReading, libraryHadith, libraryHadithCollection
+    case libraryHadithCollections, libraryDuaCollection
     case libraryQibla, libraryTasbih, libraryIslamicCalendar
 
     // Qibla
@@ -229,6 +230,8 @@ enum LocalizedKey {
         case .libraryContinueReading: return "Continue Reading"
         case .libraryHadith: return "Hadith"
         case .libraryHadithCollection: return "Hadith Collection"
+        case .libraryHadithCollections: return "Hadith Collections"
+        case .libraryDuaCollection: return "Dua Collection"
         case .libraryQibla: return "Qibla"
         case .libraryTasbih: return "Tasbih"
         case .libraryIslamicCalendar: return "Islamic Calendar"
@@ -279,9 +282,9 @@ enum LocalizedKey {
         case .moreStreakHistory: return "Streak History"
         case .moreExport: return "Export My Data"
         case .moreCommunity: return "Community"
-        case .moreShare: return "Share Aleha"
+        case .moreShare: return "Share Muslim Pro"
         case .moreInvite: return "Invite Friends"
-        case .moreAbout: return "About Aleha"
+        case .moreAbout: return "About Muslim Pro"
         case .moreLanguage: return "Language"
         case .moreReset: return "Reset App"
         case .moreResetTitle: return "Reset Everything?"
@@ -460,6 +463,8 @@ enum LocalizedKey {
         case .libraryContinueReading: return "വായന തുടരുക"
         case .libraryHadith: return "ഹദീസ്"
         case .libraryHadithCollection: return "ഹദീസ് ശേഖരം"
+        case .libraryHadithCollections: return "ഹദീസ് ശേഖരങ്ങൾ"
+        case .libraryDuaCollection: return "ദുആ ശേഖരം"
         case .libraryQibla: return "ഖിബ്‌ല"
         case .libraryTasbih: return "തസ്ബീഹ്"
         case .libraryIslamicCalendar: return "ഇസ്‌ലാമിക കലണ്ടർ"

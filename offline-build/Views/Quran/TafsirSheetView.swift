@@ -3,8 +3,6 @@ import SwiftUI
 struct TafsirSheetView: View {
     let verse: Verse
     let tafsirText: String?
-    @State private var isLoadingTafsir = false
-    @State private var loadedTafsir: String?
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -60,21 +58,13 @@ struct TafsirSheetView: View {
                 .font(.headline)
                 .foregroundStyle(Color("NoorPrimary"))
 
-            let text = tafsirText ?? loadedTafsir
-            if let t = text, !t.isEmpty {
+            if let t = tafsirText, !t.isEmpty {
                 Text(t)
                     .font(.body)
                     .lineSpacing(6)
                     .foregroundStyle(.primary)
-            } else if isLoadingTafsir {
-                HStack {
-                    ProgressView()
-                    Text("Loading tafsir...")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
             } else {
-                Text("Tafsir not available for this verse. Please check your connection and try again.")
+                Text("Tafsir not available for this verse.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

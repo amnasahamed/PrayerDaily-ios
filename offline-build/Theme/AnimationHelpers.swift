@@ -129,7 +129,7 @@ struct ConfettiBurst: View {
                     ConfettiParticle(
                         x: cx + CGFloat.random(in: -40...40),
                         y: geo.size.height * 0.4,
-                        color: colors.randomElement()!,
+                        color: colors.randomElement() ?? .green,
                         rotation: Double.random(in: 0...360),
                         scale: CGFloat.random(in: 0.6...1.4),
                         opacity: 1,

@@ -17,6 +17,7 @@ struct HomeView: View {
         }
         .onAppear {
             prayerService.requestLocation()
+            loadTodayFromStore()
             withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.05)) {
                 appeared = true
             }
@@ -78,6 +79,15 @@ struct HomeView: View {
     private var guidesSection: some View {
         IslamicGuidesSection()
             .staggerAppear(appeared, index: 3)
+    }
+
+    private func loadTodayFromStore() {
+        let today = Date()
+        let dayLog = salahStore.log(for: today)
+        todayPrayers = Prayer.allCases.map { prayer in
+            let completed = dayLog.status(for: prayer) == .prayed || dayLog.status(for: prayer) == .late
+            return SalahLogEntry(prayer: prayer, completed: completed, date: today)
+        }
     }
 
     private var verseCard: some View {

@@ -142,6 +142,31 @@ struct ChapterSection: View {
 struct HadithRowView: View {
     let hadith: HadithEntry
     @State private var showFull = false
+    @AppStorage("bookmarkedHadiths") private var bookmarkedHadiths: String = ""
+
+    private var isBookmarked: Bool {
+        bookmarkedHadiths.components(separatedBy: ",").contains(hadith.reference)
+    }
+
+    private func toggleBookmark() {
+        var ids = bookmarkedHadiths.isEmpty ? [] : bookmarkedHadiths.components(separatedBy: ",")
+        if isBookmarked {
+            ids.removeAll { $0 == hadith.reference }
+        } else {
+            ids.append(hadith.reference)
+        }
+        bookmarkedHadiths = ids.joined(separator: ",")
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+
+    private func shareHadith() {
+        let text = "\(hadith.arabic)\n\n\(hadith.english)\n\n— \(hadith.reference)"
+        let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let root = scene.windows.first?.rootViewController {
+            root.present(av, animated: true)
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -193,12 +218,12 @@ struct HadithRowView: View {
                 .font(.caption2)
                 .foregroundStyle(.secondary)
             Spacer()
-            Button(action: {}) {
-                Image(systemName: "bookmark")
+            Button(action: toggleBookmark) {
+                Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
                     .font(.caption)
                     .foregroundStyle(Color("NoorGold"))
             }
-            Button(action: {}) {
+            Button(action: shareHadith) {
                 Image(systemName: "square.and.arrow.up")
                     .font(.caption)
                     .foregroundStyle(.secondary)

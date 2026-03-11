@@ -144,7 +144,7 @@ private struct DhikrSheetWrapper: View {
 // MARK: - Quran Quick Sheet
 private struct QuranQuickSheet: View {
     @Environment(\.dismiss) var dismiss
-    private let featured = Array(QuranData.allSurahs.prefix(10))
+    private let featured = QuranData.allSurahs
 
     var body: some View {
         NavigationStack {
@@ -214,51 +214,58 @@ private struct HijriDateSheet: View {
 // MARK: - Duas Category Sheet
 struct DuasCategorySheet: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.colorScheme) var cs
     @State private var selectedCategory: DuaCategory? = nil
     private let categories = DuaDatabase.all
 
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 12) {
+                VStack(spacing: 10) {
                     ForEach(categories) { cat in
                         Button { selectedCategory = cat } label: {
                             HStack(spacing: 14) {
                                 ZStack {
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(cat.color.opacity(0.15))
-                                        .frame(width: 48, height: 48)
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .fill(cat.color.opacity(0.12))
+                                        .frame(width: 46, height: 46)
                                     Image(systemName: cat.icon)
-                                        .font(.system(size: 20))
+                                        .font(.system(size: 18, weight: .semibold))
                                         .foregroundStyle(cat.color)
                                 }
                                 VStack(alignment: .leading, spacing: 3) {
                                     Text(cat.title)
                                         .font(.subheadline.weight(.semibold))
-                                        .foregroundStyle(.primary)
+                                        .foregroundColor(.primary)
                                     Text("\(cat.duas.count) duas")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundColor(Color(UIColor.secondaryLabel))
                                 }
                                 Spacer()
                                 Image(systemName: "chevron.right")
                                     .font(.caption.weight(.semibold))
-                                    .foregroundStyle(.tertiary)
+                                    .foregroundColor(Color(UIColor.tertiaryLabel))
                             }
-                            .padding(14)
-                            .background(Color(.systemGray6).opacity(0.5))
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                            .foregroundColor(.primary)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 14)
+                            .background(Color(.systemBackground))
+                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                            .shadow(color: Color.black.opacity(cs == .dark ? 0 : 0.05),
+                                    radius: 6, x: 0, y: 2)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(SpringPressStyle())
                     }
                 }
                 .padding(.horizontal, 16)
-                .padding(.top, 12)
+                .padding(.top, 8)
                 .padding(.bottom, 40)
             }
-            .background(CalmingBackground())
+            .scrollBounceBehavior(.basedOnSize)
+            .background(Color(.systemGroupedBackground))
             .navigationTitle("Duas")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
+            .modifier(AlehaNavStyle())
             .sheetDismissButton()
             .navigationDestination(item: $selectedCategory) { cat in
                 DuaListView(category: cat)

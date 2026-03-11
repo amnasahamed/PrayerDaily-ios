@@ -44,7 +44,7 @@ struct DhikrCounterView: View {
         HStack(spacing: 0) {
             statBlock(value: "\(store.dhikrTodayTotal)", label: "Today", color: Color("NoorGold"))
             Divider().frame(height: 36)
-            statBlock(value: "\(store.dhikrWeeklyTotal)", label: "This Week", color: Color("NoorPrimary"))
+            statBlock(value: "\(store.dhikrSessionTotal)", label: "Session", color: Color("NoorPrimary"))
             Divider().frame(height: 36)
             statBlock(value: formatLifetime(store.dhikrLifetimeTotal), label: "Lifetime", color: Color("NoorAccent"))
         }
@@ -118,7 +118,7 @@ struct DhikrCounterView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 if isComplete {
-                    Text("ماشاء الله")
+                    Text(preset.completionText)
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(Color("NoorGold"))
                         .transition(.scale.combined(with: .opacity))

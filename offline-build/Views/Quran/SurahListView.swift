@@ -226,7 +226,10 @@ struct SurahListView: View {
     // MARK: - List
     private var surahListContent: some View {
         LazyVStack(spacing: 1) {
-            if filteredSurahs.isEmpty { emptyState }
+            if filteredSurahs.isEmpty && !searchText.isEmpty {
+                ContentUnavailableView.search(text: searchText)
+                    .padding(.vertical, 40)
+            } else if filteredSurahs.isEmpty { emptyState }
             else {
                 ForEach(filteredSurahs) { surah in
                     NavigationLink(destination: SurahReaderView(surah: surah)) {

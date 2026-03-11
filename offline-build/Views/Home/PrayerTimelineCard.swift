@@ -141,6 +141,8 @@ struct PrayerTimelineCard: View {
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("\(entry.prayer.rawValue) — \(entry.completed ? "Completed" : "Not completed")")
+        .accessibilityHint(entry.completed ? "Tap to unmark" : "Tap to mark as prayed")
         .onAppear { if isNext { pulse = true } }
     }
 
@@ -226,6 +228,10 @@ struct PrayerTimelineCard: View {
         withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
             prayers[idx].completed.toggle()
         }
+        // Persist to store
+        let newStatus: PrayerStatus = prayers[idx].completed ? .prayed : .none
+        salahStore.setStatus(newStatus, prayer: prayers[idx].prayer, date: prayers[idx].date)
+
         if !wasCompleted {
             confettiFor = prayers[idx].prayer.rawValue
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) { confettiFor = nil }
@@ -244,7 +250,7 @@ struct PrayerTimelineCard: View {
         guard let pt = service.prayerTimes.first(where: { $0.prayer == prayer }) else {
             return prayerHourThreshold(prayer) < Calendar.current.component(.hour, from: Date())
         }
-        return pt.isPast && !prayers.first(where: { $0.prayer == prayer })!.completed
+        return pt.isPast && !(prayers.first(where: { $0.prayer == prayer })?.completed ?? false)
     }
 
     private func prayerHourThreshold(_ prayer: Prayer) -> Int {

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct StreakCard: View {
     let streak: ReadingStreak
+    @EnvironmentObject var salahStore: SalahStore
 
     var body: some View {
         HStack(spacing: 16) {
@@ -44,10 +45,11 @@ struct StreakCard: View {
     }
 
     private var weekDots: some View {
-        VStack(spacing: 4) {
+        let completion = salahStore.weekCompletion
+        return VStack(spacing: 4) {
             ForEach(0..<7, id: \.self) { day in
                 Circle()
-                    .fill(day < 5 ? Color("NoorPrimary") : Color(.systemGray4))
+                    .fill(day < completion.count && completion[day] > 0 ? Color("NoorPrimary") : Color(.systemGray4))
                     .frame(width: 8, height: 8)
             }
         }

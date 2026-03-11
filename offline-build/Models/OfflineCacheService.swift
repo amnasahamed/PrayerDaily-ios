@@ -6,7 +6,9 @@ class OfflineCacheService {
     private let fileManager = FileManager.default
 
     private var cacheDir: URL {
-        let docs = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        guard let docs = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first else {
+            return URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("QuranCache", isDirectory: true)
+        }
         let dir = docs.appendingPathComponent("QuranCache", isDirectory: true)
         if !fileManager.fileExists(atPath: dir.path) {
             try? fileManager.createDirectory(at: dir, withIntermediateDirectories: true)

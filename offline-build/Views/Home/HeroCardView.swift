@@ -4,6 +4,7 @@ import SwiftUI
 struct HeroCard: View {
     let appeared: Bool
     @Environment(\.colorScheme) var cs
+    @Environment(\.localization) var l10n
     @State private var pulseScale: CGFloat = 1.0
     @State private var textOpacity = 0.0
     @State private var parallaxOffset: CGFloat = 0
@@ -137,15 +138,19 @@ struct HeroCard: View {
 
     private var greetingText: String {
         let h = Calendar.current.component(.hour, from: Date())
-        if h < 12 { return "Good Morning" }
-        if h < 17 { return "Good Afternoon" }
-        return "Good Evening"
+        if h < 12 { return l10n.t(.homeGreetingMorning) }
+        if h < 17 { return l10n.t(.homeGreetingAfternoon) }
+        return l10n.t(.homeGreetingEvening)
     }
 
-    private var todayDateString: String {
+    private static let fullDateFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateStyle = .full
-        return f.string(from: Date())
+        return f
+    }()
+
+    private var todayDateString: String {
+        Self.fullDateFormatter.string(from: Date())
     }
 }
 
@@ -259,6 +264,7 @@ struct AlehaLogoMark: View {
 // MARK: - Compact Streak View
 struct CompactStreakView: View {
     @Environment(\.colorScheme) var cs
+    @EnvironmentObject var salahStore: SalahStore
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -271,7 +277,7 @@ struct CompactStreakView: View {
                     .foregroundStyle(.secondary)
             }
             HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text("14")
+                Text("\(salahStore.currentStreak)")
                     .font(.system(size: 32, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.alehaAmber)
                     .contentTransition(.numericText())
@@ -292,10 +298,11 @@ struct CompactStreakView: View {
     }
 
     private var weekDots: some View {
-        HStack(spacing: 4) {
+        let completion = salahStore.weekCompletion
+        return HStack(spacing: 4) {
             ForEach(0..<7, id: \.self) { day in
                 Circle()
-                    .fill(day < 5 ? Color.alehaAmber : Color(.systemGray4))
+                    .fill(day < completion.count && completion[day] > 0 ? Color.alehaAmber : Color(.systemGray4))
                     .frame(width: 6, height: 6)
             }
         }

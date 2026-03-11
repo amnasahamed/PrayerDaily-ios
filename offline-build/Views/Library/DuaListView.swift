@@ -12,17 +12,32 @@ struct DuaListView: View {
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 14) {
+            VStack(spacing: 12) {
                 headerBanner
-                duaList
+                ForEach(Array(category.duas.enumerated()), id: \.element.id) { i, dua in
+                    DuaRowCard(
+                        dua: dua,
+                        color: category.color,
+                        isMl: isMl,
+                        isFavorite: favorites.contains(dua.id)
+                    ) {
+                        selectedDua = dua
+                    } onFavorite: {
+                        toggleFavorite(dua.id)
+                    }
+                    .opacity(appeared ? 1 : 0)
+                    .animation(.easeIn(duration: 0.2).delay(Double(i) * 0.04), value: appeared)
+                }
             }
             .padding(.horizontal, AppTheme.screenPadding)
-            .padding(.bottom, 120)
-            .padding(.top, 16)
+            .padding(.top, 8)
+            .padding(.bottom, 48)
         }
+        .scrollBounceBehavior(.basedOnSize)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(CalmingBackground())
+        .background(Color(.systemGroupedBackground))
         .navigationTitle(category.localizedTitle(isMalayalam: isMl))
+        .navigationBarTitleDisplayMode(.inline)
         .modifier(AlehaNavStyle())
         .sheet(item: $selectedDua) { dua in
             DuaDetailSheet(dua: dua, color: category.color, isFavorite: favorites.contains(dua.id)) {
@@ -30,77 +45,43 @@ struct DuaListView: View {
             }
         }
         .onAppear {
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.05)) {
-                appeared = true
-            }
+            withAnimation(.easeIn(duration: 0.25)) { appeared = true }
         }
     }
 
     // MARK: - Header Banner
     private var headerBanner: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 14) {
             ZStack {
                 Circle()
-                    .fill(category.color.opacity(0.15))
-                    .frame(width: 60, height: 60)
+                    .fill(category.color.opacity(0.12))
+                    .frame(width: 50, height: 50)
                 Image(systemName: category.icon)
-                    .font(.title2)
+                    .font(.title3)
                     .foregroundStyle(category.color)
             }
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text(category.localizedTitle(isMalayalam: isMl))
-                    .font(.title3.weight(.bold))
-                Text(isMl ? "\(category.duas.count) ദുആകൾ • ദൈനംദിന ദിക്ർ" : "\(category.duas.count) duas • Recite daily for barakah")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.headline.weight(.bold))
+                    .foregroundColor(.primary)
+                Text(isMl
+                     ? "\(category.duas.count) ദുആകൾ • ദൈനംദിന ദിക്ർ"
+                     : "\(category.duas.count) duas • Recite daily for barakah")
+                    .font(.caption)
+                    .foregroundColor(Color(UIColor.secondaryLabel))
             }
             Spacer()
         }
-        .padding(16)
-        .background(
-            LinearGradient(
-                colors: [category.color.opacity(cs == .dark ? 0.20 : 0.10),
-                         category.color.opacity(cs == .dark ? 0.08 : 0.04)],
-                startPoint: .leading, endPoint: .trailing
-            )
-        )
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                .stroke(category.color.opacity(cs == .dark ? 0.25 : 0.15), lineWidth: 1)
-        )
-        .opacity(appeared ? 1 : 0)
-        .offset(y: appeared ? 0 : 12)
-    }
-
-    // MARK: - Dua List
-    private var duaList: some View {
-        VStack(spacing: 12) {
-            ForEach(Array(category.duas.enumerated()), id: \.element.id) { i, dua in
-                DuaRowCard(
-                    dua: dua,
-                    color: category.color,
-                    isMl: isMl,
-                    isFavorite: favorites.contains(dua.id)
-                ) {
-                    selectedDua = dua
-                } onFavorite: {
-                    toggleFavorite(dua.id)
-                }
-                .opacity(appeared ? 1 : 0)
-                .offset(y: appeared ? 0 : 16)
-                .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(Double(i) * 0.06), value: appeared)
-            }
-        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .shadow(color: Color.black.opacity(cs == .dark ? 0 : 0.05), radius: 6, x: 0, y: 2)
     }
 
     private func toggleFavorite(_ id: UUID) {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        if favorites.contains(id) {
-            favorites.remove(id)
-        } else {
-            favorites.insert(id)
-        }
+        if favorites.contains(id) { favorites.remove(id) } else { favorites.insert(id) }
     }
 }
 
@@ -113,7 +94,6 @@ struct DuaRowCard: View {
     let onTap: () -> Void
     let onFavorite: () -> Void
     @Environment(\.colorScheme) var cs
-    @State private var pressed = false
 
     var body: some View {
         Button(action: {
@@ -127,21 +107,14 @@ struct DuaRowCard: View {
                 bottomRow
             }
             .padding(16)
-            .background(cs == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.88))
-            .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                    .stroke(cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.6), lineWidth: 0.5)
-            )
-            .scaleEffect(pressed ? 0.98 : 1.0)
-            .animation(.spring(response: 0.2, dampingFraction: 0.7), value: pressed)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .shadow(color: Color.black.opacity(cs == .dark ? 0 : 0.04), radius: 8, x: 0, y: 3)
         }
-        .buttonStyle(.plain)
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in pressed = true }
-                .onEnded { _ in pressed = false }
-        )
+        .buttonStyle(SpringPressStyle())
+        .accessibilityLabel("\(dua.localizedTitle(isMalayalam: isMl))")
+        .accessibilityHint("Tap to read full dua")
     }
 
     private var topRow: some View {
@@ -149,20 +122,21 @@ struct DuaRowCard: View {
             HStack(spacing: 8) {
                 ZStack {
                     Circle()
-                        .fill(color.opacity(0.12))
-                        .frame(width: 28, height: 28)
+                        .fill(color.opacity(0.10))
+                        .frame(width: 26, height: 26)
                     Text("\(dua.number)")
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(color)
+                        .font(.caption2.weight(.bold))
+                        .foregroundColor(color)
                 }
                 Text(dua.localizedTitle(isMalayalam: isMl))
                     .font(.subheadline.weight(.semibold))
+                    .foregroundColor(.primary)
             }
             Spacer()
             Button(action: onFavorite) {
                 Image(systemName: isFavorite ? "heart.fill" : "heart")
                     .font(.subheadline)
-                    .foregroundStyle(isFavorite ? Color.red : Color.secondary)
+                    .foregroundStyle(isFavorite ? Color.red : Color(UIColor.tertiaryLabel))
             }
             .buttonStyle(.plain)
         }
@@ -170,30 +144,31 @@ struct DuaRowCard: View {
 
     private var arabicText: some View {
         Text(dua.arabic)
-            .font(.system(size: 20, weight: .regular, design: .default))
+            .font(.system(size: 19, weight: .regular))
             .multilineTextAlignment(.trailing)
+            .lineSpacing(7)
             .frame(maxWidth: .infinity, alignment: .trailing)
-            .foregroundStyle(.primary)
-            .lineSpacing(6)
+            .foregroundColor(.primary)
     }
 
     private var translationText: some View {
         Text(dua.localizedTranslation(isMalayalam: isMl))
             .font(.footnote)
-            .foregroundStyle(.secondary)
-            .lineSpacing(3)
+            .foregroundColor(Color(UIColor.secondaryLabel))
+            .lineSpacing(4)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private var bottomRow: some View {
         HStack {
             Label(dua.reference, systemImage: "book.closed.fill")
                 .font(.caption2.weight(.medium))
-                .foregroundStyle(color.opacity(0.75))
+                .foregroundColor(color.opacity(0.7))
             Spacer()
             Image(systemName: "chevron.right")
                 .font(.caption2.weight(.semibold))
-                .foregroundStyle(.tertiary)
+                .foregroundColor(Color(UIColor.tertiaryLabel))
         }
     }
 }
@@ -211,18 +186,21 @@ struct DuaDetailSheet: View {
     var body: some View {
         NavigationStack {
             ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 24) {
+                VStack(spacing: 16) {
                     arabicCard
                     transliterationCard
                     translationCard
                     referenceCard
                 }
                 .padding(.horizontal, AppTheme.screenPadding)
-                .padding(.vertical, 24)
+                .padding(.top, 16)
+                .padding(.bottom, 40)
             }
-            .background(CalmingBackground())
+            .scrollBounceBehavior(.basedOnSize)
+            .background(Color(.systemGroupedBackground))
             .navigationTitle(dua.title)
             .navigationBarTitleDisplayMode(.inline)
+            .modifier(AlehaNavStyle())
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     HStack(spacing: 14) {
@@ -246,27 +224,25 @@ struct DuaDetailSheet: View {
     }
 
     private var arabicCard: some View {
-        VStack(spacing: 12) {
-            Text(dua.arabic)
-                .font(.system(size: 26, weight: .regular))
-                .multilineTextAlignment(.center)
-                .lineSpacing(10)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 8)
-        }
-        .padding(20)
-        .background(
-            LinearGradient(
-                colors: [color.opacity(cs == .dark ? 0.18 : 0.10),
-                         color.opacity(cs == .dark ? 0.08 : 0.04)],
-                startPoint: .topLeading, endPoint: .bottomTrailing
+        Text(dua.arabic)
+            .font(.system(size: 24, weight: .regular))
+            .multilineTextAlignment(.center)
+            .lineSpacing(10)
+            .foregroundColor(.primary)
+            .frame(maxWidth: .infinity)
+            .padding(20)
+            .background(
+                LinearGradient(
+                    colors: [color.opacity(cs == .dark ? 0.15 : 0.08),
+                             color.opacity(cs == .dark ? 0.06 : 0.03)],
+                    startPoint: .topLeading, endPoint: .bottomTrailing
+                )
             )
-        )
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                .stroke(color.opacity(0.2), lineWidth: 1)
-        )
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(color.opacity(0.15), lineWidth: 1)
+            )
     }
 
     @Environment(\.localization) var l10nDS
@@ -283,18 +259,18 @@ struct DuaDetailSheet: View {
     }
 
     private var referenceCard: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 10) {
             Image(systemName: "book.closed.fill")
                 .font(.subheadline)
                 .foregroundStyle(color)
             Text("Source: \(dua.reference)")
                 .font(.footnote.weight(.medium))
-                .foregroundStyle(.secondary)
+                .foregroundColor(Color(UIColor.secondaryLabel))
             Spacer()
         }
         .padding(14)
-        .background(cs == .dark ? Color.white.opacity(0.05) : Color.white.opacity(0.7))
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.smallRadius, style: .continuous))
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
     private func detailCard(label: String, icon: String, content: String) -> some View {
@@ -305,15 +281,13 @@ struct DuaDetailSheet: View {
             }
             Text(content)
                 .font(.body)
-                .lineSpacing(4)
+                .lineSpacing(5)
+                .foregroundColor(.primary)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(16)
-        .background(cs == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.88))
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                .stroke(cs == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.6), lineWidth: 0.5)
-        )
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }

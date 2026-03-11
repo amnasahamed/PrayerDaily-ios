@@ -1,88 +1,86 @@
 #!/usr/bin/env python3
-"""Generate Aleha app icon - run: python3 generate_icon.py"""
-from PIL import Image, ImageDraw, ImageFont
-import math, os
+"""Generate Muslim Pro app icon - run: python3 generate_icon.py"""
+from PIL import Image, ImageDraw
+import math, os, numpy as np
 
 size = 1024
-img = Image.new('RGBA', (size, size), (0,0,0,0))
+arr = np.zeros((size, size, 3), dtype=np.uint8)
 
-# --- Rounded rect gradient background ---
-radius = 230
-grad = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-gd = ImageDraw.Draw(grad)
+# Background: dark forest green diagonal gradient (matches reference)
 for y in range(size):
-    t = y / size
-    r = int(13 + t * 20)
-    g = int(61 + t * 45)
-    b = int(35 + t * 20)
-    gd.line([(0, y), (size, y)], fill=(r, g, b, 255))
+    for x in range(size):
+        t = (x * 0.25 + y * 0.75) / size
+        arr[y, x] = [int(2 + 3*(1-t)), int(90 - 38*t), int(52 - 22*t)]
 
-bg_mask = Image.new('L', (size, size), 0)
-bm = ImageDraw.Draw(bg_mask)
-bm.rounded_rectangle([0, 0, size, size], radius=radius, fill=255)
-grad.putalpha(bg_mask)
-img = Image.alpha_composite(img, grad)
-
-# --- Warm glow orb ---
-glow = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-gd2 = ImageDraw.Draw(glow)
-for rad in range(280, 0, -1):
-    alpha = int(18 * (1 - rad / 280))
-    cx2, cy2 = 530, 530
-    gd2.ellipse([cx2-rad, cy2-rad, cx2+rad, cy2+rad], fill=(245, 170, 60, alpha))
-glow.putalpha(bg_mask)
-img = Image.alpha_composite(img, glow)
-
-# --- Crescent (amber) ---
-cx, cy = 490, 420
-outer_r = 215
-inner_r = 168
-off_x, off_y = 78, -12
-
-crescent_mask = Image.new('L', (size, size), 0)
-cm = ImageDraw.Draw(crescent_mask)
-cm.ellipse([cx-outer_r, cy-outer_r, cx+outer_r, cy+outer_r], fill=255)
-cm.ellipse([cx+off_x-inner_r, cy+off_y-inner_r, cx+off_x+inner_r, cy+off_y+inner_r], fill=0)
-
-crescent_layer = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-ImageDraw.Draw(crescent_layer).ellipse([cx-outer_r, cy-outer_r, cx+outer_r, cy+outer_r], fill=(245, 175, 50, 255))
-crescent_layer.putalpha(crescent_mask)
-img = Image.alpha_composite(img, crescent_layer)
-
-# --- Star dot ---
+img = Image.fromarray(arr, 'RGB')
 draw = ImageDraw.Draw(img)
-draw.ellipse([683, 282, 730, 328], fill=(245, 175, 50, 255))
 
-# --- Aleha inner logo circle (green crescent) ---
-gc_x, gc_y = 448, 508
-g_outer = 88
-g_inner = 68
-g_ox = 28
+gold = (255, 248, 145)
+bg_col = (4, 70, 42)
+cx, cy = 512, 512
+stroke = 56
 
-green_mask = Image.new('L', (size, size), 0)
-gm = ImageDraw.Draw(green_mask)
-gm.ellipse([gc_x-g_outer, gc_y-g_outer, gc_x+g_outer, gc_y+g_outer], fill=255)
-gm.ellipse([gc_x+g_ox-g_inner, gc_y-8-g_inner, gc_x+g_ox+g_inner, gc_y-8+g_inner], fill=0)
+# ── 8-pointed star (Rub el Hizb) ──────────────────────────────────────────
+def star8(cx, cy, R, r, rot_deg=0):
+    pts = []
+    for i in range(16):
+        angle = math.radians(rot_deg + i * 22.5)
+        radius = R if i % 2 == 0 else r
+        pts.append((cx + radius * math.sin(angle), cy - radius * math.cos(angle)))
+    return pts
 
-green_layer = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-ImageDraw.Draw(green_layer).ellipse([gc_x-g_outer, gc_y-g_outer, gc_x+g_outer, gc_y+g_outer], fill=(45, 181, 100, 255))
-green_layer.putalpha(green_mask)
-img = Image.alpha_composite(img, green_layer)
+# Filled gold star
+draw.polygon(star8(cx, cy, 378, 255, 0), fill=gold)
+# Cutout to make it an outline
+draw.polygon(star8(cx, cy, 320, 198, 0), fill=bg_col)
 
-# --- Text ---
-draw = ImageDraw.Draw(img)
-try:
-    font_bold = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 108)
-    font_sub  = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 52)
-except Exception:
-    font_bold = ImageFont.load_default()
-    font_sub  = font_bold
+# ── Mosque arch (pointed ogee) in center ─────────────────────────────────
+arch_cx, arch_cy = cx, cy - 22
+aw2 = 118   # half-width
+ah  = 286   # total height
 
-draw.text((512, 700), "aleha", fill=(255, 255, 255, 235), font=font_bold, anchor="mt")
-draw.text((512, 828), "your spiritual companion", fill=(255, 255, 255, 100), font=font_sub, anchor="mt")
+def ogee_arch_pts(cx, cy, hw, h, s=0):
+    """Returns polygon points for a pointed ogee arch."""
+    hw2    = hw - s
+    bot_y  = cy + h // 2 - s
+    neck_y = cy + 12 - s
+    arc_r  = hw2
+    top_y  = cy - h // 2 + s
 
+    pts = [(cx - hw2, bot_y), (cx - hw2, neck_y)]
+    for deg in range(180, 0, -3):
+        rad = math.radians(deg)
+        x = cx + arc_r * math.cos(rad)
+        y = neck_y + arc_r * math.sin(rad)
+        if y >= top_y + arc_r:
+            pts.append((x, y))
+    pts.append((cx, top_y))
+    for deg in range(180, 360, 3):
+        rad = math.radians(deg)
+        x = cx + arc_r * math.cos(rad)
+        y = neck_y + arc_r * math.sin(rad)
+        if y >= top_y + arc_r:
+            pts.append((x, y))
+    pts += [(cx + hw2, neck_y), (cx + hw2, bot_y)]
+    return pts
+
+draw.polygon(ogee_arch_pts(arch_cx, arch_cy, aw2 + stroke, ah, 0), fill=gold)
+draw.polygon(ogee_arch_pts(arch_cx, arch_cy, aw2, ah, stroke), fill=bg_col)
+
+# Pointed bottom tip below arch
+tip_base_y = int(arch_cy + ah // 2 - stroke - 5)
+s2 = stroke // 2
+draw.polygon([
+    (arch_cx - aw2 - s2, tip_base_y),
+    (arch_cx + aw2 + s2, tip_base_y),
+    (arch_cx + aw2 + s2, tip_base_y + stroke),
+    (arch_cx,            tip_base_y + int(stroke * 2.3)),
+    (arch_cx - aw2 - s2, tip_base_y + stroke),
+], fill=gold)
+
+# ── Save ─────────────────────────────────────────────────────────────────
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                   "Assets.xcassets", "AppIcon.appiconset", "icon_1024.png")
+                   "Assets.xcassets", "AppIcon.appiconset", "AppIcon.png")
 os.makedirs(os.path.dirname(out), exist_ok=True)
 img.save(out, 'PNG')
-print(f"Saved to {out}")
+print(f"Saved {size}x{size} icon to {out}")

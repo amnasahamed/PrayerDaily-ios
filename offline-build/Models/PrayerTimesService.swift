@@ -152,6 +152,7 @@ class PrayerTimesService: NSObject, ObservableObject, CLLocationManagerDelegate 
 
     private let locationManager = CLLocationManager()
     private var lastCoordinate: CLLocationCoordinate2D?
+    private var fetchTask: Task<Void, Never>?
 
     static let shared = PrayerTimesService()
 
@@ -159,18 +160,24 @@ class PrayerTimesService: NSObject, ObservableObject, CLLocationManagerDelegate 
     @Published var calculationMethod: PrayerCalculationMethod {
         didSet {
             UserDefaults.standard.set(calculationMethod.rawValue, forKey: "prayer_calc_method")
-            if let coord = lastCoordinate {
-                Task { await fetchPrayerTimes(lat: coord.latitude, lng: coord.longitude) }
-            }
+            scheduleDebouncedFetch()
         }
     }
 
     @Published var asrMethod: AsrJuristicMethod {
         didSet {
             UserDefaults.standard.set(asrMethod.rawValue, forKey: "prayer_asr_method")
-            if let coord = lastCoordinate {
-                Task { await fetchPrayerTimes(lat: coord.latitude, lng: coord.longitude) }
-            }
+            scheduleDebouncedFetch()
+        }
+    }
+
+    private func scheduleDebouncedFetch() {
+        fetchTask?.cancel()
+        guard let coord = lastCoordinate else { return }
+        fetchTask = Task {
+            try? await Task.sleep(nanoseconds: 400_000_000) // 400ms debounce
+            guard !Task.isCancelled else { return }
+            await fetchPrayerTimes(lat: coord.latitude, lng: coord.longitude)
         }
     }
 

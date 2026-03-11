@@ -1,18 +1,18 @@
 import SwiftUI
 
-// MARK: - Last Read State
-class LibraryReadingState: ObservableObject {
-    @Published var lastHadithCollection: String = "Riyad as-Saliheen"
-    @Published var lastHadithNumber: Int = 12
-}
-
 struct LibraryView: View {
-    @StateObject private var readingState = LibraryReadingState()
+    @AppStorage("lastHadithCollectionId") private var lastHadithCollectionId: String = "nawawi40"
     @Environment(\.localization) var l10n
     @State private var searchText = ""
     @State private var selectedCategory = 0
     @State private var appeared = false
+    @State private var selectedCollectionId: String? = nil
+    @State private var selectedDuaCategory: DuaCategory? = nil
     private var categories: [String] { [l10n.t(.libraryKnowledge), l10n.t(.libraryDuas), l10n.t(.libraryTools), l10n.t(.libraryGuides)] }
+
+    private var lastCollection: HadithCollection? {
+        HadithLibrary.collections.first(where: { $0.id == lastHadithCollectionId }) ?? HadithLibrary.collections.first
+    }
 
     var body: some View {
         NavigationStack {
@@ -35,6 +35,14 @@ struct LibraryView: View {
             .onAppear {
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1)) { appeared = true }
             }
+            .navigationDestination(item: $selectedCollectionId) { id in
+                if let collection = HadithLibrary.collections.first(where: { $0.id == id }) {
+                    HadithCollectionDetailView(collection: collection)
+                }
+            }
+            .navigationDestination(item: $selectedDuaCategory) { cat in
+                DuaListView(category: cat)
+            }
         }
     }
 
@@ -50,10 +58,16 @@ struct LibraryView: View {
 
     // MARK: - Continue Reading Banner
     private var continueReadingBanner: some View {
-        ContinueReadingCard(
-            collection: readingState.lastHadithCollection,
-            hadithNumber: readingState.lastHadithNumber
-        )
+        Button {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            selectedCollectionId = lastHadithCollectionId
+        } label: {
+            ContinueReadingCard(
+                collection: lastCollection?.name ?? "40 Hadith Nawawi",
+                hadithNumber: 1
+            )
+        }
+        .buttonStyle(.plain)
         .opacity(appeared ? 1 : 0)
         .offset(y: appeared ? 0 : 12)
         .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.05), value: appeared)
@@ -77,9 +91,12 @@ struct LibraryView: View {
     @ViewBuilder
     private var knowledgeSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            sectionHeader(title: "Hadith Collections", icon: "book.closed.fill")
+            sectionHeader(title: l10n.t(.libraryHadithCollections), icon: "book.closed.fill")
             ForEach(Array(filteredCollections.enumerated()), id: \.element.id) { i, collection in
-                NavigationLink(destination: HadithCollectionDetailView(collection: collection)) {
+                Button {
+                    lastHadithCollectionId = collection.id
+                    selectedCollectionId = collection.id
+                } label: {
                     HadithCollectionCard(collection: collection)
                 }
                 .buttonStyle(SpringPressStyle())
@@ -101,10 +118,12 @@ struct LibraryView: View {
     // MARK: - Duas Section
     private var duaSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            sectionHeader(title: "Dua Collection", icon: "hands.sparkles.fill")
+            sectionHeader(title: l10n.t(.libraryDuaCollection), icon: "hands.sparkles.fill")
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
                 ForEach(DuaDatabase.all) { category in
-                    NavigationLink(destination: DuaListView(category: category)) {
+                    Button {
+                        selectedDuaCategory = category
+                    } label: {
                         DuaCategoryTile(
                             title: category.title,
                             icon: category.icon,
@@ -112,7 +131,7 @@ struct LibraryView: View {
                             color: category.color
                         )
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(SpringPressStyle())
                 }
             }
         }
@@ -299,9 +318,13 @@ struct DuaCategoryTile: View {
                 Circle().fill(color.opacity(0.13)).frame(width: 48, height: 48)
                 Image(systemName: icon).font(.title3).foregroundStyle(color)
             }
-            Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundColor(.primary)
+                .multilineTextAlignment(.center)
             Text("\(count) duas").font(.caption).foregroundStyle(.secondary)
         }
+        .foregroundColor(.primary)
         .frame(maxWidth: .infinity)
         .padding(.vertical, 20)
         .background(cs == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.85))

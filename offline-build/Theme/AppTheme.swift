@@ -90,7 +90,7 @@ struct CheckmarkBurst: View {
                 .fill(color.opacity(0.18))
                 .frame(width: 60, height: 60)
                 .scaleEffect(show ? 1.6 : 0.3)
-                .opacity(show ? 0 : 0)
+                .opacity(show ? 1 : 0)
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 36, weight: .bold))
                 .foregroundStyle(color)

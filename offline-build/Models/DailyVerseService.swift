@@ -199,7 +199,9 @@ class DailyVerseService {
     ]
 
     var todaysVerse: DailyVerse {
-        let dayOfYear = Calendar.current.ordinality(of: .day, in: .year, for: Date()) ?? 1
+        var utcCal = Calendar(identifier: .gregorian)
+        utcCal.timeZone = TimeZone(identifier: "UTC") ?? .current
+        let dayOfYear = utcCal.ordinality(of: .day, in: .year, for: Date()) ?? 1
         return pool[(dayOfYear - 1) % pool.count]
     }
 }

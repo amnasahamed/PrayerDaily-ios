@@ -28,50 +28,69 @@ final class NotificationService {
         }
     }
 
-    // MARK: - Schedule Daily Prayer Reminders
-    /// Schedules a gentle reminder at a fixed offset before each prayer window.
-    /// These are local, calendar-based triggers — no server needed.
-    func scheduleDailyPrayerReminders() {
+    // MARK: - Schedule Prayer Reminders from Real Prayer Times
+    /// Schedules notifications using actual calculated prayer times.
+    func schedulePrayerReminders(from prayerTimes: [PrayerTime]) {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
 
-        let prayers: [(name: String, hour: Int, minute: Int, body: String)] = [
-            ("Fajr",    5,  00, "Time for Fajr — begin your day with Salah 🌙"),
-            ("Dhuhr",  12,  30, "Dhuhr time — pause and pray 🕌"),
-            ("Asr",    15,  30, "Asr reminder — don't let it slip by ☀️"),
-            ("Maghrib", 18, 15, "Maghrib is near — prepare for prayer 🌅"),
-            ("Isha",   20,  30, "Isha time — end your day with Salah ✨"),
+        let bodies: [String: String] = [
+            "Fajr":    "Time for Fajr — begin your day with Salah 🌙",
+            "Dhuhr":   "Dhuhr time — pause and pray 🕌",
+            "Asr":     "Asr reminder — don't let it slip by ☀️",
+            "Maghrib": "Maghrib is near — prepare for prayer 🌅",
+            "Isha":    "Isha time — end your day with Salah ✨"
         ]
 
-        for prayer in prayers {
-            var components = DateComponents()
-            components.hour   = prayer.hour
-            components.minute = prayer.minute
+        let cal = Calendar.current
+        for pt in prayerTimes {
+            let name = pt.prayer.rawValue
+            let comps = cal.dateComponents([.hour, .minute], from: pt.time)
 
-            let content         = UNMutableNotificationContent()
-            content.title       = "\(prayer.name) Prayer"
-            content.body        = prayer.body
-            content.sound       = .default
+            let content = UNMutableNotificationContent()
+            content.title = "\(name) Prayer"
+            content.body = bodies[name] ?? "Time for \(name) — don't miss it 🕌"
+            content.sound = .default
             content.categoryIdentifier = "PRAYER_REMINDER"
 
-            let trigger = UNCalendarNotificationTrigger(
-                dateMatching: components,
-                repeats: true
-            )
-
+            let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: true)
             let request = UNNotificationRequest(
-                identifier: "prayer_\(prayer.name.lowercased())",
+                identifier: "prayer_\(name.lowercased())",
                 content: content,
                 trigger: trigger
             )
 
             UNUserNotificationCenter.current().add(request) { error in
                 if let error {
-                    NSLog("[Notifications] Failed to schedule \(prayer.name): \(error.localizedDescription)")
+                    NSLog("[Notifications] Failed to schedule \(name): \(error.localizedDescription)")
                 } else {
-                    NSLog("[Notifications] Scheduled \(prayer.name) at \(prayer.hour):\(String(format: "%02d", prayer.minute))")
+                    NSLog("[Notifications] Scheduled \(name) at \(comps.hour ?? 0):\(String(format: "%02d", comps.minute ?? 0))")
                 }
             }
         }
+    }
+
+    // MARK: - Schedule Daily Prayer Reminders (fallback with hardcoded times)
+    /// Legacy stub — calls schedulePrayerReminders with fallback fixed times.
+    /// Prefer calling schedulePrayerReminders(from:) with real PrayerTime objects.
+    func scheduleDailyPrayerReminders() {
+        let cal = Calendar.current
+        let fallback: [(name: String, hour: Int, minute: Int)] = [
+            ("Fajr",     5,  0),
+            ("Dhuhr",   12, 30),
+            ("Asr",     15, 30),
+            ("Maghrib", 18, 15),
+            ("Isha",    20, 30),
+        ]
+        let fakeTimes: [PrayerTime] = fallback.compactMap { item in
+            var comps = DateComponents()
+            comps.hour = item.hour
+            comps.minute = item.minute
+            guard let date = cal.date(from: comps) else { return nil }
+            let f = DateFormatter(); f.timeStyle = .short
+            return PrayerTime(prayer: Prayer(rawValue: item.name) ?? .fajr,
+                              time: date, timeString: f.string(from: date))
+        }
+        schedulePrayerReminders(from: fakeTimes)
     }
 
     // MARK: - Daily Verse Notification
@@ -81,7 +100,7 @@ final class NotificationService {
 
         let content       = UNMutableNotificationContent()
         content.title     = "Daily Verse 📖"
-        content.body      = "Open Noor for today's verse from the Quran."
+        content.body      = "Open Muslim Pro for today's verse from the Quran."
         content.sound     = .default
 
         var components    = DateComponents()

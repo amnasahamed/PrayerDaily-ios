@@ -150,7 +150,7 @@ struct MoreView: View {
     }
 
     private func triggerInviteShare() {
-        let msg = "Assalamu Alaikum! I've been using Aleha for prayer tracking & Quran reading — it's beautiful and really helpful. Check it out at https://alehalearn.com"
+        let msg = "Assalamu Alaikum! I've been using Muslim Pro for prayer tracking & Quran reading — it's beautiful and really helpful. Check it out!"
         let av = UIActivityViewController(activityItems: [msg], applicationActivities: nil)
         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let root = scene.windows.first?.rootViewController {
@@ -162,8 +162,9 @@ struct MoreView: View {
     private var footerSection: some View {
         VStack(spacing: 0) {
             Button { showAbout = true } label: {
+                let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
                 MoreMenuRow(icon: "info.circle.fill", title: localization.t(.moreAbout),
-                            subtitle: "Version 1.0 • alehalearn.com",
+                            subtitle: "Version \(version) • alehalearn.com",
                             color: Color.alehaGreen, showDivider: true)
             }
             .buttonStyle(.plain)
@@ -451,7 +452,7 @@ struct DataExportSheet: View {
     private func presentExportShare() {
         let total = store.logs.values.reduce(0) { $0 + $1.completedCount }
         let text = """
-        📊 Aleha Prayer Export
+        📊 Muslim Pro Prayer Export
         ————————————
         Current Streak: \(store.currentStreak) days
         Weekly Consistency: \(store.weeklyConsistency)%
@@ -459,7 +460,7 @@ struct DataExportSheet: View {
         Dhikr Lifetime: \(store.dhikrLifetimeTotal)
         Days Tracked: \(store.logs.count)
         ————————————
-        Exported from Aleha • alehalearn.com
+        Exported from Muslim Pro
         """
         let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -473,7 +474,7 @@ struct DataExportSheet: View {
 struct ShareAppSheet: View {
     @Environment(\.dismiss) var dismiss
 
-    private let shareText = "Assalamu Alaikum! I've been using Aleha for prayer tracking & Quran reading — beautiful and super helpful. Check it out at https://alehalearn.com"
+    private let shareText = "Assalamu Alaikum! I've been using Muslim Pro for prayer tracking & Quran reading — beautiful and super helpful. Highly recommend it!"
 
     var body: some View {
         NavigationStack {
@@ -489,7 +490,7 @@ struct ShareAppSheet: View {
                 }
                 .padding(AppTheme.screenPadding)
             }
-            .navigationTitle("Share Aleha")
+            .navigationTitle("Share Muslim Pro")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
@@ -512,7 +513,7 @@ struct ShareAppSheet: View {
     private var shareContent: some View {
         VStack(spacing: 8) {
             Text("Share with Friends").font(.title3.weight(.bold))
-            Text("Help your friends build better habits with Aleha.")
+            Text("Help your friends build better habits with Muslim Pro.")
                 .font(.subheadline).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
@@ -520,7 +521,7 @@ struct ShareAppSheet: View {
 
     private var shareButton: some View {
         Button { presentNativeShare() } label: {
-            Label("Share Aleha", systemImage: "square.and.arrow.up")
+            Label("Share Muslim Pro", systemImage: "square.and.arrow.up")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
@@ -568,7 +569,7 @@ struct ShareAppSheet: View {
     }
 }
 
-// MARK: - About Aleha Sheet
+// MARK: - About Muslim Pro Sheet
 struct AboutAlehaSheet: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
@@ -589,7 +590,7 @@ struct AboutAlehaSheet: View {
                 }
                 .padding(AppTheme.screenPadding)
             }
-            .navigationTitle("About Aleha")
+            .navigationTitle("About Muslim Pro")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
@@ -610,9 +611,10 @@ struct AboutAlehaSheet: View {
     }
 
     private var infoBlock: some View {
-        VStack(spacing: 8) {
-            Text("Aleha").font(.largeTitle.weight(.bold))
-            Text("Version 1.0").font(.subheadline).foregroundStyle(.secondary)
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+        return VStack(spacing: 8) {
+            Text("Muslim Pro").font(.largeTitle.weight(.bold))
+            Text("Version \(version)").font(.subheadline).foregroundStyle(.secondary)
             Text("Your companion for prayer, Quran reading, and daily remembrance — designed to make Islamic practice beautiful and accessible.")
                 .font(.subheadline).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -622,11 +624,13 @@ struct AboutAlehaSheet: View {
 
     private var websiteButton: some View {
         Button {
-            openURL(URL(string: "https://alehalearn.com")!)
+            if let url = URL(string: "https://muslimpro.app") {
+                openURL(url)
+            }
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: "globe")
-                Text("alehalearn.com")
+                Text("muslimpro.app")
                     .fontWeight(.semibold)
             }
             .font(.subheadline)

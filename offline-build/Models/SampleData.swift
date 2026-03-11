@@ -72,12 +72,6 @@ struct SampleData {
     // MARK: - Today's Prayers
     static func todayPrayers() -> [SalahLogEntry] {
         let today = Date()
-        return [
-            SalahLogEntry(prayer: .fajr, completed: true, date: today),
-            SalahLogEntry(prayer: .dhuhr, completed: true, date: today),
-            SalahLogEntry(prayer: .asr, completed: true, date: today),
-            SalahLogEntry(prayer: .maghrib, completed: false, date: today),
-            SalahLogEntry(prayer: .isha, completed: false, date: today),
-        ]
+        return Prayer.allCases.map { SalahLogEntry(prayer: $0, completed: false, date: today) }
     }
 }

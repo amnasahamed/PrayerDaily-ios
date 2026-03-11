@@ -1,15 +1,23 @@
 import SwiftUI
 
 struct QuickAccessSection: View {
-    private let items: [(icon: String, title: String, color: Color)] = [
-        ("book.fill",           "Quran",     Color.alehaGreen),
-        ("hands.sparkles.fill", "Duas",      Color.alehaAmber),
-        ("rosette",             "Dhikr",     Color(red: 0.55, green: 0.30, blue: 0.85)),
-        ("text.book.closed.fill","Hadith",   Color.alehaDarkGreen),
-        ("graduationcap.fill",  "Kids",      Color(red: 0.95, green: 0.55, blue: 0.20)),
-        ("cross.case.fill",     "Emergency", Color(red: 0.85, green: 0.28, blue: 0.28))
+    private struct TileItem {
+        let icon: String
+        let title: String
+        let color: Color
+        let tab: AppTab?
+    }
+
+    private let items: [TileItem] = [
+        TileItem(icon: "book.fill",            title: "Quran",     color: Color.alehaGreen,                              tab: .quran),
+        TileItem(icon: "hands.sparkles.fill",  title: "Duas",      color: Color.alehaAmber,                              tab: .library),
+        TileItem(icon: "rosette",              title: "Dhikr",     color: Color(red: 0.55, green: 0.30, blue: 0.85),     tab: .salah),
+        TileItem(icon: "text.book.closed.fill",title: "Hadith",    color: Color.alehaDarkGreen,                          tab: .library),
+        TileItem(icon: "graduationcap.fill",   title: "Kids",      color: Color(red: 0.95, green: 0.55, blue: 0.20),     tab: nil),
+        TileItem(icon: "cross.case.fill",      title: "Emergency", color: Color(red: 0.85, green: 0.28, blue: 0.28),     tab: .library),
     ]
     @State private var pressedIndex: Int? = nil
+    @State private var showKidsComing = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -24,10 +32,36 @@ struct QuickAccessSection: View {
                         title: items[i].title,
                         color: items[i].color,
                         index: i,
-                        pressedIndex: $pressedIndex
+                        pressedIndex: $pressedIndex,
+                        onTap: {
+                            if let tab = items[i].tab {
+                                NotificationCenter.default.post(name: .didTapQuickAccess, object: tab)
+                            } else {
+                                showKidsComing = true
+                            }
+                        }
                     )
                 }
             }
+        }
+        .sheet(isPresented: $showKidsComing) {
+            VStack(spacing: 20) {
+                Image(systemName: "graduationcap.fill")
+                    .font(.system(size: 48))
+                    .foregroundStyle(Color(red: 0.95, green: 0.55, blue: 0.20))
+                Text("Kids Section")
+                    .font(.title2.weight(.bold))
+                Text("Coming Soon")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Text("We're building a fun, age-appropriate Islamic learning experience for children. Stay tuned!")
+                    .font(.callout)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal)
+            }
+            .padding(40)
+            .presentationDetents([.medium])
         }
     }
 
@@ -48,6 +82,7 @@ struct QuickTile: View {
     let color: Color
     let index: Int
     @Binding var pressedIndex: Int?
+    var onTap: (() -> Void)? = nil
     @Environment(\.colorScheme) var cs
 
     private var isPressed: Bool { pressedIndex == index }
@@ -60,6 +95,7 @@ struct QuickTile: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 if pressedIndex == index { pressedIndex = nil }
             }
+            onTap?()
         } label: {
             VStack(spacing: 10) {
                 ZStack {

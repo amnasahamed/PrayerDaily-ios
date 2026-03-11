@@ -230,7 +230,7 @@ struct CalendarPrayerView: View {
         let startWeekday = calendar.component(.weekday, from: firstOfMonth) - 1
         var items: [CalendarDay] = []
         for _ in 0..<startWeekday {
-            items.append(CalendarDay(day: 0, date: Date(), isPlaceholder: true))
+            items.append(CalendarDay(day: 0, date: .distantPast, isPlaceholder: true))
         }
         for day in range {
             if let date = calendar.date(byAdding: .day, value: day - 1, to: firstOfMonth) {

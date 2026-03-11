@@ -104,6 +104,8 @@ Alhamdulillah
     }
 
     private func renderCard() -> UIImage {
+        let cardWidth = min(UIScreen.main.bounds.width - 48, 360)
+        let cardHeight = cardWidth * (480.0 / 360.0)
         let renderer = ImageRenderer(
             content: ProgressShareCard(
                 completedCount: todayCount,
@@ -111,7 +113,7 @@ Alhamdulillah
                 weeklyPct: pct,
                 dateString: formattedDate
             )
-            .frame(width: 360, height: 480)
+            .frame(width: cardWidth, height: cardHeight)
         )
         renderer.scale = 3.0
         return renderer.uiImage ?? UIImage()

@@ -343,6 +343,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1F3A40B9B3EEC555AE807906 /* Build configuration list for PBXNativeTarget "offline-build" */;
 			buildPhases = (
+				F6A8130727A24DE57583A63C /* Generate App Icon */,
 				396C14E5486E73EF47F92F48 /* Sources */,
 				EA62F924F8A87A523B72E19F /* Resources */,
 			);
@@ -397,6 +398,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F6A8130727A24DE57583A63C /* Generate App Icon */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Generate App Icon";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/offline-build\"\npython3 generate_icon.py || true\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		396C14E5486E73EF47F92F48 /* Sources */ = {

@@ -96,6 +96,8 @@ struct DhikrPreset: Codable, Identifiable {
     var target: Int
     var currentCount: Int
     var color: String
+
+    var completionText: String { "ماشاء الله" }
 }
 
 // MARK: - Store
@@ -151,10 +153,6 @@ class SalahStore: ObservableObject {
             self.dhikrLifetimeCounts = mapped
         }
 
-        // Seed sample data if empty
-        if logs.isEmpty {
-            seedSampleData()
-        }
     }
 
     // MARK: - Persistence
@@ -199,8 +197,11 @@ class SalahStore: ObservableObject {
     // MARK: - Stats
     var currentStreak: Int {
         var count = 0
-        var date = Date()
         let cal = Calendar.current
+        let today = Date()
+        // If today is incomplete, start counting from yesterday to preserve streak mid-day
+        let todayLog = log(for: today)
+        var date = todayLog.completedCount == 5 ? today : (cal.date(byAdding: .day, value: -1, to: today) ?? today)
         while true {
             let dayLog = log(for: date)
             if dayLog.completedCount == 5 {
@@ -308,9 +309,9 @@ class SalahStore: ObservableObject {
         return missed
     }
 
-    // MARK: - Dhikr weekly total
-    var dhikrWeeklyTotal: Int {
-        dhikrLifetimeCounts.values.reduce(0, +)
+    // MARK: - Dhikr totals
+    var dhikrSessionTotal: Int {
+        dhikrPresets.reduce(0) { $0 + $1.currentCount }
     }
 
     var dhikrTodayTotal: Int {
@@ -333,9 +334,16 @@ class SalahStore: ObservableObject {
         let lang = UserDefaults.standard.string(forKey: "appLanguage")
 
         // Wipe entire domain so @AppStorage bindings update reactively
-        let domain = Bundle.main.bundleIdentifier ?? "com.aleha"
-        UserDefaults.standard.removePersistentDomain(forName: domain)
-        UserDefaults.standard.synchronize()
+        if let domain = Bundle.main.bundleIdentifier {
+            UserDefaults.standard.removePersistentDomain(forName: domain)
+            UserDefaults.standard.synchronize()
+        } else {
+            // Fallback: remove keys individually when bundle ID is unavailable
+            UserDefaults.standard.removeObject(forKey: Self.logsKey)
+            UserDefaults.standard.removeObject(forKey: Self.qadaKey)
+            UserDefaults.standard.removeObject(forKey: Self.dhikrKey)
+            UserDefaults.standard.removeObject(forKey: Self.dhikrLifetimeKey)
+        }
 
         // Restore language
         if let lang { UserDefaults.standard.set(lang, forKey: "appLanguage") }

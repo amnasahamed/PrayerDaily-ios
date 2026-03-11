@@ -1,12 +1,14 @@
 import SwiftUI
+import Combine
 
 // MARK: - Compact Prayer-Time Header (~90px)
 struct SmartHeaderView: View {
     @ObservedObject var service: PrayerTimesService
     @Environment(\.colorScheme) var cs
+    @Environment(\.localization) var l10n
     @State private var countdown = ""
     @State private var pulseOpacity: Double = 1.0
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var timerCancellable: AnyCancellable?
 
     var body: some View {
         HStack(spacing: 14) {
@@ -22,8 +24,16 @@ struct SmartHeaderView: View {
         .background(headerBackground)
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .shadow(color: Color.alehaGreen.opacity(cs == .dark ? 0.22 : 0.14), radius: 14, y: 6)
-        .onAppear { updateCountdown() }
-        .onReceive(timer) { _ in updateCountdown() }
+        .onAppear {
+            updateCountdown()
+            timerCancellable = Timer.publish(every: 1, on: .main, in: .common)
+                .autoconnect()
+                .sink { _ in updateCountdown() }
+        }
+        .onDisappear {
+            timerCancellable?.cancel()
+            timerCancellable = nil
+        }
     }
 
     // MARK: - Left: greeting + arabic
@@ -110,9 +120,9 @@ struct SmartHeaderView: View {
 
     private var greetingText: String {
         let h = Calendar.current.component(.hour, from: Date())
-        if h < 12 { return "Good Morning" }
-        if h < 17 { return "Good Afternoon" }
-        return "Good Evening"
+        if h < 12 { return l10n.t(.homeGreetingMorning) }
+        if h < 17 { return l10n.t(.homeGreetingAfternoon) }
+        return l10n.t(.homeGreetingEvening)
     }
 
     private func updateCountdown() {

@@ -6,15 +6,9 @@ struct NoorApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     init() {
-        // Hide the system tab bar — we use a custom FloatingTabBar overlay.
-        // On iOS 26+ the .page TabViewStyle has no system bar, so this is a no-op there.
-        if #available(iOS 26.0, *) {
-            // iOS 26 renders TabView(.page) without a system bar by default; no action needed.
-        } else {
-            UITabBar.appearance().isHidden = true
-        }
         AppReviewManager.incrementSession()
         configureNavigationBarAppearance()
+        configureTabBarAppearance()
     }
 
     var body: some Scene {
@@ -36,14 +30,19 @@ struct NoorApp: App {
         UINavigationBar.appearance().compactAppearance = appearance
         UINavigationBar.appearance().tintColor = UIColor(Color.alehaGreen)
     }
+
+    private func configureTabBarAppearance() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .systemBackground
+
+        UITabBar.appearance().standardAppearance = appearance
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+        UITabBar.appearance().tintColor = UIColor(Color.alehaGreen)
+    }
 }
 
 // MARK: - App Root View
-// Lives as a proper SwiftUI View so @AppStorage reactivity is guaranteed:
-// View state changes trigger an immediate render cycle, ensuring
-// preferredColorScheme updates in the exact same frame as the user's tap.
-// No window-level overrideUserInterfaceStyle is used — the hosting controller
-// propagates the trait to all UIKit descendants automatically.
 struct AppRootView: View {
     @State private var selectedTab: AppTab = .home
     @StateObject private var salahStore = SalahStore()
@@ -75,31 +74,42 @@ struct AppRootView: View {
             }
         }
         .animation(.easeInOut(duration: 0.4), value: hasCompletedOnboarding)
-        // The hosting controller propagates preferredColorScheme to every UIKit descendant
-        // (nav bars, sheets, alerts) in the same render frame.
         .preferredColorScheme(preferredColorScheme)
     }
 
     private var mainApp: some View {
-        ZStack(alignment: .bottom) {
-            TabView(selection: $selectedTab) {
-                HomeView()
-                    .tag(AppTab.home)
-                SurahListView()
-                    .tag(AppTab.quran)
-                SalahDashboard()
-                    .tag(AppTab.salah)
-                LibraryView()
-                    .tag(AppTab.library)
-                MoreView()
-                    .tag(AppTab.more)
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .animation(.spring(response: 0.38, dampingFraction: 0.85), value: selectedTab)
-            .id(salahStore.resetTrigger)
+        TabView(selection: $selectedTab) {
+            HomeView()
+                .tabItem {
+                    Label(localization.t(.tabHome), systemImage: AppTab.home.icon)
+                }
+                .tag(AppTab.home)
 
-            FloatingTabBar(selectedTab: $selectedTab)
+            SurahListView()
+                .tabItem {
+                    Label(localization.t(.tabQuran), systemImage: AppTab.quran.icon)
+                }
+                .tag(AppTab.quran)
+
+            SalahDashboard()
+                .tabItem {
+                    Label(localization.t(.tabSalah), systemImage: AppTab.salah.icon)
+                }
+                .tag(AppTab.salah)
+
+            LibraryView()
+                .tabItem {
+                    Label(localization.t(.tabLibrary), systemImage: AppTab.library.icon)
+                }
+                .tag(AppTab.library)
+
+            MoreView()
+                .tabItem {
+                    Label(localization.t(.tabMore), systemImage: AppTab.more.icon)
+                }
+                .tag(AppTab.more)
         }
+        .id(salahStore.resetTrigger)
         .ignoresSafeArea(.keyboard)
         .environmentObject(salahStore)
         .environmentObject(localization)

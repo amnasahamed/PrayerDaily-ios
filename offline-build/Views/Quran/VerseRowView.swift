@@ -112,7 +112,8 @@ struct VerseRowView: View {
             Image(systemName: icon)
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(tint)
-                .frame(width: 38, height: 32)
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)

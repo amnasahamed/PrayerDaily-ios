@@ -48,10 +48,11 @@ struct HomeView: View {
     private func sectionLabel(_ icon: String, _ title: String) -> some View {
         HStack(spacing: 7) {
             Image(systemName: icon)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.body)
                 .foregroundStyle(Color.alehaGreen)
             Text(title.uppercased())
-                .font(.system(size: 11, weight: .bold))
+                .font(.caption)
+                .fontWeight(.bold)
                 .kerning(1.1)
                 .foregroundStyle(.secondary)
         }

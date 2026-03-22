@@ -4,11 +4,11 @@ import SwiftUI
 struct HabitMotivationBlock: View {
     @EnvironmentObject var salahStore: SalahStore
     @Environment(\.colorScheme) var cs
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
     @State private var animateFlame = false
 
     private var streak: Int { salahStore.currentStreak }
     private var weekTotal: Int {
-        let logs = salahStore.logs.values
         let cal = Calendar.current
         let today = Date()
         return (0..<7).compactMap { offset in
@@ -30,17 +30,18 @@ struct HabitMotivationBlock: View {
     private var streakCard: some View {
         VStack(spacing: 6) {
             Image(systemName: "flame.fill")
-                .font(.system(size: 24, weight: .semibold))
+                .font(.title2)
                 .foregroundStyle(Color.alehaAmber)
-                .scaleEffect(animateFlame ? 1.15 : 1.0)
-                .animation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true), value: animateFlame)
-                .onAppear { animateFlame = true }
+                .scaleEffect(reduceMotion ? 1.0 : (animateFlame ? 1.15 : 1.0))
+                .animation(reduceMotion ? .none : .easeInOut(duration: 1.2).repeatForever(autoreverses: true), value: animateFlame)
+                .onAppear { if !reduceMotion { animateFlame = true } }
             Text("\(streak)")
-                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .font(.title)
+                .fontWeight(.bold)
                 .foregroundStyle(Color.alehaAmber)
                 .contentTransition(.numericText())
             Text("Day Streak")
-                .font(.system(size: 10, weight: .medium))
+                .font(.caption2)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
@@ -55,14 +56,15 @@ struct HabitMotivationBlock: View {
     private var weekCard: some View {
         VStack(spacing: 6) {
             Image(systemName: "calendar")
-                .font(.system(size: 24, weight: .semibold))
+                .font(.title2)
                 .foregroundStyle(Color.alehaGreen)
             Text("\(weekTotal)/35")
-                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .font(.headline)
+                .fontWeight(.bold)
                 .foregroundStyle(Color.alehaGreen)
                 .contentTransition(.numericText())
             Text("This Week")
-                .font(.system(size: 10, weight: .medium))
+                .font(.caption2)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
@@ -78,14 +80,15 @@ struct HabitMotivationBlock: View {
         let accent: Color = qadaTotal == 0 ? Color.alehaGreen : Color.alehaSaffron
         return VStack(spacing: 6) {
             Image(systemName: "moon.fill")
-                .font(.system(size: 24, weight: .semibold))
+                .font(.title2)
                 .foregroundStyle(accent)
             Text("\(qadaTotal)")
-                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .font(.title)
+                .fontWeight(.bold)
                 .foregroundStyle(accent)
                 .contentTransition(.numericText())
             Text("Qada Left")
-                .font(.system(size: 10, weight: .medium))
+                .font(.caption2)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }

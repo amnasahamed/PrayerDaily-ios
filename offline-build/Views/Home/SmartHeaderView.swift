@@ -40,7 +40,7 @@ struct SmartHeaderView: View {
     private var leftGreeting: some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(greetingText)
-                .font(.system(size: 12, weight: .medium))
+                .font(.caption)
                 .foregroundStyle(.white.opacity(0.65))
             Text("السلام عليكم")
                 .font(.system(size: 20, weight: .bold, design: .serif))
@@ -59,10 +59,12 @@ struct SmartHeaderView: View {
                 .onAppear { pulseOpacity = 0.25 }
             VStack(alignment: .leading, spacing: 1) {
                 Text(next.prayer.rawValue)
-                    .font(.system(size: 13, weight: .bold))
+                    .font(.subheadline)
+                    .fontWeight(.bold)
                     .foregroundStyle(.white)
                 Text(countdown)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.caption)
+                    .fontWeight(.semibold)
                     .foregroundStyle(Color.alehaGreen)
                     .accessibilityLabel("Time until \(next.prayer.rawValue): \(countdown)")
             }

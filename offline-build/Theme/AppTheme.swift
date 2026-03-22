@@ -49,10 +49,15 @@ struct AlehaCardStyle: ViewModifier {
             )
             .shadow(color: .black.opacity(colorScheme == .dark ? 0.3 : 0.06), radius: 14, y: 5)
     }
-    private var cardFill: some ShapeStyle {
-        colorScheme == .dark
-            ? AnyShapeStyle(Color.white.opacity(0.08))
-            : AnyShapeStyle(Color.white.opacity(0.92))
+    @ViewBuilder
+    private var cardFill: some View {
+        if colorScheme == .dark {
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .fill(.ultraThinMaterial)
+        } else {
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .fill(.ultraThinMaterial)
+        }
     }
     private var borderColor: Color {
         colorScheme == .dark ? Color.white.opacity(0.12) : Color.alehaGreen.opacity(0.08)
@@ -115,12 +120,13 @@ struct PulseGlow: ViewModifier {
     var color: Color = Color.alehaActiveGreen
     var active: Bool = true
     @State private var pulse = false
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
 
     func body(content: Content) -> some View {
         content
             .shadow(color: active ? color.opacity(pulse ? 0.55 : 0.15) : .clear, radius: pulse ? 12 : 4)
             .onAppear {
-                guard active else { return }
+                guard active, !reduceMotion else { return }
                 withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: true)) {
                     pulse = true
                 }
@@ -161,6 +167,10 @@ struct BouncePressStyle: ButtonStyle {
 // MARK: - Calming Layered Background
 struct CalmingBackground: View {
     @Environment(\.colorScheme) var cs
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
+    @State private var phase1: Double = 0
+    @State private var phase2: Double = 0
+
     var body: some View {
         ZStack {
             baseGradient
@@ -168,6 +178,15 @@ struct CalmingBackground: View {
             bottomOrb
         }
         .ignoresSafeArea()
+        .onAppear {
+            guard !reduceMotion else { return }
+            withAnimation(.easeInOut(duration: 12).repeatForever(autoreverses: true)) {
+                phase1 = 1.0
+            }
+            withAnimation(.easeInOut(duration: 18).repeatForever(autoreverses: true)) {
+                phase2 = 1.0
+            }
+        }
     }
 
     private var baseGradient: some View {
@@ -185,14 +204,14 @@ struct CalmingBackground: View {
             .fill(Color.alehaGreen.opacity(cs == .dark ? 0.06 : 0.07))
             .frame(width: 400, height: 400)
             .blur(radius: 120)
-            .offset(x: -80, y: -240)
+            .offset(x: -80 + (30 * phase1), y: -240 + (40 * phase2))
     }
     private var bottomOrb: some View {
         Circle()
             .fill(Color.alehaAmber.opacity(cs == .dark ? 0.03 : 0.04))
             .frame(width: 300, height: 300)
             .blur(radius: 90)
-            .offset(x: 120, y: 300)
+            .offset(x: 120 - (25 * phase2), y: 300 - (35 * phase1))
     }
 }
 
@@ -277,14 +296,15 @@ struct StaggeredAppear: ViewModifier {
     let appeared: Bool
     let index: Int
     let baseDelay: Double
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
 
     func body(content: Content) -> some View {
         content
             .opacity(appeared ? 1 : 0)
             .offset(y: appeared ? 0 : 18)
             .animation(
-                .spring(response: 0.5, dampingFraction: 0.82)
-                .delay(baseDelay + Double(index) * 0.06),
+                reduceMotion ? .none : .spring(response: 0.5, dampingFraction: 0.82)
+                    .delay(baseDelay + Double(index) * 0.06),
                 value: appeared
             )
     }

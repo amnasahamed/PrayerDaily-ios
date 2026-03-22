@@ -75,8 +75,7 @@ struct AppRootView: View {
             }
         }
         .animation(.easeInOut(duration: 0.4), value: hasCompletedOnboarding)
-        // Single mechanism — no window-level override needed.
-        // The hosting controller propagates this to every UIKit descendant
+        // The hosting controller propagates preferredColorScheme to every UIKit descendant
         // (nav bars, sheets, alerts) in the same render frame.
         .preferredColorScheme(preferredColorScheme)
     }
@@ -121,17 +120,6 @@ struct AppRootView: View {
             if let tab = note.object as? AppTab {
                 selectedTab = tab
             }
-        }
-        // Synchronously propagate trait to ALL UIPageViewController child HCs,
-        // avoiding the async traitCollectionDidChange lag on tab-page hosting controllers.
-        .onChange(of: appearanceMode) { _, newMode in
-            let style: UIUserInterfaceStyle =
-                newMode == "dark"  ? .dark  :
-                newMode == "light" ? .light : .unspecified
-            UIApplication.shared.connectedScenes
-                .compactMap { $0 as? UIWindowScene }
-                .flatMap { $0.windows }
-                .forEach { $0.overrideUserInterfaceStyle = style }
         }
     }
 }

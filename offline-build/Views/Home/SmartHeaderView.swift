@@ -64,6 +64,7 @@ struct SmartHeaderView: View {
                 Text(countdown)
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(Color.alehaGreen)
+                    .accessibilityLabel("Time until \(next.prayer.rawValue): \(countdown)")
             }
         }
         .padding(.horizontal, 12)
@@ -74,6 +75,8 @@ struct SmartHeaderView: View {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .stroke(Color.alehaGreen.opacity(0.30), lineWidth: 1)
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(next.prayer.rawValue) in \(countdown)")
     }
 
     // MARK: - Crescent moon badge

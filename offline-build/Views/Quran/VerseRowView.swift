@@ -86,15 +86,16 @@ struct VerseRowView: View {
     // MARK: - Action Bar
     private var actionBar: some View {
         HStack(spacing: 0) {
-            actionButton(icon: playIcon, tint: isCurrentlyPlaying ? Color("NoorGold") : iconTint, action: onPlay)
+            actionButton(icon: playIcon, tint: isCurrentlyPlaying ? Color("NoorGold") : iconTint, action: onPlay, label: isCurrentlyPlaying ? (isPaused ? "Resume audio" : "Pause audio") : "Play audio")
             if let tafsir = onTafsir {
-                actionButton(icon: "doc.text.magnifyingglass", tint: Color("NoorAccent"), action: tafsir)
+                actionButton(icon: "doc.text.magnifyingglass", tint: Color("NoorAccent"), action: tafsir, label: "View tafsir")
             }
-            actionButton(icon: "square.and.arrow.up", tint: iconTint, action: shareAyah)
+            actionButton(icon: "square.and.arrow.up", tint: iconTint, action: shareAyah, label: "Share verse")
             actionButton(
                 icon: isBookmarked ? "bookmark.fill" : "bookmark",
                 tint: isBookmarked ? Color("NoorGold") : iconTint,
-                action: onBookmark
+                action: onBookmark,
+                label: isBookmarked ? "Remove bookmark" : "Add bookmark"
             )
             Spacer()
         }
@@ -106,7 +107,7 @@ struct VerseRowView: View {
         isFocusMode ? .white.opacity(0.55) : Color("NoorPrimary").opacity(0.7)
     }
 
-    private func actionButton(icon: String, tint: Color, action: @escaping () -> Void) -> some View {
+    private func actionButton(icon: String, tint: Color, action: @escaping () -> Void, label: String) -> some View {
         Button(action: action) {
             Image(systemName: icon)
                 .font(.system(size: 14, weight: .medium))
@@ -114,6 +115,7 @@ struct VerseRowView: View {
                 .frame(width: 38, height: 32)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(label)
     }
 
     private var playIcon: String {

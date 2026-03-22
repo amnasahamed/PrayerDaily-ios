@@ -96,6 +96,7 @@ struct ConfettiBurst: View {
     @Binding var trigger: Bool
     private let colors: [Color] = [.alehaGreen, .alehaAmber, .alehaSaffron, .blue.opacity(0.7), .pink.opacity(0.7)]
     @State private var particles: [ConfettiParticle] = []
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
 
     struct ConfettiParticle: Identifiable {
         let id = UUID()
@@ -123,7 +124,7 @@ struct ConfettiBurst: View {
                 }
             }
             .onChange(of: trigger) { _, val in
-                guard val else { return }
+                guard val, !reduceMotion else { return }
                 let cx = geo.size.width / 2
                 particles = (0..<42).map { _ in
                     ConfettiParticle(

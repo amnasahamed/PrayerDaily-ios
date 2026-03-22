@@ -165,7 +165,7 @@ struct VerseShareCard: View {
     }
 
     private func shareVerse() {
-        let text = "\"\(translation)\"\n— \(reference)\n\nVia Aleha"
+        let text = "\"\(translation)\"\n— \(reference)\n\nVia PrayerDaily"
         let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let root = scene.windows.first?.rootViewController {

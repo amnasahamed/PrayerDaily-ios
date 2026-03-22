@@ -100,7 +100,7 @@ final class NotificationService {
 
         let content       = UNMutableNotificationContent()
         content.title     = "Daily Verse 📖"
-        content.body      = "Open Muslim Pro for today's verse from the Quran."
+        content.body      = "Open PrayerDaily for today's verse from the Quran."
         content.sound     = .default
 
         var components    = DateComponents()

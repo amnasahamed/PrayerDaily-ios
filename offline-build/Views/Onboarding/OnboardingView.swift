@@ -29,7 +29,7 @@ struct OnboardingView: View {
         OnboardingPage(
             icon: "moon.stars.fill",
             iconColors: [Color.alehaGreen, Color.alehaDarkGreen],
-            title: "Welcome to Muslim Pro",
+            title: "Welcome to PrayerDaily",
             subtitle: "Your companion for prayer, Quran, and daily remembrance — beautiful and always with you.",
             accentColor: .alehaGreen
         ),

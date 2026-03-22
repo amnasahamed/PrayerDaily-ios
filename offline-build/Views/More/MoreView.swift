@@ -150,7 +150,7 @@ struct MoreView: View {
     }
 
     private func triggerInviteShare() {
-        let msg = "Assalamu Alaikum! I've been using Muslim Pro for prayer tracking & Quran reading — it's beautiful and really helpful. Check it out!"
+        let msg = "Assalamu Alaikum! I've been using PrayerDaily for prayer tracking & Quran reading — it's beautiful and really helpful. Check it out!"
         let av = UIActivityViewController(activityItems: [msg], applicationActivities: nil)
         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let root = scene.windows.first?.rootViewController {
@@ -452,7 +452,7 @@ struct DataExportSheet: View {
     private func presentExportShare() {
         let total = store.logs.values.reduce(0) { $0 + $1.completedCount }
         let text = """
-        📊 Muslim Pro Prayer Export
+        PrayerDaily Prayer Export
         ————————————
         Current Streak: \(store.currentStreak) days
         Weekly Consistency: \(store.weeklyConsistency)%
@@ -460,7 +460,7 @@ struct DataExportSheet: View {
         Dhikr Lifetime: \(store.dhikrLifetimeTotal)
         Days Tracked: \(store.logs.count)
         ————————————
-        Exported from Muslim Pro
+        Exported from PrayerDaily
         """
         let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -474,7 +474,7 @@ struct DataExportSheet: View {
 struct ShareAppSheet: View {
     @Environment(\.dismiss) var dismiss
 
-    private let shareText = "Assalamu Alaikum! I've been using Muslim Pro for prayer tracking & Quran reading — beautiful and super helpful. Highly recommend it!"
+    private let shareText = "Assalamu Alaikum! I've been using PrayerDaily for prayer tracking & Quran reading — beautiful and super helpful. Highly recommend it!"
 
     var body: some View {
         NavigationStack {
@@ -490,7 +490,7 @@ struct ShareAppSheet: View {
                 }
                 .padding(AppTheme.screenPadding)
             }
-            .navigationTitle("Share Muslim Pro")
+            .navigationTitle("Share PrayerDaily")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
@@ -513,7 +513,7 @@ struct ShareAppSheet: View {
     private var shareContent: some View {
         VStack(spacing: 8) {
             Text("Share with Friends").font(.title3.weight(.bold))
-            Text("Help your friends build better habits with Muslim Pro.")
+            Text("Help your friends build better habits with PrayerDaily.")
                 .font(.subheadline).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
@@ -521,7 +521,7 @@ struct ShareAppSheet: View {
 
     private var shareButton: some View {
         Button { presentNativeShare() } label: {
-            Label("Share Muslim Pro", systemImage: "square.and.arrow.up")
+            Label("Share PrayerDaily", systemImage: "square.and.arrow.up")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
@@ -569,7 +569,7 @@ struct ShareAppSheet: View {
     }
 }
 
-// MARK: - About Muslim Pro Sheet
+// MARK: - About PrayerDaily Sheet
 struct AboutAlehaSheet: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
@@ -590,7 +590,7 @@ struct AboutAlehaSheet: View {
                 }
                 .padding(AppTheme.screenPadding)
             }
-            .navigationTitle("About Muslim Pro")
+            .navigationTitle("About PrayerDaily")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
@@ -613,7 +613,7 @@ struct AboutAlehaSheet: View {
     private var infoBlock: some View {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
         return VStack(spacing: 8) {
-            Text("Muslim Pro").font(.largeTitle.weight(.bold))
+            Text("PrayerDaily").font(.largeTitle.weight(.bold))
             Text("Version \(version)").font(.subheadline).foregroundStyle(.secondary)
             Text("Your companion for prayer, Quran reading, and daily remembrance — designed to make Islamic practice beautiful and accessible.")
                 .font(.subheadline).foregroundStyle(.secondary)
@@ -624,13 +624,13 @@ struct AboutAlehaSheet: View {
 
     private var websiteButton: some View {
         Button {
-            if let url = URL(string: "https://muslimpro.app") {
+            if let url = URL(string: "https://alehalearn.com") {
                 openURL(url)
             }
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: "globe")
-                Text("muslimpro.app")
+                Text("alehalearn.com")
                     .fontWeight(.semibold)
             }
             .font(.subheadline)

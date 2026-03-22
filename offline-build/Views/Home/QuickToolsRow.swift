@@ -79,12 +79,14 @@ private struct ToolGridCard: View {
             // Labels
             VStack(alignment: .leading, spacing: 2) {
                 Text(tool.label)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
                 if let sub = tool.subtitle {
                     Text(sub)
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.caption)
+                        .fontWeight(.medium)
                         .foregroundStyle(tool.accent)
                         .lineLimit(1)
                 }

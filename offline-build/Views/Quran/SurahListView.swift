@@ -334,14 +334,15 @@ struct SurahRowView: View {
             .frame(height: 3)
             .frame(maxWidth: 80)
             Text(progress >= 1.0 ? "100%" : String(format: "%.0f%%", progress * 100))
-                .font(.system(size: 9, weight: .bold))
+                .font(.caption2)
+                .fontWeight(.bold)
                 .foregroundStyle(progress >= 1.0 ? Color("NoorGold") : Color("NoorPrimary"))
         }
     }
 
     private var arabicName: some View {
         Text(surah.nameArabic)
-            .font(.system(size: 22))
+            .font(.title3)
             .foregroundStyle(Color("NoorPrimary"))
     }
 }

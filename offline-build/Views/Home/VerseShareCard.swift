@@ -51,7 +51,7 @@ struct VerseShareCard: View {
     private var body_: some View {
         VStack(spacing: 12) {
             Text(arabic)
-                .font(.system(size: 26, design: .serif))
+                .font(.title3)
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
                 .lineSpacing(8)
@@ -114,7 +114,8 @@ struct VerseShareCard: View {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.55)) { saved.toggle() }
         } label: {
             Label(saved ? "Saved" : "Save", systemImage: saved ? "bookmark.fill" : "bookmark")
-                .font(.system(size: 12, weight: .semibold))
+                .font(.caption)
+                .fontWeight(.semibold)
                 .foregroundStyle(saved ? Color.alehaAmber : .white.opacity(0.85))
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
@@ -130,7 +131,8 @@ struct VerseShareCard: View {
             shareVerse()
         } label: {
             Label("Share", systemImage: "square.and.arrow.up")
-                .font(.system(size: 12, weight: .semibold))
+                .font(.caption)
+                .fontWeight(.semibold)
                 .foregroundStyle(.white.opacity(0.85))
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
@@ -146,7 +148,8 @@ struct VerseShareCard: View {
             withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) { showTafsir.toggle() }
         } label: {
             Label(showTafsir ? "Less" : "Tafsir", systemImage: showTafsir ? "chevron.up" : "book.pages")
-                .font(.system(size: 12, weight: .semibold))
+                .font(.caption)
+                .fontWeight(.semibold)
                 .foregroundStyle(.white.opacity(0.85))
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)

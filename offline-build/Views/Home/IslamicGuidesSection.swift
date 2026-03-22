@@ -116,7 +116,8 @@ private struct GuideShelfCard: View {
 
             // Title
             Text(guide.title)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.subheadline)
+                .fontWeight(.semibold)
                 .foregroundStyle(.primary)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
@@ -130,7 +131,8 @@ private struct GuideShelfCard: View {
                     .font(.system(size: 9, weight: .bold))
                     .foregroundStyle(accent)
                 Text("\(stepCount) steps")
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.caption)
+                    .fontWeight(.semibold)
                     .foregroundStyle(accent)
             }
             .padding(.top, 2)

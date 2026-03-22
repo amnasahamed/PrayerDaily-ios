@@ -63,11 +63,13 @@ struct PrayerActionBlock: View {
                 .pulseGlow(Color.alehaActiveGreen, active: progress > 0 && progress < 1)
             VStack(spacing: 0) {
                 Text("\(completedCount)")
-                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .font(.title)
+                    .fontWeight(.bold)
                     .foregroundStyle(Color.alehaActiveGreen)
                     .contentTransition(.numericText())
                 Text("of 5")
-                    .font(.system(size: 10, weight: .medium))
+                    .font(.caption2)
+                    .fontWeight(.medium)
                     .foregroundStyle(.secondary)
             }
         }

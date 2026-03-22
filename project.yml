@@ -21,11 +21,7 @@ targets:
     type: application
     platform: iOS
     deploymentTarget: '17.0'
-    preBuildScripts:
-      - name: Generate App Icon
-        script: |
-          cd "$SRCROOT/offline-build"
-          python3 generate_icon.py || true
+    preBuildScripts: []
     sources:
       - path: offline-build
     info:

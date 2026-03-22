@@ -27,13 +27,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>PrayerDaily does not use the camera.</string>
+	<string>Aleha does not use the camera.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>PrayerDaily needs your location to calculate accurate prayer times for your area.</string>
+	<string>Aleha needs your location to calculate accurate prayer times for your area.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>PrayerDaily does not use the microphone.</string>
+	<string>Aleha does not use the microphone.</string>
 	<key>NSUserNotificationsUsageDescription</key>
-	<string>PrayerDaily sends prayer time reminders and a daily Quran verse.</string>
+	<string>Aleha sends prayer time reminders and a daily Quran verse.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

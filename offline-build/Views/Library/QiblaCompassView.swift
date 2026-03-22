@@ -153,7 +153,7 @@ struct QiblaCompassView: View {
             Color("NoorSurface")
             if isPerfectlyAligned {
                 RadialGradient(
-                    colors: [Color(hex: "#2E8B42").opacity(0.18), Color.clear],
+                    colors: [Color.alehaGreen.opacity(0.15), Color.clear],
                     center: .center, startRadius: 60, endRadius: 320
                 )
                 .animation(.easeInOut(duration: 1.0), value: isPerfectlyAligned)
@@ -161,20 +161,21 @@ struct QiblaCompassView: View {
         }
     }
 
-    // MARK: - Location Badge (replaces old topBar)
+    // MARK: - Location Badge
     private var locationBadge: some View {
         HStack(spacing: 16) {
             HStack(spacing: 5) {
                 Image(systemName: "location.fill")
-                    .font(.caption2)
-                    .foregroundStyle(Color(hex: "#2E8B42"))
+                    .font(.caption)
+                    .foregroundStyle(Color.alehaGreen)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(qibla.locationName)
-                        .font(.caption.weight(.semibold))
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
                         .foregroundStyle(.primary)
                     if !qibla.distanceToMakkah.isEmpty {
                         Text(qibla.distanceToMakkah)
-                            .font(.caption2)
+                            .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -184,20 +185,29 @@ struct QiblaCompassView: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Current location: \(qibla.locationName). \(qibla.distanceToMakkah)")
     }
 
     private var calibrationIndicator: some View {
         Group {
             if showCalibrationCheck {
                 HStack(spacing: 4) {
-                    Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
-                    Text("Calibrated").font(.caption.weight(.medium)).foregroundStyle(.green)
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+                    Text("Calibrated")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.green)
                 }
                 .transition(.scale.combined(with: .opacity))
             } else if qibla.isCalibrated {
                 HStack(spacing: 4) {
-                    Circle().fill(Color.green).frame(width: 7, height: 7)
-                    Text("Accurate").font(.caption2).foregroundStyle(.secondary)
+                    Image(systemName: "location.circle.fill")
+                        .foregroundStyle(Color.alehaGreen)
+                    Text("Accurate")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             } else {
                 calibratingBadge
@@ -211,7 +221,7 @@ struct QiblaCompassView: View {
         HStack(spacing: 6) {
             Circle()
                 .fill(Color.orange)
-                .frame(width: 7, height: 7)
+                .frame(width: 8, height: 8)
                 .overlay(
                     Circle()
                         .stroke(Color.orange.opacity(0.4), lineWidth: 3)
@@ -220,22 +230,26 @@ struct QiblaCompassView: View {
                         .animation(.easeOut(duration: 1.2).repeatForever(autoreverses: false), value: alignmentPulse)
                 )
                 .onAppear { alignmentPulse = true }
-            Text("Calibrating").font(.caption2).foregroundStyle(.secondary)
+            Text("Calibrating")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 
-    // MARK: - Compass Dial (full-bleed, no card box)
+    // MARK: - Compass Dial
     private var compassDialView: some View {
         ZStack {
             outerRing
+            degreeTicks
             cardinalLabels
             qiblaNeedle
             centerKaaba
         }
-        .frame(width: 290, height: 290)
+        .frame(width: 300, height: 300)
         .rotationEffect(.degrees(-qibla.heading))
         .animation(.interpolatingSpring(stiffness: 80, damping: 12), value: qibla.heading)
         .padding(.vertical, 8)
+        .accessibilityLabel("Qibla direction: \(Int(qibla.qiblaDirection)) degrees")
     }
 
     private var outerRing: some View {
@@ -243,24 +257,31 @@ struct QiblaCompassView: View {
             Circle()
                 .stroke(
                     LinearGradient(
-                        colors: [Color(hex: "#2E8B42").opacity(0.5), Color(hex: "#C8A951").opacity(0.3), Color(hex: "#2E8B42").opacity(0.5)],
+                        colors: [Color.alehaGreen.opacity(0.6), Color.alehaAmber.opacity(0.4), Color.alehaGreen.opacity(0.6)],
                         startPoint: .topLeading, endPoint: .bottomTrailing
-                    ), lineWidth: 2
+                    ), lineWidth: 3
                 )
-                .frame(width: 284, height: 284)
+                .frame(width: 296, height: 296)
+
             Circle()
-                .stroke(Color(.systemGray5), lineWidth: 1)
-                .frame(width: 262, height: 262)
-                .opacity(0.6)
-            ForEach(0..<72, id: \.self) { i in
-                let isMajor = i % 18 == 0
-                let isMid = i % 9 == 0
-                Rectangle()
-                    .fill(isMajor ? Color(hex: "#2E8B42") : (isMid ? Color(.systemGray3) : Color(.systemGray5)))
-                    .frame(width: isMajor ? 2 : 1, height: isMajor ? 14 : (isMid ? 9 : 6))
-                    .offset(y: -133)
-                    .rotationEffect(.degrees(Double(i) * 5))
-            }
+                .stroke(Color.alehaGreen.opacity(0.2), lineWidth: 1)
+                .frame(width: 280, height: 280)
+
+            Circle()
+                .stroke(Color.secondary.opacity(0.15), lineWidth: 12)
+                .frame(width: 268, height: 268)
+        }
+    }
+
+    private var degreeTicks: some View {
+        ForEach(0..<72, id: \.self) { i in
+            let isMajor = i % 18 == 0
+            let isMid = i % 9 == 0
+            Rectangle()
+                .fill(isMajor ? Color.alehaGreen : (isMid ? Color.secondary.opacity(0.5) : Color.secondary.opacity(0.3)))
+                .frame(width: isMajor ? 2.5 : 1, height: isMajor ? 16 : (isMid ? 10 : 6))
+                .offset(y: -138)
+                .rotationEffect(.degrees(Double(i) * 5))
         }
     }
 
@@ -276,36 +297,47 @@ struct QiblaCompassView: View {
     private func compassLabel(_ text: String, angle: Double, color: Color = .primary) -> some View {
         let rad = angle * .pi / 180
         return Text(text)
-            .font(.caption.weight(.bold))
+            .font(.headline)
+            .fontWeight(.bold)
             .foregroundStyle(color)
-            .offset(x: 108 * sin(rad), y: -108 * cos(rad))
+            .offset(x: 112 * sin(rad), y: -112 * cos(rad))
     }
 
     private var qiblaNeedle: some View {
         let needleAngle = qibla.qiblaDirection
         return ZStack(alignment: .bottom) {
+            // Glow effect
+            Rectangle()
+                .fill(Color.alehaGreen.opacity(0.25))
+                .frame(width: 8, height: 80)
+                .blur(radius: 4)
+                .offset(y: -14)
+
+            // Main needle
             Rectangle()
                 .fill(
                     LinearGradient(
-                        colors: [Color(hex: "#2E8B42").opacity(0.0), Color(hex: "#2E8B42").opacity(0.35)],
+                        colors: [Color.alehaGreen.opacity(0.1), Color.alehaGreen],
                         startPoint: .bottom, endPoint: .top
                     )
                 )
-                .frame(width: 6, height: 72)
-                .blur(radius: 3)
-                .offset(y: -16)
-            Rectangle()
-                .fill(LinearGradient(colors: [Color(hex: "#2E8B42"), Color(hex: "#2E8B42").opacity(0.75)], startPoint: .top, endPoint: .bottom))
-                .frame(width: 3.5, height: 68)
-                .offset(y: -16)
+                .frame(width: 4, height: 72)
+                .offset(y: -14)
+
+            // Arrow head
             Image(systemName: "arrowtriangle.up.fill")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundStyle(Color(hex: "#2E8B42"))
-                .offset(y: -82)
-            Text("Qibla")
-                .font(.system(size: 9, weight: .bold))
-                .foregroundStyle(Color(hex: "#2E8B42"))
-                .offset(y: -102)
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundStyle(Color.alehaGreen)
+                .offset(y: -84)
+
+            // Qibla label
+            Text("QIBLA")
+                .font(.caption2)
+                .fontWeight(.heavy)
+                .foregroundStyle(Color.alehaGreen)
+                .tracking(1.5)
+                .offset(y: -108)
         }
         .rotationEffect(.degrees(needleAngle))
         .animation(.interpolatingSpring(stiffness: 70, damping: 11), value: needleAngle)
@@ -313,55 +345,69 @@ struct QiblaCompassView: View {
 
     private var centerKaaba: some View {
         ZStack {
-            Circle().fill(Color(hex: "#2E8B42").opacity(0.12)).frame(width: 60, height: 60)
-            Circle().stroke(Color(hex: "#C8A951").opacity(0.5), lineWidth: 1.5).frame(width: 54, height: 54)
+            // Outer glow
             Circle()
-                .fill(cs == .dark ? Color(.systemGray6) : .white)
-                .frame(width: 50, height: 50)
-                .shadow(color: .black.opacity(0.08), radius: 4)
-            Image(systemName: "building.fill")
-                .font(.system(size: 20))
+                .fill(Color.alehaGreen.opacity(0.1))
+                .frame(width: 70, height: 70)
+
+            // Gold ring
+            Circle()
+                .stroke(Color.alehaAmber.opacity(0.6), lineWidth: 2)
+                .frame(width: 60, height: 60)
+
+            // White center
+            Circle()
+                .fill(cs == .dark ? Color(.systemGray5) : .white)
+                .frame(width: 54, height: 54)
+                .shadow(color: .black.opacity(0.1), radius: 4)
+
+            // Kaaba icon
+            Image(systemName: "building.columns.fill")
+                .font(.title2)
                 .foregroundStyle(Color.alehaDarkGreen)
                 .rotationEffect(.degrees(qibla.heading))
         }
     }
 
-    // MARK: - Bottom Pill (unified degree + instruction)
+    // MARK: - Bottom Pill
     private var bottomPill: some View {
         HStack(spacing: 16) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 HStack(alignment: .firstTextBaseline, spacing: 2) {
-                    Text(String(format: "%.1f", qibla.qiblaDirection))
-                        .font(.system(size: 34, weight: .bold, design: .rounded))
-                        .foregroundStyle(Color(hex: "#2E8B42"))
+                    Text(String(format: "%.0f", qibla.qiblaDirection))
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundStyle(Color.alehaGreen)
                         .contentTransition(.numericText())
                     Text("°")
-                        .font(.system(size: 22, weight: .semibold))
-                        .foregroundStyle(Color(hex: "#2E8B42").opacity(0.7))
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.alehaGreen.opacity(0.7))
                         .baselineOffset(6)
                 }
-                Text(isPerfectlyAligned ? "✅ Perfect alignment" : "Face this direction to pray")
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(isPerfectlyAligned ? Color(hex: "#2E8B42") : .secondary)
-                    .animation(.spring(response: 0.3), value: isPerfectlyAligned)
+                HStack(spacing: 4) {
+                    Image(systemName: isPerfectlyAligned ? "checkmark.circle.fill" : "location.north.fill")
+                        .font(.caption)
+                    Text(isPerfectlyAligned ? "Perfect alignment" : "Face this direction to pray")
+                        .font(.caption)
+                }
+                .foregroundStyle(isPerfectlyAligned ? Color.alehaGreen : .secondary)
+                .animation(.spring(response: 0.3), value: isPerfectlyAligned)
             }
             Spacer()
             ShareLink(
-                item: "My Qibla direction is \(String(format: "%.1f°", qibla.qiblaDirection)) from \(qibla.locationName). \(qibla.distanceToMakkah). 🕋",
+                item: "My Qibla direction is \(String(format: "%.0f°", qibla.qiblaDirection)) from \(qibla.locationName). \(qibla.distanceToMakkah).",
                 subject: Text("My Qibla Direction"),
-                message: Text("Shared via Noor")
+                message: Text("Shared via PrayerDaily")
             ) {
-                HStack(spacing: 6) {
-                    Image(systemName: "square.and.arrow.up")
-                        .font(.subheadline.weight(.semibold))
-                    Text("Share")
-                        .font(.subheadline.weight(.semibold))
-                }
-                .foregroundStyle(.white)
-                .padding(.horizontal, 18)
-                .padding(.vertical, 12)
-                .background(Color(hex: "#2E8B42"))
-                .clipShape(Capsule())
+                Label("Share", systemImage: "square.and.arrow.up")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 12)
+                    .background(Color.alehaGreen)
+                    .clipShape(Capsule())
             }
         }
         .padding(.horizontal, 24)
@@ -380,18 +426,17 @@ struct QiblaCompassView: View {
     private var calibrationHint: some View {
         Group {
             if let err = qibla.locationError {
-                Text(err)
+                Label(err, systemImage: "exclamationmark.triangle.fill")
                     .font(.caption)
                     .foregroundStyle(.red)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 24)
             } else if !qibla.isCalibrated {
-                Text("Move your phone in a figure-8 to calibrate")
+                Label("Move your phone in a figure-8 to calibrate", systemImage: "iphone.gen3.radiowaves.left.and.right")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                    .italic()
             } else {
-                Text("\"Align your heart before your direction.\"")
+                Text("\"Turn towards the Kaaba with sincerity.\"")
                     .font(.caption)
                     .foregroundStyle(.tertiary)
                     .italic()

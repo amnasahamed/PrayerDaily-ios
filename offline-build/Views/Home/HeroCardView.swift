@@ -39,10 +39,10 @@ struct HeroCard: View {
     private var skyGradient: some View {
         LinearGradient(
             colors: [
-                Color(red: 0.05, green: 0.12, blue: 0.22),
-                Color(red: 0.06, green: 0.22, blue: 0.16),
-                Color(red: 0.10, green: 0.34, blue: 0.22),
-                Color(red: 0.14, green: 0.44, blue: 0.28)
+                cs == .dark ? Color(red: 0.05, green: 0.12, blue: 0.22) : Color(red: 0.12, green: 0.25, blue: 0.45),
+                cs == .dark ? Color(red: 0.06, green: 0.22, blue: 0.16) : Color(red: 0.08, green: 0.35, blue: 0.28),
+                cs == .dark ? Color(red: 0.10, green: 0.34, blue: 0.22) : Color(red: 0.10, green: 0.45, blue: 0.32),
+                cs == .dark ? Color(red: 0.14, green: 0.44, blue: 0.28) : Color(red: 0.14, green: 0.55, blue: 0.38)
             ],
             startPoint: .top,
             endPoint: .bottom
@@ -61,7 +61,7 @@ struct HeroCard: View {
             for (x, y, r) in starPositions {
                 let point = CGPoint(x: size.width * x, y: size.height * y)
                 let rect = CGRect(x: point.x - r, y: point.y - r, width: r * 2, height: r * 2)
-                context.fill(Path(ellipseIn: rect), with: .color(.white.opacity(0.6)))
+                context.fill(Path(ellipseIn: rect), with: .color(cs == .dark ? .white.opacity(0.6) : .white.opacity(0.3)))
             }
         }
         .allowsHitTesting(false)
@@ -74,8 +74,8 @@ struct HeroCard: View {
                 .fill(
                     LinearGradient(
                         colors: [
-                            Color(red: 0.04, green: 0.14, blue: 0.08).opacity(0.9),
-                            Color(red: 0.03, green: 0.10, blue: 0.06)
+                            cs == .dark ? Color(red: 0.04, green: 0.14, blue: 0.08).opacity(0.9) : Color(red: 0.08, green: 0.25, blue: 0.15).opacity(0.85),
+                            cs == .dark ? Color(red: 0.03, green: 0.10, blue: 0.06) : Color(red: 0.05, green: 0.18, blue: 0.10)
                         ],
                         startPoint: .top,
                         endPoint: .bottom

@@ -22,6 +22,21 @@ struct VerseShareCard: View {
         .background(cardBg)
         .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
         .shadow(color: Color.alehaGreen.opacity(0.22), radius: 18, y: 8)
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .stroke(
+                    LinearGradient(
+                        colors: [
+                            Color.alehaAmber.opacity(0.4),
+                            Color.alehaGreen.opacity(0.2),
+                            Color.alehaAmber.opacity(0.1)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1.5
+                )
+        )
         .onAppear {
             withAnimation(.easeIn(duration: 0.7).delay(0.2)) { arabicOpacity = 1 }
         }
@@ -178,9 +193,9 @@ struct VerseShareCard: View {
         ZStack {
             LinearGradient(
                 colors: [
-                    Color.alehaDeepTeal,
-                    Color(red: 0.07, green: 0.26, blue: 0.16),
-                    Color(red: 0.11, green: 0.38, blue: 0.22)
+                    cs == .dark ? Color.alehaDeepTeal : Color(red: 0.15, green: 0.40, blue: 0.35),
+                    cs == .dark ? Color(red: 0.07, green: 0.26, blue: 0.16) : Color(red: 0.10, green: 0.35, blue: 0.25),
+                    cs == .dark ? Color(red: 0.11, green: 0.38, blue: 0.22) : Color(red: 0.12, green: 0.42, blue: 0.30)
                 ],
                 startPoint: .topLeading, endPoint: .bottomTrailing
             )

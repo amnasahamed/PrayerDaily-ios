@@ -14,7 +14,7 @@ struct HadithCollectionDetailView: View {
             .padding(.top, 16)
             .padding(.bottom, 120)
         }
-        .background(Color("NoorSurface").ignoresSafeArea())
+        .background(Color(.systemBackground).ignoresSafeArea())
         .navigationTitle(collection.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color(.systemBackground), for: .navigationBar)
@@ -80,7 +80,7 @@ struct StatBubble: View {
 
     var body: some View {
         VStack(spacing: 2) {
-            Text(value).font(.headline.weight(.bold)).foregroundStyle(Color("NoorPrimary"))
+            Text(value).font(.headline.weight(.bold)).foregroundStyle(Color.alehaGreen)
             Text(label).font(.caption2).foregroundStyle(.secondary)
         }
     }
@@ -119,7 +119,7 @@ struct ChapterSection: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(chapter.arabicTitle)
                         .font(.caption)
-                        .foregroundStyle(Color("NoorPrimary"))
+                        .foregroundStyle(Color.alehaGreen)
                     Text(chapter.title)
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.primary)
@@ -186,7 +186,7 @@ struct HadithRowView: View {
                 .foregroundStyle(.white)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 3)
-                .background(Color("NoorPrimary"))
+                .background(Color.alehaGreen)
                 .clipShape(Capsule())
             Text(hadith.narrator)
                 .font(.caption)
@@ -199,7 +199,7 @@ struct HadithRowView: View {
     private var arabicText: some View {
         Text(hadith.arabic)
             .font(.system(size: 18, design: .serif))
-            .foregroundStyle(Color("NoorPrimary"))
+            .foregroundStyle(Color.alehaGreen)
             .lineLimit(showFull ? nil : 2)
             .frame(maxWidth: .infinity, alignment: .trailing)
             .multilineTextAlignment(.trailing)
@@ -221,7 +221,7 @@ struct HadithRowView: View {
             Button(action: toggleBookmark) {
                 Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
                     .font(.caption)
-                    .foregroundStyle(Color("NoorGold"))
+                    .foregroundStyle(Color.alehaAmber)
             }
             Button(action: shareHadith) {
                 Image(systemName: "square.and.arrow.up")

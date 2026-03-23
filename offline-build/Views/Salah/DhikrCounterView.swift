@@ -17,7 +17,7 @@ struct DhikrCounterView: View {
 
     var body: some View {
         ZStack {
-            Color("NoorSurface").ignoresSafeArea()
+            Color(.systemBackground).ignoresSafeArea()
             VStack(spacing: 0) {
                 statsHeader
                 Spacer()
@@ -42,11 +42,11 @@ struct DhikrCounterView: View {
     // MARK: - Stats Header
     private var statsHeader: some View {
         HStack(spacing: 0) {
-            statBlock(value: "\(store.dhikrTodayTotal)", label: "Today", color: Color("NoorGold"))
+            statBlock(value: "\(store.dhikrTodayTotal)", label: "Today", color: Color.alehaAmber)
             Divider().frame(height: 36)
-            statBlock(value: "\(store.dhikrSessionTotal)", label: "Session", color: Color("NoorPrimary"))
+            statBlock(value: "\(store.dhikrSessionTotal)", label: "Session", color: Color.alehaGreen)
             Divider().frame(height: 36)
-            statBlock(value: formatLifetime(store.dhikrLifetimeTotal), label: "Lifetime", color: Color("NoorAccent"))
+            statBlock(value: formatLifetime(store.dhikrLifetimeTotal), label: "Lifetime", color: Color.alehaSaffron)
         }
         .padding(.vertical, 14)
         .background(
@@ -94,7 +94,7 @@ struct DhikrCounterView: View {
             Circle()
                 .trim(from: 0, to: min(progress, 1.0))
                 .stroke(
-                    isComplete ? Color("NoorGold") : accentColor,
+                    isComplete ? Color.alehaAmber : accentColor,
                     style: StrokeStyle(lineWidth: 14, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
@@ -111,7 +111,7 @@ struct DhikrCounterView: View {
             VStack(spacing: 4) {
                 Text("\(preset.currentCount)")
                     .font(.system(size: 62, weight: .bold, design: .rounded))
-                    .foregroundStyle(isComplete ? Color("NoorGold") : .primary)
+                    .foregroundStyle(isComplete ? Color.alehaAmber : .primary)
                     .contentTransition(.numericText())
                     .animation(.spring(response: 0.2), value: preset.currentCount)
                 Text("of \(preset.target)")
@@ -120,7 +120,7 @@ struct DhikrCounterView: View {
                 if isComplete {
                     Text(preset.completionText)
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(Color("NoorGold"))
+                        .foregroundStyle(Color.alehaAmber)
                         .transition(.scale.combined(with: .opacity))
                 }
             }
@@ -146,13 +146,13 @@ struct DhikrCounterView: View {
             } label: {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(currentIndex == 0 ? Color(.systemGray4) : Color("NoorPrimary"))
+                    .foregroundStyle(currentIndex == 0 ? Color(.systemGray4) : Color.alehaGreen)
             }
             HStack(spacing: 7) {
                 ForEach(store.dhikrPresets.indices, id: \.self) { i in
                     let done = store.dhikrPresets[i].currentCount >= store.dhikrPresets[i].target
                     Circle()
-                        .fill(i == currentIndex ? accentColor : (done ? Color("NoorGold") : Color(.systemGray4)))
+                        .fill(i == currentIndex ? accentColor : (done ? Color.alehaAmber : Color(.systemGray4)))
                         .frame(width: i == currentIndex ? 9 : 7, height: i == currentIndex ? 9 : 7)
                         .animation(.spring(response: 0.3), value: currentIndex)
                 }
@@ -164,7 +164,7 @@ struct DhikrCounterView: View {
             } label: {
                 Image(systemName: "chevron.right")
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(currentIndex == store.dhikrPresets.count - 1 ? Color(.systemGray4) : Color("NoorPrimary"))
+                    .foregroundStyle(currentIndex == store.dhikrPresets.count - 1 ? Color(.systemGray4) : Color.alehaGreen)
             }
         }
         .padding(.bottom, 16)
@@ -244,12 +244,12 @@ struct DhikrOverviewSheet: View {
                                     Circle().stroke(Color(.systemGray5), lineWidth: 4)
                                     Circle()
                                         .trim(from: 0, to: min(progress, 1.0))
-                                        .stroke(isComplete ? Color("NoorGold") : accent,
+                                        .stroke(isComplete ? Color.alehaAmber : accent,
                                                 style: StrokeStyle(lineWidth: 4, lineCap: .round))
                                         .rotationEffect(.degrees(-90))
                                     Text("\(preset.currentCount)")
                                         .font(.caption.weight(.bold))
-                                        .foregroundStyle(isComplete ? Color("NoorGold") : accent)
+                                        .foregroundStyle(isComplete ? Color.alehaAmber : accent)
                                 }
                                 .frame(width: 44, height: 44)
                                 VStack(alignment: .leading, spacing: 3) {
@@ -264,11 +264,11 @@ struct DhikrOverviewSheet: View {
                                 VStack(alignment: .trailing, spacing: 2) {
                                     Text("\(preset.currentCount)/\(preset.target)")
                                         .font(.caption.weight(.bold))
-                                        .foregroundStyle(isComplete ? Color("NoorGold") : accent)
+                                        .foregroundStyle(isComplete ? Color.alehaAmber : accent)
                                     if isComplete {
                                         Image(systemName: "checkmark.circle.fill")
                                             .font(.caption)
-                                            .foregroundStyle(Color("NoorGold"))
+                                            .foregroundStyle(Color.alehaAmber)
                                     }
                                 }
                             }
@@ -288,7 +288,7 @@ struct DhikrOverviewSheet: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }
-                        .foregroundStyle(Color("NoorPrimary"))
+                        .foregroundStyle(Color.alehaGreen)
                 }
             }
         }

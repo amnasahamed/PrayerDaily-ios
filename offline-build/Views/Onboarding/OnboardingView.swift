@@ -24,6 +24,7 @@ struct OnboardingView: View {
     @AppStorage("profileName")   private var profileName: String = "Muslim"
     @AppStorage("profileMadhab") private var profileMadhab: String = "Hanafi"
     @AppStorage("notificationsEnabled") private var notificationsEnabled: Bool = false
+    @Environment(\.colorScheme) var cs: ColorScheme
 
     private let pages: [OnboardingPage] = [
         OnboardingPage(
@@ -105,22 +106,51 @@ struct OnboardingView: View {
 
     // MARK: - Icon Bubble
     private func iconBubble(page: OnboardingPage) -> some View {
-        ZStack {
+        let iconColors = adaptiveIconColors(for: page)
+        return ZStack {
             Circle()
-                .fill(LinearGradient(colors: page.iconColors.map { $0.opacity(0.18) },
+                .fill(LinearGradient(colors: iconColors.map { $0.opacity(0.18) },
                                      startPoint: .topLeading, endPoint: .bottomTrailing))
                 .frame(width: 130, height: 130)
             Circle()
-                .fill(LinearGradient(colors: page.iconColors,
+                .fill(LinearGradient(colors: iconColors,
                                      startPoint: .topLeading, endPoint: .bottomTrailing))
                 .frame(width: 96, height: 96)
-                .shadow(color: page.iconColors.first?.opacity(0.4) ?? .clear, radius: 20, y: 8)
+                .shadow(color: iconColors.first?.opacity(0.4) ?? .clear, radius: 20, y: 8)
             Image(systemName: page.icon)
                 .font(.system(size: 42, weight: .semibold))
                 .foregroundStyle(.white)
         }
         .scaleEffect(appeared ? 1 : 0.7)
         .opacity(appeared ? 1 : 0)
+    }
+
+    // MARK: - Adaptive Icon Colors
+    private func adaptiveIconColors(for page: OnboardingPage) -> [Color] {
+        switch currentPage {
+        case 0: // Welcome - Green
+            return cs == .dark
+                ? [Color(red: 0.15, green: 0.55, blue: 0.35), Color(red: 0.08, green: 0.30, blue: 0.18)]
+                : [Color.alehaGreen, Color.alehaDarkGreen]
+        case 1: // Track - Amber
+            return cs == .dark
+                ? [Color(red: 0.85, green: 0.50, blue: 0.10), Color(red: 0.65, green: 0.35, blue: 0.05)]
+                : [Color.alehaAmber, Color(red: 0.80, green: 0.45, blue: 0.05)]
+        case 2: // Quran - Blue
+            return cs == .dark
+                ? [Color(red: 0.30, green: 0.55, blue: 0.95), Color(red: 0.15, green: 0.30, blue: 0.70)]
+                : [Color(red: 0.20, green: 0.50, blue: 0.88), Color(red: 0.08, green: 0.22, blue: 0.60)]
+        case 3: // Never Miss - Purple
+            return cs == .dark
+                ? [Color(red: 0.70, green: 0.30, blue: 0.95), Color(red: 0.45, green: 0.12, blue: 0.70)]
+                : [Color(red: 0.55, green: 0.20, blue: 0.88), Color(red: 0.30, green: 0.05, blue: 0.60)]
+        case 4: // Personalise - Green
+            return cs == .dark
+                ? [Color(red: 0.15, green: 0.55, blue: 0.35), Color(red: 0.08, green: 0.30, blue: 0.18)]
+                : [Color.alehaGreen, Color.alehaDarkGreen]
+        default:
+            return page.iconColors
+        }
     }
 
     // MARK: - Text Block
@@ -325,15 +355,23 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 17)
                 .background(
-                    LinearGradient(colors: page.iconColors,
+                    LinearGradient(colors: adaptiveNotifGradient,
                                    startPoint: .leading, endPoint: .trailing)
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                .shadow(color: page.iconColors.first?.opacity(0.35) ?? .clear, radius: 12, y: 5)
+                .shadow(color: adaptiveNotifGradient.first?.opacity(0.35) ?? .clear, radius: 12, y: 5)
             }
             .buttonStyle(SpringPressStyle())
             .disabled(notifLoading)
         }
+    }
+
+    // MARK: - Adaptive Notification Gradient
+    private var adaptiveNotifGradient: [Color] {
+        // Page 3 is the notifications page with purple theme
+        cs == .dark
+            ? [Color(red: 0.70, green: 0.30, blue: 0.95), Color(red: 0.45, green: 0.12, blue: 0.70)]
+            : [Color(red: 0.55, green: 0.20, blue: 0.88), Color(red: 0.30, green: 0.05, blue: 0.60)]
     }
 
     // MARK: - Get Started Button
@@ -352,13 +390,20 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 17)
                 .background(
-                    LinearGradient(colors: [Color.alehaGreen, Color.alehaDarkGreen],
+                    LinearGradient(colors: adaptiveGreenGradient,
                                    startPoint: .leading, endPoint: .trailing)
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 .shadow(color: Color.alehaGreen.opacity(0.35), radius: 12, y: 5)
         }
         .buttonStyle(SpringPressStyle())
+    }
+
+    // MARK: - Adaptive Green Gradient
+    private var adaptiveGreenGradient: [Color] {
+        cs == .dark
+            ? [Color(red: 0.15, green: 0.55, blue: 0.35), Color(red: 0.08, green: 0.30, blue: 0.18)]
+            : [Color.alehaGreen, Color.alehaDarkGreen]
     }
 
     // MARK: - Request Permission

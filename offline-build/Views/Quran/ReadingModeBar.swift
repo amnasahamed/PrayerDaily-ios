@@ -55,14 +55,14 @@ struct ReadingModeBar: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
         }
-        .background(Color("NoorSurface"))
+        .background(Color(.systemBackground))
     }
 
     private func modeBackground(_ m: ReadingMode) -> Color {
-        m == mode ? Color("NoorPrimary") : Color("NoorPrimary").opacity(0.08)
+        m == mode ? Color.alehaGreen : Color.alehaGreen.opacity(0.08)
     }
 
     private func modeForeground(_ m: ReadingMode) -> Color {
-        m == mode ? .white : Color("NoorPrimary")
+        m == mode ? .white : Color.alehaGreen
     }
 }

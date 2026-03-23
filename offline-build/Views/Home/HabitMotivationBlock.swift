@@ -115,7 +115,20 @@ struct HabitMotivationBlock: View {
 // MARK: - Color blend helper
 extension Color {
     func blended(with other: Color, ratio: Double) -> Color {
-        // Simple tint blend for card backgrounds
-        self.opacity(1 - ratio)
+        // Blend based on ratio: ratio=0 returns self, ratio=1 returns other
+        let clampedRatio = max(0, min(1, ratio))
+        let uiSelf = UIColor(self)
+        let uiOther = UIColor(other)
+
+        var r1: CGFloat = 0, g1: CGFloat = 0, b1: CGFloat = 0, a1: CGFloat = 0
+        var r2: CGFloat = 0, g2: CGFloat = 0, b2: CGFloat = 0, a2: CGFloat = 0
+        uiSelf.getRed(&r1, green: &g1, blue: &b1, alpha: &a1)
+        uiOther.getRed(&r2, green: &g2, blue: &b2, alpha: &a2)
+
+        return Color(
+            red: Double(r1) * (1 - clampedRatio) + Double(r2) * clampedRatio,
+            green: Double(g1) * (1 - clampedRatio) + Double(g2) * clampedRatio,
+            blue: Double(b1) * (1 - clampedRatio) + Double(b2) * clampedRatio
+        )
     }
 }

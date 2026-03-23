@@ -6,7 +6,11 @@ struct CalendarPrayerView: View {
 
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 4), count: 7)
-    private let weekdayLabels = ["S", "M", "T", "W", "T", "F", "S"]
+    private var weekdayLabels: [String] {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        return formatter.shortWeekdaySymbols ?? ["S", "M", "T", "W", "T", "F", "S"]
+    }
 
     var body: some View {
         ScrollView(showsIndicators: false) {

@@ -3,10 +3,13 @@ import SwiftUI
 struct QadaTrackerView: View {
     @EnvironmentObject var store: SalahStore
     @Environment(\.localization) var l10n
-    private var isMl: Bool { l10n.currentLanguage == .malayalam }
 
     private var totalQada: Int {
         store.qadaEntries.reduce(0) { $0 + $1.count }
+    }
+
+    private func localized(_ key: LocalizedKey) -> String {
+        l10n.t(key)
     }
 
     var body: some View {
@@ -28,18 +31,18 @@ struct QadaTrackerView: View {
         HStack(spacing: 20) {
             ZStack {
                 Circle()
-                    .fill(totalQada == 0 ? Color.alehaGreen.opacity(0.12) : Color("NoorAccent").opacity(0.12))
+                    .fill(totalQada == 0 ? Color.alehaGreen.opacity(0.12) : Color.alehaSaffron.opacity(0.12))
                     .frame(width: 72, height: 72)
                 Image(systemName: totalQada == 0 ? "checkmark.circle.fill" : "arrow.uturn.backward.circle.fill")
                     .font(.system(size: 32))
-                    .foregroundStyle(totalQada == 0 ? Color.alehaGreen : Color("NoorAccent"))
+                    .foregroundStyle(totalQada == 0 ? Color.alehaGreen : Color.alehaSaffron)
             }
             VStack(alignment: .leading, spacing: 4) {
                 Text("\(totalQada)")
                     .font(.system(size: 36, weight: .bold, design: .rounded))
-                    .foregroundStyle(totalQada == 0 ? Color.alehaGreen : Color("NoorAccent"))
+                    .foregroundStyle(totalQada == 0 ? Color.alehaGreen : Color.alehaSaffron)
                     .contentTransition(.numericText())
-                Text(totalQada == 0 ? (isMl ? "എല്ലാം ശരി! അൽഹംദുലില്ലാഹ്" : "All caught up! Alhamdulillah") : (isMl ? "ഖദ ആക്കാനുള്ള മൊത്തം" : "Total Qada to Make Up"))
+                Text(totalQada == 0 ? localized(.qadaAllCaughtUp) : localized(.qadaTotalToMakeUp))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -56,26 +59,26 @@ struct QadaTrackerView: View {
             HStack(spacing: 8) {
                 Image(systemName: "sparkles")
                     .foregroundStyle(Color.alehaAmber)
-                Text(isMl ? "സ്മാർട്ട് കണക്ക്" : "Smart Estimate")
+                Text(localized(.qadaSmartEstimate))
                     .font(.subheadline.weight(.semibold))
             }
             if estimated > 0 {
-                Text(isMl ? "കഴിഞ്ഞ 30 ദിവസത്തിലെ ലോഗ് അനുസരിച്ച്, **\(estimated) നമസ്കാരം** ഖദ ആക്കാൻ ബാക്കിയുണ്ട്." : "Based on your logs from the last 30 days, you have an estimated **\(estimated) missed prayer\(estimated > 1 ? "s" : "")** to make up.")
+                Text("Based on your logs from the last 30 days, you have an estimated **\(estimated) missed prayer\(estimated > 1 ? "s" : "")** to make up.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Button {
                     applyEstimate(estimated)
                 } label: {
-                    Label(isMl ? "കണക്ക് ചേർക്കുക" : "Apply Estimate", systemImage: "plus.circle.fill")
+                    Label(localized(.qadaApplyEstimate), systemImage: "plus.circle.fill")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .background(Color("NoorAccent"))
+                        .background(Color.alehaSaffron)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             } else {
-                Text(isMl ? "കഴിഞ്ഞ 30 ദിവസത്തിൽ വിട്ടുപോയ നമസ്കാരങ്ങൾ ഇല്ല. അൽഹംദുലില്ലാഹ്!" : "No missed prayers detected in your last 30 days of logs. Keep it up!")
+                Text(localized(.qadaNoMissed30Days))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -98,7 +101,7 @@ struct QadaTrackerView: View {
     // MARK: - Qada List
     private var prayerQadaList: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(isMl ? "ഖദ ആക്കേണ്ട നമസ്കാരം" : "Missed Prayers to Make Up")
+            Text(localized(.qadaMissedPrayersToMakeUp))
                 .font(.subheadline.weight(.semibold))
             ForEach(store.qadaEntries) { entry in
                 qadaRow(entry)
@@ -111,11 +114,11 @@ struct QadaTrackerView: View {
         HStack(spacing: 14) {
             Image(systemName: entry.prayer.icon)
                 .font(.title3)
-                .foregroundStyle(Color("NoorAccent"))
+                .foregroundStyle(Color.alehaSaffron)
                 .frame(width: 36)
             VStack(alignment: .leading, spacing: 2) {
-                Text(entry.prayer.localizedName(isMalayalam: isMl)).font(.body.weight(.medium))
-                Text(isMl ? "\(entry.count) ബാക്കി" : "\(entry.count) remaining").font(.caption).foregroundStyle(.secondary)
+                Text(entry.prayer.localizedName(isMalayalam: l10n.currentLanguage == .malayalam)).font(.body.weight(.medium))
+                Text("\(entry.count) \(localized(.qadaRemaining))").font(.caption).foregroundStyle(.secondary)
             }
             Spacer()
             counterButtons(entry)
@@ -130,7 +133,7 @@ struct QadaTrackerView: View {
             } label: {
                 Image(systemName: "minus.circle.fill")
                     .font(.title2)
-                    .foregroundStyle(entry.count > 0 ? Color("NoorAccent") : Color(.systemGray4))
+                    .foregroundStyle(entry.count > 0 ? Color.alehaSaffron : Color(.systemGray4))
             }
             .disabled(entry.count == 0)
             Text("\(entry.count)")
@@ -142,7 +145,7 @@ struct QadaTrackerView: View {
             } label: {
                 Image(systemName: "plus.circle.fill")
                     .font(.title2)
-                    .foregroundStyle(Color("NoorPrimary"))
+                    .foregroundStyle(Color.alehaGreen)
             }
         }
         .buttonStyle(.plain)
@@ -153,7 +156,7 @@ struct QadaTrackerView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 6) {
                 Image(systemName: "book.closed.fill")
-                    .foregroundStyle(Color("NoorPrimary"))
+                    .foregroundStyle(Color.alehaGreen)
                 Text("What is Qada?")
                     .font(.subheadline.weight(.semibold))
             }
@@ -163,7 +166,7 @@ struct QadaTrackerView: View {
             Divider()
             HStack(spacing: 6) {
                 Image(systemName: "info.circle.fill")
-                    .foregroundStyle(Color("NoorPrimary").opacity(0.7))
+                    .foregroundStyle(Color.alehaGreen.opacity(0.7))
                 Text("How to use this tracker")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)

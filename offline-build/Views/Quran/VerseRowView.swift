@@ -57,9 +57,9 @@ struct VerseRowView: View {
         HStack {
             Text("\(verse.number)")
                 .font(.caption2.weight(.bold))
-                .foregroundStyle(isFocusMode ? Color("NoorGold") : Color("NoorPrimary"))
+                .foregroundStyle(isFocusMode ? Color.alehaAmber : Color.alehaGreen)
                 .frame(width: 28, height: 28)
-                .background((isFocusMode ? Color("NoorGold") : Color("NoorPrimary")).opacity(0.12))
+                .background((isFocusMode ? Color.alehaAmber : Color.alehaGreen).opacity(0.12))
                 .clipShape(Circle())
             Spacer()
         }
@@ -71,7 +71,7 @@ struct VerseRowView: View {
             .lineSpacing(isFocusMode ? 20 : 14)
             .multilineTextAlignment(.trailing)
             .frame(maxWidth: .infinity, alignment: .trailing)
-            .foregroundStyle(isFocusMode ? .white : (isCurrentlyPlaying ? Color("NoorPrimary") : .primary))
+            .foregroundStyle(isFocusMode ? .white : (isCurrentlyPlaying ? Color.alehaGreen : .primary))
             .animation(.spring(response: 0.35, dampingFraction: 0.8), value: arabicFontSize)
     }
 
@@ -86,14 +86,14 @@ struct VerseRowView: View {
     // MARK: - Action Bar
     private var actionBar: some View {
         HStack(spacing: 0) {
-            actionButton(icon: playIcon, tint: isCurrentlyPlaying ? Color("NoorGold") : iconTint, action: onPlay, label: isCurrentlyPlaying ? (isPaused ? "Resume audio" : "Pause audio") : "Play audio")
+            actionButton(icon: playIcon, tint: isCurrentlyPlaying ? Color.alehaAmber : iconTint, action: onPlay, label: isCurrentlyPlaying ? (isPaused ? "Resume audio" : "Pause audio") : "Play audio")
             if let tafsir = onTafsir {
-                actionButton(icon: "doc.text.magnifyingglass", tint: Color("NoorAccent"), action: tafsir, label: "View tafsir")
+                actionButton(icon: "doc.text.magnifyingglass", tint: Color.alehaSaffron, action: tafsir, label: "View tafsir")
             }
             actionButton(icon: "square.and.arrow.up", tint: iconTint, action: shareAyah, label: "Share verse")
             actionButton(
                 icon: isBookmarked ? "bookmark.fill" : "bookmark",
-                tint: isBookmarked ? Color("NoorGold") : iconTint,
+                tint: isBookmarked ? Color.alehaAmber : iconTint,
                 action: onBookmark,
                 label: isBookmarked ? "Remove bookmark" : "Add bookmark"
             )
@@ -104,7 +104,7 @@ struct VerseRowView: View {
     }
 
     private var iconTint: Color {
-        isFocusMode ? .white.opacity(0.55) : Color("NoorPrimary").opacity(0.7)
+        isFocusMode ? .white.opacity(0.55) : Color.alehaGreen.opacity(0.7)
     }
 
     private func actionButton(icon: String, tint: Color, action: @escaping () -> Void, label: String) -> some View {
@@ -131,7 +131,7 @@ struct VerseRowView: View {
         if isFocusMode {
             Color.black
         } else if isCurrentlyPlaying {
-            Color("NoorPrimary").opacity(0.06)
+            Color.alehaGreen.opacity(0.06)
         } else {
             colorScheme == .dark ? Color(.systemGray6) : Color.white
         }

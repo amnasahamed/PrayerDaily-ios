@@ -54,7 +54,8 @@ struct ShareProgressSheet: View {
             completedCount: todayCount,
             streak: streak,
             weeklyPct: pct,
-            dateString: formattedDate
+            dateString: formattedDate,
+            colorScheme: cs
         )
         .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         .shadow(color: Color.alehaActiveGreen.opacity(0.25), radius: 24, y: 10)
@@ -111,7 +112,8 @@ Alhamdulillah
                 completedCount: todayCount,
                 streak: streak,
                 weeklyPct: pct,
-                dateString: formattedDate
+                dateString: formattedDate,
+                colorScheme: cs
             )
             .frame(width: cardWidth, height: cardHeight)
         )
@@ -126,6 +128,7 @@ struct ProgressShareCard: View {
     let streak: Int
     let weeklyPct: Int
     let dateString: String
+    let colorScheme: ColorScheme
 
     private var allDone: Bool { completedCount == 5 }
 
@@ -147,11 +150,17 @@ struct ProgressShareCard: View {
 
     private var cardBackground: some View {
         LinearGradient(
-            colors: [
-                Color(red: 0.04, green: 0.10, blue: 0.07),
-                Color(red: 0.06, green: 0.18, blue: 0.11),
-                Color(red: 0.10, green: 0.28, blue: 0.17)
-            ],
+            colors: colorScheme == .dark
+                ? [
+                    Color(red: 0.04, green: 0.10, blue: 0.07),
+                    Color(red: 0.06, green: 0.18, blue: 0.11),
+                    Color(red: 0.10, green: 0.28, blue: 0.17)
+                ]
+                : [
+                    Color(red: 0.85, green: 0.95, blue: 0.88),
+                    Color(red: 0.75, green: 0.90, blue: 0.80),
+                    Color(red: 0.65, green: 0.85, blue: 0.72)
+                ],
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )

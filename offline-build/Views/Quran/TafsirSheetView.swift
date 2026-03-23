@@ -15,13 +15,13 @@ struct TafsirSheetView: View {
                 }
                 .padding(AppTheme.screenPadding)
             }
-            .background(Color("NoorSurface").ignoresSafeArea())
+            .background(Color(.systemBackground).ignoresSafeArea())
             .navigationTitle("Tafsir")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }
-                        .foregroundStyle(Color("NoorPrimary"))
+                        .foregroundStyle(Color.alehaGreen)
                 }
             }
         }
@@ -32,10 +32,10 @@ struct TafsirSheetView: View {
             HStack {
                 Text("Ayah \(verse.number)")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(Color("NoorPrimary"))
+                    .foregroundStyle(Color.alehaGreen)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
-                    .background(Color("NoorPrimary").opacity(0.1))
+                    .background(Color.alehaGreen.opacity(0.1))
                     .clipShape(Capsule())
                 Spacer()
             }
@@ -56,7 +56,7 @@ struct TafsirSheetView: View {
         VStack(alignment: .leading, spacing: 12) {
             Label("Ibn Kathir Commentary", systemImage: "text.book.closed.fill")
                 .font(.headline)
-                .foregroundStyle(Color("NoorPrimary"))
+                .foregroundStyle(Color.alehaGreen)
 
             if let t = tafsirText, !t.isEmpty {
                 Text(t)

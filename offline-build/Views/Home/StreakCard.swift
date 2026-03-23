@@ -18,7 +18,7 @@ struct StreakCard: View {
         VStack(spacing: 2) {
             Image(systemName: "flame.fill")
                 .font(.title)
-                .foregroundStyle(Color("NoorGold"))
+                .foregroundStyle(Color.alehaAmber)
             Text("\(streak.currentDays)")
                 .font(.title2.weight(.bold))
             Text("days")
@@ -26,7 +26,7 @@ struct StreakCard: View {
                 .foregroundStyle(.secondary)
         }
         .frame(width: 64, height: 80)
-        .background(Color("NoorGold").opacity(0.12))
+        .background(Color.alehaAmber.opacity(0.12))
         .clipShape(RoundedRectangle(cornerRadius: AppTheme.smallRadius))
     }
 
@@ -40,7 +40,7 @@ struct StreakCard: View {
             let todayLabel = streak.todayRead ? "\(streak.pagesReadToday) pages today" : "Read today to continue!"
             Text(todayLabel)
                 .font(.caption)
-                .foregroundStyle(streak.todayRead ? Color("NoorPrimary") : .orange)
+                .foregroundStyle(streak.todayRead ? Color.alehaGreen : .orange)
         }
     }
 
@@ -49,7 +49,7 @@ struct StreakCard: View {
         return VStack(spacing: 4) {
             ForEach(0..<7, id: \.self) { day in
                 Circle()
-                    .fill(day < completion.count && completion[day] > 0 ? Color("NoorPrimary") : Color(.systemGray4))
+                    .fill(day < completion.count && completion[day] > 0 ? Color.alehaGreen : Color(.systemGray4))
                     .frame(width: 8, height: 8)
             }
         }

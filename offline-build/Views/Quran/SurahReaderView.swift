@@ -58,7 +58,7 @@ struct SurahReaderView: View {
         if isFocusMode {
             Color.black.ignoresSafeArea()
         } else {
-            Color("NoorSurface").ignoresSafeArea()
+            Color(.systemBackground).ignoresSafeArea()
         }
     }
 
@@ -77,7 +77,7 @@ struct SurahReaderView: View {
             Spacer()
             Image(systemName: "wifi.exclamationmark")
                 .font(.system(size: 44))
-                .foregroundStyle(Color("NoorGold"))
+                .foregroundStyle(Color.alehaAmber)
             Text("Connection Issue")
                 .font(.headline.weight(.semibold))
             Text(msg)
@@ -94,7 +94,7 @@ struct SurahReaderView: View {
                         .foregroundStyle(.white)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 12)
-                        .background(Color("NoorPrimary"))
+                        .background(Color.alehaGreen)
                         .clipShape(Capsule())
                 }
                 .buttonStyle(SpringPressStyle())
@@ -150,7 +150,7 @@ struct SurahReaderView: View {
                 VStack(spacing: 6) {
                     Text("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
                         .font(.system(size: isFocusMode ? 22 : 24))
-                        .foregroundStyle(isFocusMode ? .white : Color("NoorPrimary"))
+                        .foregroundStyle(isFocusMode ? .white : Color.alehaGreen)
                         .multilineTextAlignment(.center)
 
                     if readingMode == .both || readingMode == .translationOnly {
@@ -163,10 +163,10 @@ struct SurahReaderView: View {
                         if isCached {
                             Label("Offline", systemImage: "arrow.down.circle.fill")
                                 .font(.caption2.weight(.semibold))
-                                .foregroundStyle(Color("NoorPrimary"))
+                                .foregroundStyle(Color.alehaGreen)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 3)
-                                .background(Color("NoorPrimary").opacity(0.1))
+                                .background(Color.alehaGreen.opacity(0.1))
                                 .clipShape(Capsule())
                         }
                         surahTypeBadge
@@ -186,7 +186,7 @@ struct SurahReaderView: View {
             .foregroundStyle(.secondary)
             .padding(.horizontal, 8)
             .padding(.vertical, 3)
-            .background(Color("NoorSurface"))
+            .background(Color(.systemBackground))
             .clipShape(Capsule())
             .overlay(Capsule().stroke(Color.secondary.opacity(0.2), lineWidth: 1))
     }
@@ -196,7 +196,7 @@ struct SurahReaderView: View {
         if isFocusMode {
             Color.white.opacity(0.05)
         } else {
-            Color("NoorPrimary").opacity(0.05)
+            Color.alehaGreen.opacity(0.05)
         }
     }
 
@@ -210,13 +210,13 @@ struct SurahReaderView: View {
                     .foregroundStyle(isFocusMode ? .white : .primary)
                 Text(surah.nameArabic)
                     .font(.caption)
-                    .foregroundStyle(isFocusMode ? .white.opacity(0.6) : Color("NoorPrimary"))
+                    .foregroundStyle(isFocusMode ? .white.opacity(0.6) : Color.alehaGreen)
             }
         }
         ToolbarItem(placement: .topBarTrailing) {
             Button { Task { await loadTafsir() } } label: {
                 Image(systemName: tafsirMap.isEmpty ? "doc.text.magnifyingglass" : "doc.text.fill")
-                    .foregroundStyle(Color("NoorGold"))
+                    .foregroundStyle(Color.alehaAmber)
             }
         }
     }

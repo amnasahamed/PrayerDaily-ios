@@ -146,6 +146,10 @@ enum LocalizedKey {
     // Hadith
     case hadithTitle, hadithNarrated, hadithSource, hadithShare
 
+    // Qada Tracker
+    case qadaAllCaughtUp, qadaTotalToMakeUp, qadaSmartEstimate, qadaApplyEstimate
+    case qadaNoMissed30Days, qadaMissedPrayersToMakeUp, qadaRemaining
+
     func string(for lang: AppLanguage) -> String {
         switch lang {
         case .english: return englishValue
@@ -383,6 +387,15 @@ enum LocalizedKey {
         case .hadithNarrated: return "Narrated by"
         case .hadithSource: return "Source"
         case .hadithShare: return "Share"
+
+        // Qada Tracker
+        case .qadaAllCaughtUp: return "All caught up! Alhamdulillah"
+        case .qadaTotalToMakeUp: return "Total Qada to Make Up"
+        case .qadaSmartEstimate: return "Smart Estimate"
+        case .qadaApplyEstimate: return "Apply Estimate"
+        case .qadaNoMissed30Days: return "No missed prayers detected in your last 30 days of logs. Keep it up!"
+        case .qadaMissedPrayersToMakeUp: return "Missed Prayers to Make Up"
+        case .qadaRemaining: return "remaining"
         }
     }
 
@@ -616,6 +629,15 @@ enum LocalizedKey {
         case .hadithNarrated: return "റിപ്പോർട്ട് ചെയ്തത്"
         case .hadithSource: return "ഉറവിടം"
         case .hadithShare: return "പങ്കിടുക"
+
+        // Qada Tracker
+        case .qadaAllCaughtUp: return "എല്ലാം ശരി! അൽഹംദുലില്ലാഹ്"
+        case .qadaTotalToMakeUp: return "ഖദ ആക്കാനുള്ള മൊത്തം"
+        case .qadaSmartEstimate: return "സ്മാർട്ട് കണക്ക്"
+        case .qadaApplyEstimate: return "കണക്ക് ചേർക്കുക"
+        case .qadaNoMissed30Days: return "കഴിഞ്ഞ 30 ദിവസത്തിൽ വിട്ടുപോയ നമസ്കാരങ്ങൾ ഇല്ല. അൽഹംദുലില്ലാഹ്!"
+        case .qadaMissedPrayersToMakeUp: return "ഖദ ആക്കേണ്ട നമസ്കാരം"
+        case .qadaRemaining: return "ബാക്കി"
         }
     }
 }

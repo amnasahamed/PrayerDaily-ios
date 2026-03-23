@@ -106,6 +106,7 @@ private extension Double {
 // MARK: - Main View
 struct QiblaCompassView: View {
     @StateObject private var qibla = QiblaManager()
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.colorScheme) var cs
     @State private var showCalibrationCheck = false
     @State private var alignmentPulse = false
@@ -132,7 +133,7 @@ struct QiblaCompassView: View {
                     .padding(.bottom, 12)
             }
         }
-        .navigationTitle("Qibla")
+        .navigationTitle(localization.t(.qiblaTitle))
         .navigationBarTitleDisplayMode(.inline)
         .sheetDismissButton()
         .toolbarBackground(Color(.systemBackground), for: .navigationBar)
@@ -144,7 +145,9 @@ struct QiblaCompassView: View {
             triggerCalibrationHaptic()
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { showCalibrationCheck = false }
         }
-        .onChange(of: isPerfectlyAligned) { aligned in if aligned { triggerAlignmentHaptic() } }
+        .onChange(of: isPerfectlyAligned) { oldValue, newValue in
+            if newValue && !oldValue { triggerAlignmentHaptic() }
+        }
     }
 
     // MARK: - Background
@@ -195,7 +198,7 @@ struct QiblaCompassView: View {
                 HStack(spacing: 4) {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(.green)
-                    Text("Calibrated")
+                    Text(localization.t(.qiblaCalibrated))
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(.green)
@@ -205,7 +208,7 @@ struct QiblaCompassView: View {
                 HStack(spacing: 4) {
                     Image(systemName: "location.circle.fill")
                         .foregroundStyle(Color.alehaGreen)
-                    Text("Accurate")
+                    Text(localization.t(.qiblaAccurate))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -230,7 +233,7 @@ struct QiblaCompassView: View {
                         .animation(.easeOut(duration: 1.2).repeatForever(autoreverses: false), value: alignmentPulse)
                 )
                 .onAppear { alignmentPulse = true }
-            Text("Calibrating")
+            Text(localization.t(.qiblaCalibrating))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -332,7 +335,7 @@ struct QiblaCompassView: View {
                 .offset(y: -84)
 
             // Qibla label
-            Text("QIBLA")
+            Text(localization.t(.qiblaQiblaLabel))
                 .font(.caption2)
                 .fontWeight(.heavy)
                 .foregroundStyle(Color.alehaGreen)
@@ -388,7 +391,7 @@ struct QiblaCompassView: View {
                 HStack(spacing: 4) {
                     Image(systemName: isPerfectlyAligned ? "checkmark.circle.fill" : "location.north.fill")
                         .font(.caption)
-                    Text(isPerfectlyAligned ? "Perfect alignment" : "Face this direction to pray")
+                    Text(isPerfectlyAligned ? localization.t(.qiblaPerfectAlignment) : localization.t(.qiblaFaceDirection))
                         .font(.caption)
                 }
                 .foregroundStyle(isPerfectlyAligned ? Color.alehaGreen : .secondary)
@@ -397,10 +400,10 @@ struct QiblaCompassView: View {
             Spacer()
             ShareLink(
                 item: "My Qibla direction is \(String(format: "%.0f°", qibla.qiblaDirection)) from \(qibla.locationName). \(qibla.distanceToMakkah).",
-                subject: Text("My Qibla Direction"),
-                message: Text("Shared via PrayerDaily")
+                subject: Text(localization.t(.qiblaMyDirection)),
+                message: Text(localization.t(.qiblaSharedVia))
             ) {
-                Label("Share", systemImage: "square.and.arrow.up")
+                Label(localization.t(.commonShare), systemImage: "square.and.arrow.up")
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundStyle(.white)
@@ -432,7 +435,7 @@ struct QiblaCompassView: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 24)
             } else if !qibla.isCalibrated {
-                Label("Move your phone in a figure-8 to calibrate", systemImage: "iphone.gen3.radiowaves.left.and.right")
+                Label(localization.t(.qiblaNeedsCalibration), systemImage: "iphone.gen3.radiowaves.left.and.right")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else {

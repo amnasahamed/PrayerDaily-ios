@@ -143,25 +143,25 @@ struct LibraryView: View {
     // MARK: - Tools Section
     private var toolsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(title: "Islamic Tools", icon: "wrench.and.screwdriver.fill")
+            sectionHeader(title: l10n.t(.libraryIslamicTools), icon: "wrench.and.screwdriver.fill")
             NavigationLink(destination: QiblaCompassView()) {
-                ToolRow(icon: "location.north.fill", title: "Qibla Compass",
-                        subtitle: "Instant accurate direction anywhere", color: Color.alehaGreen)
+                ToolRow(icon: "location.north.fill", title: l10n.t(.libraryQiblaDesc),
+                        subtitle: l10n.t(.libraryQibla), color: Color.alehaGreen)
             }
             .buttonStyle(SpringPressStyle())
             NavigationLink(destination: LibraryDhikrView()) {
-                ToolRow(icon: "rosette", title: "Dhikr Counter",
-                        subtitle: "Digital tasbeeh with streak tracking", color: Color.alehaAmber)
+                ToolRow(icon: "rosette", title: l10n.t(.dhikrTitle),
+                        subtitle: l10n.t(.libraryDhikrDesc), color: Color.alehaAmber)
             }
             .buttonStyle(SpringPressStyle())
             NavigationLink(destination: LibraryHijriView()) {
-                ToolRow(icon: "calendar.badge.clock", title: "Hijri Calendar",
-                        subtitle: "Convert Gregorian to Islamic date", color: Color.alehaDarkGreen)
+                ToolRow(icon: "calendar.badge.clock", title: l10n.t(.libraryIslamicCalendar),
+                        subtitle: l10n.t(.libraryHijriDesc), color: Color.alehaDarkGreen)
             }
             .buttonStyle(SpringPressStyle())
             NavigationLink(destination: LibraryPrayerTrackerView()) {
-                ToolRow(icon: "moon.stars.fill", title: "Prayer Tracker",
-                        subtitle: "Log and review your daily salah", color: Color(red: 0.45, green: 0.25, blue: 0.75))
+                ToolRow(icon: "moon.stars.fill", title: l10n.t(.trackerPrayerTracker),
+                        subtitle: l10n.t(.libraryPrayerTrackerDesc), color: Color(red: 0.45, green: 0.25, blue: 0.75))
             }
             .buttonStyle(SpringPressStyle())
         }
@@ -173,22 +173,22 @@ struct LibraryView: View {
     // MARK: - Guides Section
     private var guidesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(title: "Islamic Guides", icon: "map.fill")
+            sectionHeader(title: l10n.t(.libraryIslamicGuides), icon: "map.fill")
             NavigationLink(destination: EmergencyGuidesView()) {
-                LibraryGuideRow(icon: "cross.case.fill", title: "Emergency Guides",
-                                subtitle: "Janazah, Ruqyah & Nikah procedures",
+                LibraryGuideRow(icon: "cross.case.fill", title: l10n.t(.moreEmergency),
+                                subtitle: l10n.t(.libraryEmergencyGuidesDesc),
                                 color: Color(red: 0.8, green: 0.2, blue: 0.25))
             }
             .buttonStyle(SpringPressStyle())
             NavigationLink(destination: EmergencyGuidesView()) {
                 LibraryGuideRow(icon: "person.fill.questionmark", title: "New Muslim Guide",
-                                subtitle: "Essential knowledge for new Muslims",
+                                subtitle: l10n.t(.libraryNewMuslimGuideDesc),
                                 color: Color.alehaGreen)
             }
             .buttonStyle(SpringPressStyle())
             NavigationLink(destination: EmergencyGuidesView()) {
                 LibraryGuideRow(icon: "book.pages.fill", title: "Fiqh Basics",
-                                subtitle: "Practical rulings for everyday life",
+                                subtitle: l10n.t(.libraryFiqhBasicsDesc),
                                 color: Color.alehaDarkGreen)
             }
             .buttonStyle(SpringPressStyle())
@@ -213,6 +213,7 @@ struct ContinueReadingCard: View {
     let collection: String
     let hadithNumber: Int
     @Environment(\.colorScheme) var cs
+    @Environment(\.localization) var l10n
 
     var body: some View {
         HStack(spacing: 14) {
@@ -225,12 +226,12 @@ struct ContinueReadingCard: View {
                     .foregroundStyle(Color.alehaGreen)
             }
             VStack(alignment: .leading, spacing: 3) {
-                Text("Continue Reading")
+                Text(l10n.t(.libraryContinueReading))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Color.alehaGreen)
                 Text("\(collection) #\(hadithNumber)")
                     .font(.subheadline.weight(.bold))
-                Text("\"Actions are judged by intentions…\"")
+                Text("\"Actions are judged by intentions...\"")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)

@@ -3,6 +3,7 @@ import SwiftUI
 // MARK: - Share Progress Sheet
 struct ShareProgressSheet: View {
     @ObservedObject var store: SalahStore
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var cs
     @State private var showSystemShare = false
@@ -30,11 +31,11 @@ struct ShareProgressSheet: View {
                 .padding(.horizontal, AppTheme.screenPadding)
                 .padding(.bottom, 30)
             }
-            .navigationTitle("Share Progress")
+            .navigationTitle(localization.t(.shareProgressTitle))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
+                    Button(localization.t(.commonDone)) { dismiss() }
                 }
             }
             .onAppear { withAnimation { rendered = true } }
@@ -69,9 +70,9 @@ struct ShareProgressSheet: View {
 
     private var messageText: some View {
         VStack(spacing: 6) {
-            Text("Ready to inspire others?")
+            Text(localization.t(.shareReadyToInspire))
                 .font(.subheadline.weight(.semibold))
-            Text("Share your consistency with family and friends.")
+            Text(localization.t(.shareInspireDescription))
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -86,7 +87,7 @@ struct ShareProgressSheet: View {
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: "square.and.arrow.up")
-                Text("Share Card")
+                Text(localization.t(.shareCard))
             }
         }
         .buttonStyle(PrimaryCTAStyle(color: Color.alehaActiveGreen))
@@ -124,6 +125,7 @@ Alhamdulillah
 
 // MARK: - The Exportable Share Card
 struct ProgressShareCard: View {
+    @EnvironmentObject var localization: LocalizationManager
     let completedCount: Int
     let streak: Int
     let weeklyPct: Int
@@ -200,7 +202,7 @@ struct ProgressShareCard: View {
                 Text("\(completedCount) of 5")
                     .font(.system(size: 52, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
-                Text(allDone ? "Prayers Completed" : "Prayers Logged Today")
+                Text(allDone ? localization.t(.sharePrayersCompleted) : localization.t(.sharePrayersLoggedToday))
                     .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(.white.opacity(0.7))
             }
@@ -210,11 +212,11 @@ struct ProgressShareCard: View {
 
             // Stats row
             HStack(spacing: 0) {
-                miniStat(value: "\(streak)", label: "Day\nStreak", icon: "flame.fill", color: .orange)
+                miniStat(value: "\(streak)", label: localization.t(.shareDayStreak), icon: "flame.fill", color: .orange)
                 Rectangle().fill(.white.opacity(0.1)).frame(width: 1, height: 40)
-                miniStat(value: "\(weeklyPct)%", label: "This\nWeek", icon: "chart.bar.fill", color: Color.alehaGreen)
+                miniStat(value: "\(weeklyPct)%", label: localization.t(.salahThisWeek), icon: "chart.bar.fill", color: Color.alehaGreen)
                 Rectangle().fill(.white.opacity(0.1)).frame(width: 1, height: 40)
-                miniStat(value: allDone ? "All" : "\(completedCount)", label: "All\nToday", icon: allDone ? "checkmark.circle.fill" : "moon.stars.fill", color: allDone ? Color.alehaAmber : Color.alehaGreen)
+                miniStat(value: allDone ? localization.t(.shareAll) : "\(completedCount)", label: localization.t(.shareAllToday), icon: allDone ? "checkmark.circle.fill" : "moon.stars.fill", color: allDone ? Color.alehaAmber : Color.alehaGreen)
             }
             .background(Color.white.opacity(0.06))
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))

@@ -4,6 +4,7 @@ struct CompactDhikrCard: View {
     @State private var count: Int = 0
     @State private var tapScale: CGFloat = 1.0
     @Environment(\.colorScheme) var cs
+    @EnvironmentObject var localization: LocalizationManager
 
     private let target = 33
     private var progress: Double { min(Double(count) / Double(target), 1.0) }
@@ -27,7 +28,7 @@ struct CompactDhikrCard: View {
             Image(systemName: "hands.sparkles.fill")
                 .foregroundStyle(Color.alehaAmber)
                 .font(.system(size: 12))
-            Text("Dhikr")
+            Text(localization.t(.dhikrTitle))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             Spacer()

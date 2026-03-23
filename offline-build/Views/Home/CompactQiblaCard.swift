@@ -4,6 +4,7 @@ import CoreLocation
 struct CompactQiblaCard: View {
     @StateObject private var qibla = QiblaManager()
     @Environment(\.colorScheme) var cs
+    @EnvironmentObject var localization: LocalizationManager
     @State private var needleRotation: Double = 0
 
     var body: some View {
@@ -20,7 +21,7 @@ struct CompactQiblaCard: View {
         .shadow(color: .black.opacity(0.05), radius: 14, y: 5)
         .onAppear { qibla.start() }
         .onDisappear { qibla.stop() }
-        .onChange(of: qibla.heading) { _ in
+        .onChange(of: qibla.heading) { _, _ in
             withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                 needleRotation = -(qibla.heading - qibla.qiblaDirection)
             }
@@ -32,7 +33,7 @@ struct CompactQiblaCard: View {
             Image(systemName: "location.north.fill")
                 .foregroundStyle(Color.alehaGreen)
                 .font(.system(size: 12))
-            Text("Qibla")
+            Text(localization.t(.qiblaTitle))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             Spacer()
@@ -89,7 +90,7 @@ struct CompactQiblaCard: View {
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.alehaGreen)
             } else {
-                Text("Locating...")
+                Text(localization.t(.homeLocating))
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             }
@@ -119,3 +120,4 @@ struct Triangle: Shape {
         return path
     }
 }
+

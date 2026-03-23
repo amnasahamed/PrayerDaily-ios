@@ -3,6 +3,7 @@ import SwiftUI
 // MARK: - Habit & Motivation Block
 struct HabitMotivationBlock: View {
     @EnvironmentObject var salahStore: SalahStore
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.colorScheme) var cs
     @Environment(\.accessibilityReduceMotion) var reduceMotion
     @State private var animateFlame = false
@@ -40,7 +41,7 @@ struct HabitMotivationBlock: View {
                 .fontWeight(.bold)
                 .foregroundStyle(Color.alehaAmber)
                 .contentTransition(.numericText())
-            Text("Day Streak")
+            Text(localization.t(.salahDayStreak))
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -63,7 +64,7 @@ struct HabitMotivationBlock: View {
                 .fontWeight(.bold)
                 .foregroundStyle(Color.alehaGreen)
                 .contentTransition(.numericText())
-            Text("This Week")
+            Text(localization.t(.salahThisWeek))
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -87,7 +88,7 @@ struct HabitMotivationBlock: View {
                 .fontWeight(.bold)
                 .foregroundStyle(accent)
                 .contentTransition(.numericText())
-            Text("Qada Left")
+            Text(localization.t(.homeQadaLeft))
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

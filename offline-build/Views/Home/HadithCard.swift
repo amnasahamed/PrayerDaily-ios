@@ -4,6 +4,7 @@ struct HadithCard: View {
     let hadith: Hadith
     @State private var expanded = false
     @Environment(\.colorScheme) var cs
+    @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -20,7 +21,7 @@ struct HadithCard: View {
                 Image(systemName: "quote.opening")
                     .font(.caption.weight(.bold))
                     .foregroundStyle(Color.alehaAmber)
-                Text("Hadith of the Day")
+                Text(localization.t(.homeHadithOfTheDay))
                     .font(.subheadline.weight(.semibold))
             }
             Spacer()

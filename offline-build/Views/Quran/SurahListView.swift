@@ -17,6 +17,16 @@ enum SurahFilter: String, CaseIterable {
         case .completed: return "checkmark.seal"
         }
     }
+
+    func displayName(localization: LocalizationManager) -> String {
+        switch self {
+        case .all: return localization.t(.quranFilterAll)
+        case .juz: return localization.t(.quranFilterJuz)
+        case .meccan: return localization.t(.quranFilterMeccan)
+        case .medinan: return localization.t(.quranFilterMedinan)
+        case .completed: return localization.t(.quranFilterCompleted)
+        }
+    }
 }
 
 // MARK: - Main View
@@ -26,6 +36,7 @@ struct SurahListView: View {
     @State private var activeFilter: SurahFilter = .all
     @State private var selectedJuz: Int = 1
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var localization: LocalizationManager
 
     private var filteredSurahs: [SurahInfo] {
         var list = QuranData.allSurahs
@@ -65,8 +76,8 @@ struct SurahListView: View {
                     }
                 }
             }
-            .searchable(text: $searchText, prompt: "Search surahs...")
-            .navigationTitle(LocalizationManager.shared.t(.quranTitle))
+            .searchable(text: $searchText, prompt: localization.t(.quranSearchPrompt))
+            .navigationTitle(localization.t(.quranTitle))
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color(.systemBackground), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
@@ -101,15 +112,15 @@ struct SurahListView: View {
                 continueIcon
                 VStack(alignment: .leading, spacing: 5) {
                     HStack {
-                        Text("Continue Reading")
+                        Text(localization.t(.quranContinueReading))
                             .font(.caption.weight(.bold))
                             .foregroundStyle(Color("NoorGold"))
                         Spacer()
-                        Text(String(format: "%.0f%% of Quran", overall * 100))
+                        Text(String(format: localization.t(.quranPercentQuran), overall * 100))
                             .font(.caption2.weight(.medium))
                             .foregroundStyle(.white.opacity(0.7))
                     }
-                    Text("\(surahName), Ayah \(verseNum)")
+                    Text("\(surahName), \(localization.t(.quranAyah)) \(verseNum)")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.white)
                     HStack(spacing: 8) {
@@ -164,7 +175,7 @@ struct SurahListView: View {
     private func readingTimeEstimate(verse: Int, total: Int) -> String {
         let remaining = max(0, total - verse)
         let mins = max(1, remaining / 5)
-        return "~\(mins) min remaining"
+        return String(format: localization.t(.surahMinRemaining), mins)
     }
 
     // MARK: - Sticky Filter Bar
@@ -189,7 +200,7 @@ struct SurahListView: View {
             HStack(spacing: 5) {
                 Image(systemName: filter.icon)
                     .font(.caption2.weight(.semibold))
-                Text(filter.rawValue)
+                Text(filter.displayName(localization: localization))
                     .font(.caption.weight(.semibold))
             }
             .foregroundStyle(isSelected ? .white : .primary)
@@ -249,9 +260,9 @@ struct SurahListView: View {
             Image(systemName: "checkmark.seal.fill")
                 .font(.system(size: 44))
                 .foregroundStyle(Color("NoorPrimary").opacity(0.3))
-            Text("No Surahs Yet")
+            Text(localization.t(.quranNoSurahsYet))
                 .font(.headline).foregroundStyle(.secondary)
-            Text("Start reading to track your progress")
+            Text(localization.t(.quranStartReading))
                 .font(.caption).foregroundStyle(.tertiary)
         }
         .frame(maxWidth: .infinity)
@@ -264,6 +275,7 @@ struct SurahRowView: View {
     let surah: SurahInfo
     let progress: Double
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
         HStack(spacing: 14) {
@@ -313,7 +325,7 @@ struct SurahRowView: View {
                     .foregroundStyle(.secondary)
                 Text("·")
                     .font(.caption2).foregroundStyle(.tertiary)
-                Text("\(surah.verses) Ayahs")
+                Text("\(surah.verses) \(localization.t(.quranAyahs))")
                     .font(.caption2).foregroundStyle(.secondary)
             }
             if progress > 0 {

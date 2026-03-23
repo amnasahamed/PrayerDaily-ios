@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var store: SalahStore
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.colorScheme) var cs
 
     @AppStorage("profileName") private var profileName: String = "Muslim"
@@ -28,7 +29,7 @@ struct ProfileView: View {
                 .padding(.bottom, 120)
             }
         }
-        .navigationTitle("Profile")
+        .navigationTitle(localization.t(.profileTitle))
         .navigationBarTitleDisplayMode(.large)
         .modifier(AlehaNavStyle())
     }
@@ -48,11 +49,11 @@ struct ProfileView: View {
 
             if isEditingName {
                 HStack {
-                    TextField("Your name", text: $tempName)
+                    TextField(localization.t(.profileEditName), text: $tempName)
                         .textFieldStyle(.plain)
                         .font(.title3.weight(.semibold))
                         .multilineTextAlignment(.center)
-                    Button("Save") {
+                    Button(localization.t(.profileSave)) {
                         profileName = tempName.isEmpty ? "Muslim" : tempName
                         isEditingName = false
                     }
@@ -73,7 +74,7 @@ struct ProfileView: View {
                 .buttonStyle(.plain)
             }
 
-            Text("Member since \(memberSince)").font(.caption).foregroundStyle(.secondary)
+            Text("\(localization.t(.profileMemberSince)) \(memberSince)").font(.caption).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
         .noorCard()
@@ -87,12 +88,12 @@ struct ProfileView: View {
     // MARK: - Stats
     private var statsSection: some View {
         HStack(spacing: 0) {
-            profileStat(value: "\(store.currentStreak)", label: "Streak", icon: "flame.fill", color: .orange)
+            profileStat(value: "\(store.currentStreak)", label: localization.t(.profileStreak), icon: "flame.fill", color: .orange)
             Divider().frame(height: 44)
-            profileStat(value: "\(store.weeklyConsistency)%", label: "This Week", icon: "chart.bar.fill", color: Color.alehaGreen)
+            profileStat(value: "\(store.weeklyConsistency)%", label: localization.t(.profileThisWeek), icon: "chart.bar.fill", color: Color.alehaGreen)
             Divider().frame(height: 44)
             let total = store.logs.values.reduce(0) { $0 + $1.completedCount }
-            profileStat(value: "\(total)", label: "Prayers", icon: "checkmark.seal.fill", color: Color.alehaAmber)
+            profileStat(value: "\(total)", label: localization.t(.profilePrayers), icon: "checkmark.seal.fill", color: Color.alehaAmber)
         }
         .noorCard()
     }
@@ -129,16 +130,16 @@ struct ProfileView: View {
         HStack(spacing: 14) {
             rowIcon("location.fill", color: Color.alehaGreen)
             VStack(alignment: .leading, spacing: 2) {
-                Text("Location").font(.subheadline.weight(.medium))
+                Text(localization.t(.profileLocation)).font(.subheadline.weight(.medium))
                 if isEditingLocation {
-                    TextField("City, Country", text: $tempLocation, onCommit: {
+                    TextField(localization.t(.profileCityCountry), text: $tempLocation, onCommit: {
                         profileLocation = tempLocation
                         isEditingLocation = false
                     })
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 } else {
-                    Text(profileLocation.isEmpty ? "Not set" : profileLocation)
+                    Text(profileLocation.isEmpty ? localization.t(.commonNotSet) : profileLocation)
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }
@@ -152,7 +153,7 @@ struct ProfileView: View {
                     isEditingLocation = true
                 }
             } label: {
-                Text(isEditingLocation ? "Save" : "Edit")
+                Text(isEditingLocation ? localization.t(.profileSave) : localization.t(.profileEdit))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Color.alehaGreen)
             }
@@ -163,9 +164,9 @@ struct ProfileView: View {
     private var madhabRow: some View {
         HStack(spacing: 14) {
             rowIcon("book.fill", color: Color.alehaAmber)
-            Text("Madhab").font(.subheadline.weight(.medium))
+            Text(localization.t(.profileMadhab)).font(.subheadline.weight(.medium))
             Spacer()
-            Picker("Madhab", selection: $profileMadhab) {
+            Picker(localization.t(.profileMadhab), selection: $profileMadhab) {
                 ForEach(madhhabs, id: \.self) { Text($0) }
             }
             .pickerStyle(.menu)

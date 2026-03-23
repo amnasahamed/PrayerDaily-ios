@@ -133,7 +133,7 @@ struct GuideDetailView: View {
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                BilingualToggle(isMalayalam: $isMalayalam)
+                BilingualPicker(isMalayalam: $isMalayalam)
             }
         }
     }
@@ -195,31 +195,37 @@ struct GuideDetailView: View {
     }
 }
 
-// MARK: - Bilingual Toggle
-struct BilingualToggle: View {
+// MARK: - Bilingual Picker (iOS-native Menu)
+struct BilingualPicker: View {
     @Binding var isMalayalam: Bool
 
     var body: some View {
-        HStack(spacing: 0) {
-            langBtn("EN", active: !isMalayalam) { isMalayalam = false }
-            langBtn("മ", active: isMalayalam)  { isMalayalam = true }
-        }
-        .background(Color(.systemGray5))
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
+        Menu {
+            Button {
+                withAnimation(.easeInOut(duration: 0.18)) { isMalayalam = false }
+            } label: {
+                Label("English", systemImage: isMalayalam ? "" : "checkmark")
+            }
 
-    @ViewBuilder
-    private func langBtn(_ label: String, active: Bool, action: @escaping () -> Void) -> some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.18)) { action() }
+            Button {
+                withAnimation(.easeInOut(duration: 0.18)) { isMalayalam = true }
+            } label: {
+                Label("മലയാളം", systemImage: isMalayalam ? "checkmark" : "")
+            }
         } label: {
-            Text(label)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(active ? .white : .secondary)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 5)
-                .background(active ? Color.accentColor : Color.clear)
-                .clipShape(RoundedRectangle(cornerRadius: 7))
+            HStack(spacing: 4) {
+                Image(systemName: "globe")
+                    .font(.subheadline)
+                Text(isMalayalam ? "മ" : "EN")
+                    .font(.subheadline.weight(.semibold))
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption2)
+            }
+            .foregroundStyle(Color.alehaGreen)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
+            .background(Color.alehaGreen.opacity(0.12))
+            .clipShape(Capsule())
         }
     }
 }

@@ -30,17 +30,17 @@ struct LanguagePickerSheet: View {
                         }
                     }
                 } header: {
-                    Text("PREFERRED LANGUAGE")
+                    Text(localization.t(.languagePreferredHeader))
                 } footer: {
-                    Text("Quran translation is currently only available in English. UI language changes apply immediately.")
+                    Text(localization.t(.moreLanguageFooter))
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Language")
+            .navigationTitle(localization.t(.moreLanguage))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
+                    Button(localization.t(.commonDone)) { dismiss() }
                         .fontWeight(.semibold)
                 }
             }
@@ -59,10 +59,10 @@ struct LanguagePickerSheet: View {
                     .foregroundStyle(Color.alehaGreen)
             }
             VStack(alignment: .leading, spacing: 3) {
-                Text("App Language")
+                Text(localization.t(.moreAppLanguage))
                     .font(.body.weight(.semibold))
                     .foregroundStyle(.primary)
-                Text("Controls UI text, prayer names and guide content.")
+                Text(localization.t(.moreLanguageDesc))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)

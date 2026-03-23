@@ -15,12 +15,12 @@ enum ReadingMode: String, CaseIterable {
         }
     }
 
-    var shortLabel: String {
+    func shortLabel(localization: LocalizationManager) -> String {
         switch self {
-        case .arabicOnly:       return "Arabic"
-        case .both:             return "Both"
-        case .translationOnly:  return "Trans."
-        case .focus:            return "Focus"
+        case .arabicOnly:       return localization.t(.quranReadingModeArabic)
+        case .both:             return localization.t(.quranReadingModeBoth)
+        case .translationOnly:  return localization.t(.quranReadingModeTranslation)
+        case .focus:            return localization.t(.quranReadingModeFocus)
         }
     }
 }
@@ -28,6 +28,7 @@ enum ReadingMode: String, CaseIterable {
 struct ReadingModeBar: View {
     @Binding var mode: ReadingMode
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -41,7 +42,7 @@ struct ReadingModeBar: View {
                         HStack(spacing: 5) {
                             Image(systemName: m.icon)
                                 .font(.caption)
-                            Text(m.shortLabel)
+                            Text(m.shortLabel(localization: localization))
                                 .font(.caption.weight(.medium))
                         }
                         .padding(.horizontal, 12)

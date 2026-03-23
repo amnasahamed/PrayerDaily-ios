@@ -4,6 +4,7 @@ struct TafsirSheetView: View {
     let verse: Verse
     let tafsirText: String?
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
         NavigationStack {
@@ -16,11 +17,11 @@ struct TafsirSheetView: View {
                 .padding(AppTheme.screenPadding)
             }
             .background(Color(.systemBackground).ignoresSafeArea())
-            .navigationTitle("Tafsir")
+            .navigationTitle(localization.t(.tafsirTitle))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
+                    Button(localization.t(.commonDone)) { dismiss() }
                         .foregroundStyle(Color.alehaGreen)
                 }
             }
@@ -30,7 +31,7 @@ struct TafsirSheetView: View {
     private var verseHeader: some View {
         VStack(alignment: .trailing, spacing: 12) {
             HStack {
-                Text("Ayah \(verse.number)")
+                Text("\(localization.t(.tafsirAyah)) \(verse.number)")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Color.alehaGreen)
                     .padding(.horizontal, 10)
@@ -54,7 +55,7 @@ struct TafsirSheetView: View {
 
     private var tafsirContent: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Ibn Kathir Commentary", systemImage: "text.book.closed.fill")
+            Label(localization.t(.tafsirIbnKathir), systemImage: "text.book.closed.fill")
                 .font(.headline)
                 .foregroundStyle(Color.alehaGreen)
 
@@ -64,7 +65,7 @@ struct TafsirSheetView: View {
                     .lineSpacing(6)
                     .foregroundStyle(.primary)
             } else {
-                Text("Tafsir not available for this verse.")
+                Text(localization.t(.tafsirNotAvailable))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

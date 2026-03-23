@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TodayPrayerView: View {
     @EnvironmentObject var store: SalahStore
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.localization) var l10n
     @State private var showShareProgress = false
     @State private var confettiBurst = false
@@ -46,7 +47,7 @@ struct TodayPrayerView: View {
         HStack(spacing: 20) {
             progressRing
             VStack(alignment: .leading, spacing: 6) {
-                Text(isMl ? "\(todayLog.completedCount) / 5 നമസ്കാരം" : "\(todayLog.completedCount) of 5 Prayers")
+                Text(isMl ? "\(todayLog.completedCount) / 5 നമസ്കാരം" : "\(todayLog.completedCount) \(localization.t(.todayOf5Prayers))")
                     .font(.headline)
                 statusLabel
                 Text(todayProgress)
@@ -65,8 +66,8 @@ struct TodayPrayerView: View {
             if remaining == 0 { return "ഇന്നത്തെ എല്ലാ നമസ്കാരവും — അൽഹംദുലില്ലാഹ്" }
             return "\(remaining) നമസ്കാരം ബാക്കി"
         }
-        if remaining == 0 { return "All prayers done today — Alhamdulillah" }
-        return "\(remaining) prayer\(remaining > 1 ? "s" : "") remaining"
+        if remaining == 0 { return localization.t(.todayAllPrayersDone) }
+        return "\(remaining) \(localization.t(.todayPrayersRemaining))"
     }
 
     private var progressRing: some View {
@@ -84,7 +85,7 @@ struct TodayPrayerView: View {
                     .font(.system(size: 18, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.alehaActiveGreen)
                     .contentTransition(.numericText())
-                Text(isMl ? "ഇന്ന്" : "Today")
+                Text(localization.t(.todayLabel))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -99,9 +100,9 @@ struct TodayPrayerView: View {
                     .font(.title3)
                     .foregroundStyle(Color.alehaActiveGreen)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(isMl ? "പ്രോഗ്രസ് പങ്കിടുക" : "Share My Progress")
+                    Text(localization.t(.todayShareProgress))
                         .font(.subheadline.weight(.semibold))
-                    Text(isMl ? "ഇന്നത്തെ സ്ഥിതിവിവരക്കണക്ക്" : "Beautiful card with today's stats")
+                    Text(localization.t(.todayShareStatsDesc))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -126,7 +127,7 @@ struct TodayPrayerView: View {
             } else {
                 let nextPrayer = Prayer.allCases.first { todayLog.status(for: $0) == .none }
                 if let next = nextPrayer {
-                    Label("\(isMl ? "അടുത്തത്" : "Next"): \(next.localizedName(isMalayalam: isMl))", systemImage: next.icon)
+                    Label("\(localization.t(.headerNextPrayer)): \(next.localizedName(isMalayalam: isMl))", systemImage: next.icon)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -143,7 +144,7 @@ struct TodayPrayerView: View {
                 .font(.title2)
                 .foregroundStyle(color)
             VStack(alignment: .leading, spacing: 3) {
-                Text(isMl ? "ആഴ്ചതോറുമുള്ള കൃത്യത" : "Weekly Consistency")
+                Text(localization.t(.salahWeeklyConsistency))
                     .font(.subheadline.weight(.semibold))
                 Text(consistencyMessage(pct))
                     .font(.caption)
@@ -179,10 +180,10 @@ struct TodayPrayerView: View {
     private var prayerListSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text(isMl ? "നമസ്കാരം രേഖപ്പെടുത്തുക" : "Log Your Prayers")
+                Text(localization.t(.salahLogPrayer))
                     .font(.subheadline.weight(.semibold))
                 Spacer()
-                Text(isMl ? "സ്വൈപ്പ് ചെയ്യുക" : "Swipe to log")
+                Text(localization.t(.todaySwipeToLog))
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             }
@@ -201,10 +202,10 @@ struct TodayPrayerView: View {
     private var weekOverviewCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text(isMl ? "ഈ ആഴ്ച" : "This Week")
+                Text(localization.t(.salahThisWeek))
                     .font(.subheadline.weight(.semibold))
                 Spacer()
-                Label(isMl ? "\(store.currentStreak) ദിവസ സ്ട്രീക്ക്" : "\(store.currentStreak) day streak", systemImage: "flame.fill")
+                Label("\(store.currentStreak) \(localization.t(.salahDayStreak))", systemImage: "flame.fill")
                     .font(.caption.weight(.medium))
                     .foregroundStyle(Color.alehaAmber)
             }
@@ -244,6 +245,7 @@ struct TodayPrayerView: View {
 
 // MARK: - Swipe-to-Log Row
 struct SwipeToPrayRow: View {
+    @EnvironmentObject var localization: LocalizationManager
     let prayer: Prayer
     let status: PrayerStatus
     var isMalayalam: Bool = false
@@ -293,7 +295,7 @@ struct SwipeToPrayRow: View {
     private var swipeHintView: some View {
         HStack(spacing: 6) {
             Image(systemName: "checkmark.circle.fill")
-            Text(isMalayalam ? "നിർവ്വഹിച്ചു" : "Prayed")
+            Text(localization.t(.salahPrayed))
                 .font(.caption.weight(.semibold))
         }
         .foregroundStyle(.white)
@@ -337,7 +339,7 @@ struct SwipeToPrayRow: View {
             }
             if status != .none {
                 Button(role: .destructive) { onStatusChange(.none) } label: {
-                    Label(isMalayalam ? "നീക്കം ചെയ്യുക" : "Clear", systemImage: "trash")
+                    Label(localization.t(.salahClear), systemImage: "trash")
                 }
             }
         } label: {
@@ -352,6 +354,7 @@ struct SwipeToPrayRow: View {
 
 // MARK: - Legacy Row (Calendar reuse)
 struct PrayerLogRow: View {
+    @EnvironmentObject var localization: LocalizationManager
     let prayer: Prayer
     let status: PrayerStatus
     var isMalayalam: Bool = false
@@ -376,7 +379,7 @@ struct PrayerLogRow: View {
                 }
                 if status != .none {
                     Button(role: .destructive) { onStatusChange(.none) } label: {
-                        Label(isMalayalam ? "നീക്കം ചെയ്യുക" : "Clear", systemImage: "trash")
+                        Label(localization.t(.salahClear), systemImage: "trash")
                     }
                 }
             } label: {

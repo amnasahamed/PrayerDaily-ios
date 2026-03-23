@@ -249,12 +249,12 @@ struct DuaDetailSheet: View {
     private var isMlDS: Bool { l10nDS.currentLanguage == .malayalam }
 
     private var transliterationCard: some View {
-        detailCard(label: isMlDS ? "ലിപ്യന്തരണം" : "Transliteration",
+        detailCard(label: l10nDS.t(.quranTransliteration),
                    icon: "textformat.abc", content: dua.transliteration)
     }
 
     private var translationCard: some View {
-        detailCard(label: isMlDS ? "അർത്ഥം" : "Translation",
+        detailCard(label: l10nDS.t(.quranTranslation),
                    icon: "globe", content: dua.localizedTranslation(isMalayalam: isMlDS))
     }
 
@@ -263,7 +263,7 @@ struct DuaDetailSheet: View {
             Image(systemName: "book.closed.fill")
                 .font(.subheadline)
                 .foregroundStyle(color)
-            Text("Source: \(dua.reference)")
+            Text("\(l10nDS.t(.duaSource)): \(dua.reference)")
                 .font(.footnote.weight(.medium))
                 .foregroundColor(Color(UIColor.secondaryLabel))
             Spacer()

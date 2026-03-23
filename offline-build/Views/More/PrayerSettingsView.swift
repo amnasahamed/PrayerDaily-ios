@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PrayerSettingsView: View {
+    @EnvironmentObject var localization: LocalizationManager
     @ObservedObject private var service = PrayerTimesService.shared
     @AppStorage("profileMadhab") private var profileMadhab: String = "Hanafi"
     @State private var appeared = false
@@ -22,7 +23,7 @@ struct PrayerSettingsView: View {
                 .padding(.bottom, 120)
             }
         }
-        .navigationTitle("Prayer Calculation")
+        .navigationTitle(localization.t(.prayerSettingsTitle))
         .navigationBarTitleDisplayMode(.large)
         .modifier(AlehaNavStyle())
         .onAppear {
@@ -39,9 +40,9 @@ struct PrayerSettingsView: View {
                     .font(.title3).foregroundStyle(Color.alehaGreen)
             }
             VStack(alignment: .leading, spacing: 5) {
-                Text("Why does this matter?")
+                Text(localization.t(.prayerWhyMatter))
                     .font(.subheadline.weight(.semibold))
-                Text("Different scholarly bodies use slightly different formulas for Fajr & Isha. Select the method followed in your region or by your madhab for the most accurate times.")
+                Text(localization.t(.prayerSettingsWhyMatterDescription))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -49,7 +50,7 @@ struct PrayerSettingsView: View {
                     HStack(spacing: 5) {
                         Image(systemName: "checkmark.circle.fill")
                             .font(.caption2).foregroundStyle(Color.alehaGreen)
-                        Text("Active: \(service.activeMethodName)")
+                        Text("\(localization.t(.prayerActiveMethod)) \(service.activeMethodName)")
                             .font(.caption2.weight(.medium))
                             .foregroundStyle(Color.alehaGreen)
                     }
@@ -64,11 +65,11 @@ struct PrayerSettingsView: View {
     private var methodSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Label("Calculation Method", systemImage: "doc.text.magnifyingglass")
+                Label(localization.t(.prayerSettingsMethod), systemImage: "doc.text.magnifyingglass")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Color.alehaGreen)
                 Spacer()
-                Text("Fajr & Isha angles")
+                Text(localization.t(.prayerFajrIsha))
                     .font(.caption2).foregroundStyle(.secondary)
             }
 
@@ -136,17 +137,17 @@ struct PrayerSettingsView: View {
     // MARK: - Asr Section
     private var asrSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Asr Juristic Method", systemImage: "sun.haze.fill")
+            Label(localization.t(.prayerSettingsAsr), systemImage: "sun.haze.fill")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Color.alehaAmber)
 
-            Text("The Hanafi school uses a shadow length multiplier of 2× (later Asr), while all other schools use 1× (earlier Asr).")
+            Text(localization.t(.prayerSettingsAsrDescription))
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
             HStack(spacing: 12) {
-                asrChip(method: .shafii, title: "Standard", subtitle: "Shafi'i · Maliki · Hanbali")
-                asrChip(method: .hanafi, title: "Hanafi", subtitle: "Later Asr")
+                asrChip(method: .shafii, title: localization.t(.prayerSettingsAsrStandard), subtitle: localization.t(.prayerSettingsAsrShafiiSubtitle))
+                asrChip(method: .hanafi, title: localization.t(.prayerSettingsAsrHanafi), subtitle: localization.t(.prayerSettingsAsrHanafiSubtitle))
             }
         }
         .noorCard()
@@ -188,7 +189,7 @@ struct PrayerSettingsView: View {
     private var activeTimesCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Label("Today's Calculated Times", systemImage: "clock.fill")
+                Label(localization.t(.prayerTodaysTimes), systemImage: "clock.fill")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Color.alehaGreen)
                 Spacer()
@@ -197,7 +198,7 @@ struct PrayerSettingsView: View {
                 }
             }
             if service.prayerTimes.isEmpty {
-                Text("Enable location access to see prayer times.")
+                Text(localization.t(.prayerEnableLocation))
                     .font(.caption).foregroundStyle(.secondary)
             } else {
                 VStack(spacing: 8) {
@@ -212,7 +213,7 @@ struct PrayerSettingsView: View {
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(service.nextPrayer?.prayer == pt.prayer ? Color.alehaAmber : .primary)
                             if service.nextPrayer?.prayer == pt.prayer {
-                                Text("NEXT")
+                                Text(localization.t(.headerNextPrayer))
                                     .font(.caption2.weight(.bold))
                                     .foregroundStyle(.white)
                                     .padding(.horizontal, 6)
@@ -240,7 +241,7 @@ struct PrayerSettingsView: View {
     private var savedBanner: some View {
         HStack(spacing: 10) {
             Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.alehaGreen)
-            Text("Settings applied — recalculating…").font(.subheadline)
+            Text(localization.t(.prayerSettingsApplied)).font(.subheadline)
         }
         .padding(14)
         .background(Color.alehaGreen.opacity(0.1))

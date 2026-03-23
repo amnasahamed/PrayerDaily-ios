@@ -3,6 +3,7 @@ import SwiftUI
 struct HadithCollectionDetailView: View {
     let collection: HadithCollection
     @State private var expandedChapter: Int? = nil
+    @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -53,8 +54,8 @@ struct HadithCollectionDetailView: View {
 
     private var statsRow: some View {
         HStack(spacing: 24) {
-            StatBubble(value: "\(collection.totalHadith)", label: "Hadith")
-            StatBubble(value: "\(collection.chapters.count)", label: "Chapters")
+            StatBubble(value: "\(collection.totalHadith)", label: localization.t(.hadithTitle))
+            StatBubble(value: "\(collection.chapters.count)", label: localization.t(.hadithChapters))
         }
         .padding(.top, 4)
     }
@@ -91,6 +92,7 @@ struct ChapterSection: View {
     let chapter: HadithChapter
     let isExpanded: Bool
     let onTap: () -> Void
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.colorScheme) var cs
 
     var body: some View {
@@ -123,7 +125,7 @@ struct ChapterSection: View {
                     Text(chapter.title)
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.primary)
-                    Text("\(chapter.hadiths.count) hadith")
+                    Text("\(chapter.hadiths.count) \(localization.t(.hadithTitle))")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }

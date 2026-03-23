@@ -3,6 +3,7 @@ import SwiftUI
 // MARK: - Library Dhikr View (wraps DhikrCounterView with its own store)
 struct LibraryDhikrView: View {
     @StateObject private var store = SalahStore()
+    @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
         ZStack {
@@ -10,7 +11,7 @@ struct LibraryDhikrView: View {
             DhikrCounterView()
                 .environmentObject(store)
         }
-        .navigationTitle("Dhikr Counter")
+        .navigationTitle(localization.t(.dhikrTitle))
         .navigationBarTitleDisplayMode(.inline)
         .modifier(AlehaNavStyle())
     }
@@ -21,6 +22,7 @@ struct LibraryHijriView: View {
     @StateObject private var prayerService = PrayerTimesService.shared
     @State private var displayedMonthOffset: Int = 0
     @Environment(\.colorScheme) var cs
+    @EnvironmentObject var localization: LocalizationManager
 
     private let hijriCal = Calendar(identifier: .islamicUmmAlQura)
     private let gregCal = Calendar.current
@@ -45,7 +47,7 @@ struct LibraryHijriView: View {
                 .padding(.bottom, 120)
             }
         }
-        .navigationTitle("Hijri Calendar")
+        .navigationTitle(localization.t(.libraryIslamicCalendar))
         .navigationBarTitleDisplayMode(.inline)
         .sheetDismissButton()
         .modifier(AlehaNavStyle())
@@ -189,7 +191,7 @@ struct LibraryHijriView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 RoundedRectangle(cornerRadius: 2).fill(Color.alehaAmber).frame(width: 4, height: 18)
-                Text("Upcoming Islamic Events")
+                Text(localization.t(.hijriUpcomingEvents))
                     .font(.headline.weight(.bold))
                 Spacer()
             }
@@ -214,7 +216,7 @@ struct LibraryHijriView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 RoundedRectangle(cornerRadius: 2).fill(Color.alehaDarkGreen).frame(width: 4, height: 18)
-                Text("Islamic Months").font(.headline.weight(.bold))
+                Text(localization.t(.hijriIslamicMonths)).font(.headline.weight(.bold))
                 Spacer()
             }
             ForEach(islamicMonths, id: \.0) { month in
@@ -320,6 +322,7 @@ private extension Array {
 // MARK: - Library Prayer Tracker View (wraps full Salah dashboard)
 struct LibraryPrayerTrackerView: View {
     @StateObject private var store = SalahStore()
+    @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
         ZStack {
@@ -335,18 +338,18 @@ struct LibraryPrayerTrackerView: View {
                 .padding(.bottom, 120)
             }
         }
-        .navigationTitle("Prayer Tracker")
+        .navigationTitle(localization.t(.trackerPrayerTracker))
         .navigationBarTitleDisplayMode(.inline)
         .modifier(AlehaNavStyle())
     }
 
     private var headerCard: some View {
         HStack(spacing: 0) {
-            statCell("\(store.currentStreak)", label: "Streak")
+            statCell("\(store.currentStreak)", label: localization.t(.salahStreak))
             Divider().frame(height: 44)
-            statCell("\(store.weeklyConsistency)%", label: "This Week")
+            statCell("\(store.weeklyConsistency)%", label: localization.t(.salahThisWeek))
             Divider().frame(height: 44)
-            statCell("\(store.todayLog.completedCount)/5", label: "Today")
+            statCell("\(store.todayLog.completedCount)/5", label: localization.t(.salahToday))
         }
         .noorCard()
     }
@@ -365,7 +368,7 @@ struct LibraryPrayerTrackerView: View {
 
     private var weekOverview: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("This Week")
+            Text(localization.t(.salahThisWeek))
                 .font(.headline.weight(.bold))
             HStack(spacing: 8) {
                 ForEach(0..<7) { offset in
@@ -388,7 +391,7 @@ struct LibraryPrayerTrackerView: View {
 
     private var todayPrayers: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Today's Log")
+            Text(localization.t(.trackerTodaysLog))
                 .font(.headline.weight(.bold))
             ForEach(Prayer.allCases) { prayer in
                 HStack(spacing: 12) {
@@ -415,7 +418,7 @@ struct LibraryPrayerTrackerView: View {
                             Button(role: .destructive) {
                                 store.setStatus(.none, prayer: prayer, date: Date())
                             } label: {
-                                Label("Clear", systemImage: "trash")
+                                Label(localization.t(.trackerClear), systemImage: "trash")
                             }
                         }
                     } label: {

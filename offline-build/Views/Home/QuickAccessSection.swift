@@ -3,21 +3,22 @@ import SwiftUI
 struct QuickAccessSection: View {
     private struct TileItem {
         let icon: String
-        let title: String
+        let titleKey: LocalizedKey
         let color: Color
         let tab: AppTab?
     }
 
     private let items: [TileItem] = [
-        TileItem(icon: "book.fill",            title: "Quran",     color: Color.alehaGreen,                              tab: .quran),
-        TileItem(icon: "hands.sparkles.fill",  title: "Duas",      color: Color.alehaAmber,                              tab: .library),
-        TileItem(icon: "rosette",              title: "Dhikr",     color: Color(red: 0.55, green: 0.30, blue: 0.85),     tab: .salah),
-        TileItem(icon: "text.book.closed.fill",title: "Hadith",    color: Color.alehaDarkGreen,                          tab: .library),
-        TileItem(icon: "graduationcap.fill",   title: "Kids",      color: Color(red: 0.95, green: 0.55, blue: 0.20),     tab: nil),
-        TileItem(icon: "cross.case.fill",      title: "Emergency", color: Color(red: 0.85, green: 0.28, blue: 0.28),     tab: .library),
+        TileItem(icon: "book.fill",            titleKey: .quranTitle,     color: Color.alehaGreen,                              tab: .quran),
+        TileItem(icon: "hands.sparkles.fill",  titleKey: .libraryDuas,    color: Color.alehaAmber,                              tab: .library),
+        TileItem(icon: "rosette",              titleKey: .dhikrTitle,     color: Color(red: 0.55, green: 0.30, blue: 0.85),     tab: .salah),
+        TileItem(icon: "text.book.closed.fill",titleKey: .hadithTitle,    color: Color.alehaDarkGreen,                          tab: .library),
+        TileItem(icon: "graduationcap.fill",   titleKey: .homeKids,       color: Color(red: 0.95, green: 0.55, blue: 0.20),     tab: nil),
+        TileItem(icon: "cross.case.fill",      titleKey: .emergencyTitle, color: Color(red: 0.85, green: 0.28, blue: 0.28),     tab: .library),
     ]
     @State private var pressedIndex: Int? = nil
     @State private var showKidsComing = false
+    @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -29,7 +30,7 @@ struct QuickAccessSection: View {
                 ForEach(items.indices, id: \.self) { i in
                     QuickTile(
                         icon:  items[i].icon,
-                        title: items[i].title,
+                        title: localization.t(items[i].titleKey),
                         color: items[i].color,
                         index: i,
                         pressedIndex: $pressedIndex,
@@ -49,12 +50,12 @@ struct QuickAccessSection: View {
                 Image(systemName: "graduationcap.fill")
                     .font(.system(size: 48))
                     .foregroundStyle(Color(red: 0.95, green: 0.55, blue: 0.20))
-                Text("Kids Section")
+                Text(localization.t(.homeKidsSection))
                     .font(.title2.weight(.bold))
-                Text("Coming Soon")
+                Text(localization.t(.homeComingSoon))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                Text("We're building a fun, age-appropriate Islamic learning experience for children. Stay tuned!")
+                Text(localization.t(.homeKidsDescription))
                     .font(.callout)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
@@ -70,7 +71,7 @@ struct QuickAccessSection: View {
             RoundedRectangle(cornerRadius: 2, style: .continuous)
                 .fill(Color.alehaGreen)
                 .frame(width: 4, height: 18)
-            Text("Quick Access")
+            Text(localization.t(.homeQuickAccess))
                 .font(.headline.weight(.semibold))
         }
     }

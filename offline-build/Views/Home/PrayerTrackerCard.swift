@@ -4,6 +4,7 @@ struct PrayerTrackerCard: View {
     @Binding var prayers: [SalahLogEntry]
     @State private var lastTapped: String? = nil
     @State private var confettiPrayer: String? = nil
+    @EnvironmentObject var localization: LocalizationManager
 
     private var completedCount: Int { prayers.filter(\.completed).count }
     private var progress: Double { Double(completedCount) / 5.0 }
@@ -19,7 +20,7 @@ struct PrayerTrackerCard: View {
 
     private var headerRow: some View {
         HStack {
-            Label("Today's Salah", systemImage: "clock.fill")
+            Label(localization.t(.homeTodaySalah), systemImage: "clock.fill")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.primary)
             Spacer()

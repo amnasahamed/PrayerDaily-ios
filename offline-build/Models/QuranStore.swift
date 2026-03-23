@@ -145,8 +145,8 @@ class QuranStore: ObservableObject {
         stopAudio()
         audioState = .loading
 
-        let surahStr = String(format: "%03d", surahId)
-        let verseStr = String(format: "%03d", verseNum)
+        _ = String(format: "%03d", surahId)
+        _ = String(format: "%03d", verseNum)
         let urlString = "https://cdn.islamic.network/quran/audio/128/ar.alafasy/\(computeAbsoluteVerse(surah: surahId, verse: verseNum)).mp3"
 
         guard let url = URL(string: urlString) else {

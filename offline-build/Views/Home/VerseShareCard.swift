@@ -11,6 +11,7 @@ struct VerseShareCard: View {
     @State private var saved = false
     @State private var arabicOpacity = 0.0
     @Environment(\.colorScheme) var cs
+    @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
         VStack(spacing: 0) {
@@ -45,7 +46,7 @@ struct VerseShareCard: View {
     // MARK: - Header
     private var header: some View {
         HStack {
-            Label("Verse of the Day", systemImage: "sparkles")
+            Label(localization.t(.homeVerseOfDay), systemImage: "sparkles")
                 .font(.caption.weight(.bold))
                 .foregroundStyle(Color.alehaAmber)
                 .padding(.horizontal, 12)
@@ -128,7 +129,7 @@ struct VerseShareCard: View {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
             withAnimation(.spring(response: 0.3, dampingFraction: 0.55)) { saved.toggle() }
         } label: {
-            Label(saved ? "Saved" : "Save", systemImage: saved ? "bookmark.fill" : "bookmark")
+            Label(saved ? localization.t(.homeSaved) : localization.t(.homeSave), systemImage: saved ? "bookmark.fill" : "bookmark")
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundStyle(saved ? Color.alehaAmber : .white.opacity(0.85))
@@ -145,7 +146,7 @@ struct VerseShareCard: View {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             shareVerse()
         } label: {
-            Label("Share", systemImage: "square.and.arrow.up")
+            Label(localization.t(.commonShare), systemImage: "square.and.arrow.up")
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundStyle(.white.opacity(0.85))
@@ -162,7 +163,7 @@ struct VerseShareCard: View {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) { showTafsir.toggle() }
         } label: {
-            Label(showTafsir ? "Less" : "Tafsir", systemImage: showTafsir ? "chevron.up" : "book.pages")
+            Label(showTafsir ? localization.t(.homeTafsirLess) : localization.t(.homeTafsir), systemImage: showTafsir ? "chevron.up" : "book.pages")
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundStyle(.white.opacity(0.85))

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct AppearanceView: View {
+    @EnvironmentObject var localization: LocalizationManager
     @AppStorage("appearanceMode") private var appearanceMode: String = "system"
     @AppStorage("arabicFontSize") private var arabicFontSize: Double = 28
     @AppStorage("translationEnabled") private var translationEnabled: Bool = true
@@ -30,7 +31,7 @@ struct AppearanceView: View {
                 .padding(.bottom, 120)
             }
         }
-        .navigationTitle("Appearance")
+        .navigationTitle(localization.t(.appearanceTitle))
         .navigationBarTitleDisplayMode(.large)
         .modifier(AlehaNavStyle())
     }
@@ -48,8 +49,8 @@ struct AppearanceView: View {
     // MARK: - Theme
     private var themePicker: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("App Theme").font(.headline.weight(.bold))
-            Text("Takes effect immediately across the whole app.")
+            Text(localization.t(.appearanceAppTheme)).font(.headline.weight(.bold))
+            Text(localization.t(.appearanceTakesEffect))
                 .font(.caption).foregroundStyle(.secondary)
             HStack(spacing: 12) {
                 ForEach(modes, id: \.0) { id, icon, label in
@@ -57,7 +58,8 @@ struct AppearanceView: View {
                     Button {
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         appearanceMode = id
-                        showConfirmation("Theme set to \(label)")
+                        let themeLabel = id == "system" ? localization.t(.appearanceSystem) : (id == "light" ? localization.t(.appearanceLight) : localization.t(.appearanceDark))
+                        showConfirmation(localization.t(.appearanceThemeSet).replacingOccurrences(of: "\(label)", with: themeLabel))
                     } label: {
                         VStack(spacing: 10) {
                             ZStack {
@@ -68,7 +70,7 @@ struct AppearanceView: View {
                                     .font(.title3)
                                     .foregroundStyle(selected ? Color.alehaGreen : .secondary)
                             }
-                            Text(label).font(.caption.weight(selected ? .semibold : .regular))
+                            Text(label == "System" ? localization.t(.appearanceSystem) : (label == "Light" ? localization.t(.appearanceLight) : localization.t(.appearanceDark))).font(.caption.weight(selected ? .semibold : .regular))
                                 .foregroundStyle(selected ? Color.alehaGreen : .secondary)
                         }
                         .frame(maxWidth: .infinity)
@@ -95,7 +97,7 @@ struct AppearanceView: View {
     // MARK: - Arabic Font
     private var arabicSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("Arabic Text Size").font(.headline.weight(.bold))
+            Text(localization.t(.appearanceArabicTextSize)).font(.headline.weight(.bold))
             Text("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
                 .font(.system(size: arabicFontSize))
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -109,7 +111,7 @@ struct AppearanceView: View {
                 Text("A").font(.title2)
             }
             HStack {
-                Text("Applied in Quran reader & Dua screens.")
+                Text(localization.t(.appearanceAppliedIn))
                     .font(.caption).foregroundStyle(.secondary)
                 Spacer()
                 Text("\(Int(arabicFontSize))pt")
@@ -122,9 +124,9 @@ struct AppearanceView: View {
     // MARK: - Reading Prefs
     private var readingSection: some View {
         VStack(spacing: 0) {
-            toggleRow(title: "Show Translation", subtitle: "English meaning below each ayah",
+            toggleRow(title: localization.t(.appearanceTranslation), subtitle: localization.t(.appearanceEnglishMeaning),
                       icon: "text.bubble.fill", color: Color.alehaGreen, binding: $translationEnabled, divider: true)
-            toggleRow(title: "Show Transliteration", subtitle: "Romanized Arabic pronunciation",
+            toggleRow(title: localization.t(.appearanceTransliteration), subtitle: localization.t(.appearanceRomanized),
                       icon: "character.book.closed.fill", color: Color.alehaAmber, binding: $transliterationEnabled, divider: false)
         }
         .background(

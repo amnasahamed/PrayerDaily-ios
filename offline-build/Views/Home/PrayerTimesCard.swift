@@ -3,6 +3,7 @@ import SwiftUI
 struct PrayerTimesCard: View {
     @StateObject private var service = PrayerTimesService.shared
     @Environment(\.colorScheme) var cs
+    @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -16,7 +17,7 @@ struct PrayerTimesCard: View {
 
     private var headerRow: some View {
         HStack {
-            Label("Prayer Times", systemImage: "clock.fill")
+            Label(localization.t(.prayerTimesTitle), systemImage: "clock.fill")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Color.alehaGreen)
             Spacer()
@@ -83,7 +84,7 @@ struct PrayerTimesCard: View {
         Button { service.requestLocation() } label: {
             HStack {
                 Image(systemName: "location.fill").foregroundStyle(Color.alehaGreen)
-                Text("Enable Location").font(.subheadline.weight(.medium)).foregroundStyle(Color.alehaGreen)
+                Text(localization.t(.prayerTimesEnableLocation)).font(.subheadline.weight(.medium)).foregroundStyle(Color.alehaGreen)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)

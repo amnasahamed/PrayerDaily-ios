@@ -7,6 +7,7 @@ struct PrayerTimelineCard: View {
     @ObservedObject var service: PrayerTimesService
     @Binding var prayers: [SalahLogEntry]
     @EnvironmentObject var salahStore: SalahStore
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.colorScheme) var cs
 
     @State private var pulse = false
@@ -41,7 +42,7 @@ struct PrayerTimelineCard: View {
                 .italic()
                 .foregroundStyle(.secondary)
             Spacer()
-            Text("Today")
+            Text(localization.t(.homeToday))
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(Color.alehaGreen)
                 .padding(.horizontal, 9)
@@ -52,17 +53,17 @@ struct PrayerTimelineCard: View {
     }
 
     private var nextPrayerLabel: String {
-        guard let next = service.nextPrayer else { return "All prayers done today" }
+        guard let next = service.nextPrayer else { return localization.t(.homeAllPrayersDone) }
         let mins = Int(next.time.timeIntervalSinceNow / 60)
         if mins < 60 {
-            return "\(mins) minutes until \(next.prayer.rawValue)"
+            return String(format: localization.t(.homeMinutesUntil), mins, next.prayer.rawValue)
         } else {
             let hrs = mins / 60
             let rem = mins % 60
             if rem == 0 {
-                return "\(hrs)h until \(next.prayer.rawValue)"
+                return String(format: localization.t(.homeHoursUntil), hrs, next.prayer.rawValue)
             }
-            return "\(hrs)h \(rem)m until \(next.prayer.rawValue)"
+            return String(format: localization.t(.homeHoursMinutesUntil), hrs, rem, next.prayer.rawValue)
         }
     }
 
@@ -141,8 +142,8 @@ struct PrayerTimelineCard: View {
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("\(entry.prayer.rawValue) — \(entry.completed ? "Completed" : "Not completed")")
-        .accessibilityHint(entry.completed ? "Tap to unmark" : "Tap to mark as prayed")
+        .accessibilityLabel("\(entry.prayer.rawValue) — \(entry.completed ? localization.t(.homeCompleted) : localization.t(.homeNotCompleted))")
+        .accessibilityHint(entry.completed ? localization.t(.homeTapToUnmark) : localization.t(.homeTapToMark))
         .onAppear { if isNext { pulse = true } }
     }
 
@@ -277,21 +278,21 @@ struct PrayerTimelineCard: View {
             habitStat(
                 icon: "flame.fill",
                 value: "\(salahStore.currentStreak)",
-                label: "streak",
+                label: localization.t(.homeStreak),
                 color: Color.alehaAmber
             )
             footerDivider
             habitStat(
                 icon: "calendar",
                 value: "\(weekTotal)/35",
-                label: "this week",
+                label: localization.t(.homeThisWeek),
                 color: Color.alehaGreen
             )
             footerDivider
             habitStat(
                 icon: "moon.fill",
                 value: "\(qadaTotal)",
-                label: "qada left",
+                label: localization.t(.homeQadaLeft),
                 color: qadaTotal == 0 ? Color.alehaGreen : Color.alehaSaffron
             )
         }

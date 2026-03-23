@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CalendarPrayerView: View {
     @EnvironmentObject var store: SalahStore
+    @EnvironmentObject var localization: LocalizationManager
     @State private var displayedMonth = Date()
 
     private let calendar = Calendar.current
@@ -136,10 +137,10 @@ struct CalendarPrayerView: View {
     // MARK: - Legend
     private var legendRow: some View {
         HStack(spacing: 16) {
-            legendItem(color: Color.alehaGreen, label: "All 5")
-            legendItem(color: Color.alehaAmber, label: "3–4")
-            legendItem(color: .red.opacity(0.65), label: "<3")
-            legendItem(color: Color(.systemGray5), label: "None")
+            legendItem(color: Color.alehaGreen, label: localization.t(.calendarLegendAll5))
+            legendItem(color: Color.alehaAmber, label: localization.t(.calendarLegend3to4))
+            legendItem(color: .red.opacity(0.65), label: localization.t(.calendarLegendLess3))
+            legendItem(color: Color(.systemGray5), label: localization.t(.calendarLegendNone))
         }
         .font(.caption2)
         .foregroundStyle(.secondary)
@@ -165,13 +166,13 @@ struct CalendarPrayerView: View {
                     .font(.subheadline.weight(.semibold))
             }
             HStack(spacing: 0) {
-                summaryStatBlock(value: "\(summary.logged)", label: "Prayers Logged", color: Color("NoorPrimary"))
+                summaryStatBlock(value: "\(summary.logged)", label: localization.t(.calendarPrayersLogged), color: Color("NoorPrimary"))
                 Divider().frame(height: 40)
-                summaryStatBlock(value: "\(summary.bestStreak)", label: "Best Streak", color: Color.alehaAmber)
+                summaryStatBlock(value: "\(summary.bestStreak)", label: localization.t(.calendarBestStreak), color: Color.alehaAmber)
                 Divider().frame(height: 40)
                 let possible = daysInDisplayedMonth() * 5
                 let pct = possible > 0 ? Int(Double(summary.logged) / Double(possible) * 100) : 0
-                summaryStatBlock(value: "\(pct)%", label: "Completion", color: Color.alehaGreen)
+                summaryStatBlock(value: "\(pct)%", label: localization.t(.calendarCompletion), color: Color.alehaGreen)
             }
         }
         .noorCard()

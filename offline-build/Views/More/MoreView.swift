@@ -66,21 +66,21 @@ struct MoreView: View {
         VStack(spacing: 0) {
             NavigationLink(destination: ProfileView()) {
                 MoreMenuRow(icon: "person.crop.circle.fill", title: localization.t(.moreProfile),
-                            subtitle: "Your name, madhab & preferences",
+                            subtitle: localization.t(.moreProfileSubtitle),
                             color: Color.alehaGreen, showDivider: true)
             }
             .buttonStyle(.plain)
 
             NavigationLink(destination: AppearanceView()) {
                 MoreMenuRow(icon: "moon.stars.fill", title: localization.t(.moreAppearance),
-                            subtitle: "Theme, Arabic size & reading options",
+                            subtitle: localization.t(.moreAppearanceSubtitle),
                             color: Color.alehaDarkGreen, showDivider: true)
             }
             .buttonStyle(.plain)
 
             NavigationLink(destination: PrayerSettingsView()) {
                 MoreMenuRow(icon: "clock.badge.checkmark.fill", title: localization.t(.morePrayerCalc),
-                            subtitle: "Method, madhab & Asr juristic rule",
+                            subtitle: localization.t(.morePrayerCalcSubtitle),
                             color: Color.alehaAmber, showDivider: true)
             }
             .buttonStyle(.plain)
@@ -96,7 +96,7 @@ struct MoreView: View {
 
             Button { showStreakHistory = true } label: {
                 MoreMenuRow(icon: "flame.fill", title: localization.t(.moreStreakHistory),
-                            subtitle: "View your prayer consistency over time",
+                            subtitle: localization.t(.moreStreakHistorySubtitle),
                             color: .orange, showDivider: true)
             }
             .buttonStyle(.plain)
@@ -111,7 +111,7 @@ struct MoreView: View {
 
             Button { showDataExport = true } label: {
                 MoreMenuRow(icon: "square.and.arrow.up.fill", title: localization.t(.moreExport),
-                            subtitle: "Download your prayer logs & notes",
+                            subtitle: localization.t(.moreExportSubtitle),
                             color: Color(red: 0.45, green: 0.25, blue: 0.75), showDivider: false)
             }
             .buttonStyle(.plain)
@@ -125,7 +125,7 @@ struct MoreView: View {
             Button { showAbout = true } label: {
                 let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
                 MoreMenuRow(icon: "info.circle.fill", title: localization.t(.moreAbout),
-                            subtitle: "Version \(version) • alehalearn.com",
+                            subtitle: "\(localization.t(.commonVersion)) \(version) • alehalearn.com",
                             color: Color.alehaGreen, showDivider: true)
             }
             .buttonStyle(.plain)
@@ -135,7 +135,7 @@ struct MoreView: View {
                 showResetConfirm = true
             } label: {
                 MoreMenuRow(icon: "trash.fill", title: localization.t(.moreReset),
-                            subtitle: localization.currentLanguage == .malayalam ? "എല്ലാ ഡാറ്റയും ലോഗും മായ്ക്കുക" : "Erase all data, logs & preferences",
+                            subtitle: localization.t(.moreResetSubtitle),
                             color: .red, showDivider: false)
             }
             .buttonStyle(.plain)
@@ -188,6 +188,7 @@ private extension View {
 // MARK: - Streak History Sheet
 struct StreakHistorySheet: View {
     @ObservedObject var store: SalahStore
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var cs
 
@@ -205,11 +206,11 @@ struct StreakHistorySheet: View {
                     .padding(.bottom, 40)
                 }
             }
-            .navigationTitle("Streak History")
+            .navigationTitle(localization.t(.streakHistory))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
+                    Button(localization.t(.commonDone)) { dismiss() }
                 }
             }
         }
@@ -217,11 +218,11 @@ struct StreakHistorySheet: View {
 
     private var summaryCard: some View {
         HStack(spacing: 0) {
-            snapStat(value: "\(store.currentStreak)", label: "Current\nStreak", color: .orange)
+            snapStat(value: "\(store.currentStreak)", label: localization.t(.streakCurrent), color: .orange)
             Divider().frame(height: 44)
-            snapStat(value: "\(bestStreak)", label: "Best\nStreak", color: Color.alehaGreen)
+            snapStat(value: "\(bestStreak)", label: localization.t(.streakBest), color: Color.alehaGreen)
             Divider().frame(height: 44)
-            snapStat(value: "\(store.weeklyConsistency)%", label: "This\nWeek", color: Color.alehaAmber)
+            snapStat(value: "\(store.weeklyConsistency)%", label: localization.t(.streakThisWeek), color: Color.alehaAmber)
         }
         .noorCard()
     }
@@ -248,7 +249,7 @@ struct StreakHistorySheet: View {
 
     private var weeklyBars: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Last 7 Days").font(.headline.weight(.bold))
+            Text(localization.t(.streakLast7)).font(.headline.weight(.bold))
             HStack(alignment: .bottom, spacing: 8) {
                 ForEach(lastSevenDays, id: \.0) { dayLabel, count in
                     VStack(spacing: 4) {
@@ -287,7 +288,7 @@ struct StreakHistorySheet: View {
 
     private var calendarGrid: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Last 30 Days").font(.headline.weight(.bold))
+            Text(localization.t(.streakLast30)).font(.headline.weight(.bold))
             let days = last30Days
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
                 ForEach(days, id: \.0) { _, count in
@@ -298,10 +299,10 @@ struct StreakHistorySheet: View {
                 }
             }
             HStack(spacing: 14) {
-                legendDot(color: Color.alehaGreen, label: "All 5")
-                legendDot(color: Color.alehaAmber, label: "3-4")
-                legendDot(color: .orange, label: "1-2")
-                legendDot(color: Color(.systemGray4), label: "None")
+                legendDot(color: Color.alehaGreen, label: localization.t(.streakAll5))
+                legendDot(color: Color.alehaAmber, label: localization.t(.streakLegend34))
+                legendDot(color: .orange, label: localization.t(.streakLegend12))
+                legendDot(color: Color(.systemGray4), label: localization.t(.streakNone))
             }
         }
         .noorCard()
@@ -326,6 +327,7 @@ struct StreakHistorySheet: View {
 // MARK: - Data Export Sheet
 struct DataExportSheet: View {
     @ObservedObject var store: SalahStore
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.dismiss) var dismiss
     @State private var exported = false
 
@@ -342,10 +344,10 @@ struct DataExportSheet: View {
                 }
                 .padding(AppTheme.screenPadding)
             }
-            .navigationTitle("Export Data")
+            .navigationTitle(localization.t(.exportTitle))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
+                ToolbarItem(placement: .topBarTrailing) { Button(localization.t(.commonDone)) { dismiss() } }
             }
         }
     }
@@ -361,16 +363,16 @@ struct DataExportSheet: View {
 
     private var exportInfo: some View {
         VStack(spacing: 10) {
-            Text("Export Your Data").font(.title3.weight(.bold))
-            Text("Your prayer logs, dhikr counts, and notes are ready to export as a summary.")
+            Text(localization.t(.exportYourData)).font(.title3.weight(.bold))
+            Text(localization.t(.exportDescription))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
             VStack(alignment: .leading, spacing: 8) {
-                exportRow("Prayer logs", value: "\(store.logs.count) days")
-                exportRow("Total prayers logged", value: "\(store.logs.values.reduce(0) { $0 + $1.completedCount })")
-                exportRow("Dhikr lifetime", value: "\(store.dhikrLifetimeTotal) counts")
-                exportRow("Current streak", value: "\(store.currentStreak) days")
+                exportRow(localization.t(.exportPrayerLogs), value: "\(store.logs.count) days")
+                exportRow(localization.t(.exportTotalPrayers), value: "\(store.logs.values.reduce(0) { $0 + $1.completedCount })")
+                exportRow(localization.t(.exportDhikrLifetime), value: "\(store.dhikrLifetimeTotal) counts")
+                exportRow(localization.t(.exportCurrentStreakLabel), value: "\(store.currentStreak) days")
             }
             .noorCard()
         }
@@ -390,7 +392,7 @@ struct DataExportSheet: View {
             exported = true
             presentExportShare()
         } label: {
-            Label("Export Summary", systemImage: "arrow.down.doc.fill")
+            Label(localization.t(.exportButton), systemImage: "arrow.down.doc.fill")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
@@ -403,7 +405,7 @@ struct DataExportSheet: View {
     private var successBadge: some View {
         HStack(spacing: 10) {
             Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.alehaGreen)
-            Text("Export ready — sharing…").font(.subheadline)
+            Text(localization.t(.exportReady)).font(.subheadline)
         }
         .padding(14)
         .background(Color.alehaGreen.opacity(0.1))
@@ -433,6 +435,7 @@ struct DataExportSheet: View {
 
 // MARK: - Share App Sheet
 struct ShareAppSheet: View {
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.dismiss) var dismiss
 
     private let shareText = "Assalamu Alaikum! I've been using PrayerDaily for prayer tracking & Quran reading — beautiful and super helpful. Highly recommend it!"
@@ -451,10 +454,10 @@ struct ShareAppSheet: View {
                 }
                 .padding(AppTheme.screenPadding)
             }
-            .navigationTitle("Share PrayerDaily")
+            .navigationTitle(localization.t(.shareAppTitle))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
+                ToolbarItem(placement: .topBarTrailing) { Button(localization.t(.commonDone)) { dismiss() } }
             }
         }
     }
@@ -473,8 +476,8 @@ struct ShareAppSheet: View {
 
     private var shareContent: some View {
         VStack(spacing: 8) {
-            Text("Share with Friends").font(.title3.weight(.bold))
-            Text("Help your friends build better habits with PrayerDaily.")
+            Text(localization.t(.shareWithFriends)).font(.title3.weight(.bold))
+            Text(localization.t(.shareDescription))
                 .font(.subheadline).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
@@ -482,7 +485,7 @@ struct ShareAppSheet: View {
 
     private var shareButton: some View {
         Button { presentNativeShare() } label: {
-            Label("Share PrayerDaily", systemImage: "square.and.arrow.up")
+            Label(localization.t(.sharePrayerDaily), systemImage: "square.and.arrow.up")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
@@ -494,9 +497,9 @@ struct ShareAppSheet: View {
 
     private var inviteOptions: some View {
         HStack(spacing: 16) {
-            inviteChip(icon: "message.fill", label: "Message", color: Color.alehaGreen)
-            inviteChip(icon: "envelope.fill", label: "Email", color: Color.alehaAmber)
-            inviteChip(icon: "link", label: "Copy Link", color: Color.alehaDarkGreen)
+            inviteChip(icon: "message.fill", label: localization.t(.shareMessage), color: Color.alehaGreen)
+            inviteChip(icon: "envelope.fill", label: localization.t(.shareEmail), color: Color.alehaAmber)
+            inviteChip(icon: "link", label: localization.t(.shareCopyLink), color: Color.alehaDarkGreen)
         }
     }
 
@@ -532,6 +535,7 @@ struct ShareAppSheet: View {
 
 // MARK: - About PrayerDaily Sheet
 struct AboutAlehaSheet: View {
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
 
@@ -545,16 +549,16 @@ struct AboutAlehaSheet: View {
                     infoBlock
                     websiteButton
                     Spacer()
-                    Text("Made with care for the Muslim community")
+                    Text(localization.t(.commonMadeWith))
                         .font(.caption).foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
                 .padding(AppTheme.screenPadding)
             }
-            .navigationTitle("About PrayerDaily")
+            .navigationTitle(localization.t(.aboutPrayerdaily))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
+                ToolbarItem(placement: .topBarTrailing) { Button(localization.t(.commonDone)) { dismiss() } }
             }
         }
     }
@@ -574,9 +578,9 @@ struct AboutAlehaSheet: View {
     private var infoBlock: some View {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
         return VStack(spacing: 8) {
-            Text("PrayerDaily").font(.largeTitle.weight(.bold))
-            Text("Version \(version)").font(.subheadline).foregroundStyle(.secondary)
-            Text("Your companion for prayer, Quran reading, and daily remembrance — designed to make Islamic practice beautiful and accessible.")
+            Text(localization.t(.aboutPrayerdaily)).font(.largeTitle.weight(.bold))
+            Text("\(localization.t(.commonVersion)) \(version)").font(.subheadline).foregroundStyle(.secondary)
+            Text(localization.t(.aboutDescription))
                 .font(.subheadline).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.top, 4)

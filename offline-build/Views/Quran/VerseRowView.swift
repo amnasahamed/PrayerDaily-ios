@@ -15,6 +15,7 @@ struct VerseRowView: View {
 
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.arabicFontSize) private var arabicFontSize
+    @EnvironmentObject var localization: LocalizationManager
     @State private var showShareSheet = false
     @State private var shareItems: [Any] = []
 
@@ -86,16 +87,16 @@ struct VerseRowView: View {
     // MARK: - Action Bar
     private var actionBar: some View {
         HStack(spacing: 0) {
-            actionButton(icon: playIcon, tint: isCurrentlyPlaying ? Color.alehaAmber : iconTint, action: onPlay, label: isCurrentlyPlaying ? (isPaused ? "Resume audio" : "Pause audio") : "Play audio")
+            actionButton(icon: playIcon, tint: isCurrentlyPlaying ? Color.alehaAmber : iconTint, action: onPlay, label: isCurrentlyPlaying ? (isPaused ? localization.t(.verseResumeAudio) : localization.t(.versePauseAudio)) : localization.t(.versePlayAudio))
             if let tafsir = onTafsir {
-                actionButton(icon: "doc.text.magnifyingglass", tint: Color.alehaSaffron, action: tafsir, label: "View tafsir")
+                actionButton(icon: "doc.text.magnifyingglass", tint: Color.alehaSaffron, action: tafsir, label: localization.t(.verseViewTafsir))
             }
-            actionButton(icon: "square.and.arrow.up", tint: iconTint, action: shareAyah, label: "Share verse")
+            actionButton(icon: "square.and.arrow.up", tint: iconTint, action: shareAyah, label: localization.t(.verseShareVerse))
             actionButton(
                 icon: isBookmarked ? "bookmark.fill" : "bookmark",
                 tint: isBookmarked ? Color.alehaAmber : iconTint,
                 action: onBookmark,
-                label: isBookmarked ? "Remove bookmark" : "Add bookmark"
+                label: isBookmarked ? localization.t(.verseRemoveBookmark) : localization.t(.verseAddBookmark)
             )
             Spacer()
         }

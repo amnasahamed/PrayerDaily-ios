@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct OfflineContentView: View {
+    @EnvironmentObject var localization: LocalizationManager
     @State private var cachedIds: Set<Int> = []
     @State private var downloadingId: Int? = nil
     @State private var removingId: Int? = nil
@@ -33,16 +34,16 @@ struct OfflineContentView: View {
                 .padding(.bottom, 120)
             }
         }
-        .navigationTitle("Offline Content")
+        .navigationTitle(localization.t(.offlineTitle))
         .navigationBarTitleDisplayMode(.large)
         .modifier(AlehaNavStyle())
         .onAppear { refreshState() }
-        .confirmationDialog("Clear all offline data?", isPresented: $showClearConfirm, titleVisibility: .visible) {
-            Button("Clear All", role: .destructive) {
+        .confirmationDialog(localization.t(.offlineClearConfirmTitle), isPresented: $showClearConfirm, titleVisibility: .visible) {
+            Button(localization.t(.offlineClearAll), role: .destructive) {
                 cache.clearCache()
                 refreshState()
             }
-            Button("Cancel", role: .cancel) {}
+            Button(localization.t(.commonCancel), role: .cancel) {}
         }
     }
 
@@ -55,7 +56,7 @@ struct OfflineContentView: View {
     private var storageCard: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Text("Storage Used").font(.headline.weight(.bold))
+                Text(localization.t(.offlineStorageUsed)).font(.headline.weight(.bold))
                 Spacer()
                 Text(cacheSize)
                     .font(.subheadline.weight(.semibold))
@@ -66,11 +67,11 @@ struct OfflineContentView: View {
                 .tint(Color.alehaGreen)
                 .scaleEffect(x: 1, y: 1.6, anchor: .center)
             HStack {
-                Text("\(cachedIds.count) of \(featured.count) surahs saved")
+                Text("\(cachedIds.count) of \(featured.count) " + localization.t(.offlineSurahsSaved))
                     .font(.caption).foregroundStyle(.secondary)
                 Spacer()
                 if !cachedIds.isEmpty {
-                    Button("Clear All") { showClearConfirm = true }
+                    Button(localization.t(.offlineClearAll)) { showClearConfirm = true }
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.red)
                 }
@@ -97,7 +98,7 @@ struct OfflineContentView: View {
     private var offlineNote: some View {
         HStack(spacing: 10) {
             Image(systemName: "info.circle.fill").foregroundStyle(Color.alehaAmber)
-            Text("Saved surahs are available without internet. Open a surah in the Quran tab to cache it automatically.")
+            Text(localization.t(.offlineSavedInfo))
                 .font(.caption).foregroundStyle(.secondary)
         }
         .padding(14)
@@ -144,7 +145,7 @@ struct OfflineContentView: View {
             } label: {
                 HStack(spacing: 4) {
                     Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.alehaGreen)
-                    Text("Saved").font(.caption.weight(.medium)).foregroundStyle(Color.alehaGreen)
+                    Text(localization.t(.offlineSaved)).font(.caption.weight(.medium)).foregroundStyle(Color.alehaGreen)
                 }
             }
             .buttonStyle(.plain)
@@ -164,7 +165,7 @@ struct OfflineContentView: View {
             } label: {
                 HStack(spacing: 4) {
                     Image(systemName: "arrow.down.circle").foregroundStyle(Color.alehaAmber)
-                    Text("Save").font(.caption.weight(.medium)).foregroundStyle(Color.alehaAmber)
+                    Text(localization.t(.offlineDownload)).font(.caption.weight(.medium)).foregroundStyle(Color.alehaAmber)
                 }
             }
             .buttonStyle(.plain)

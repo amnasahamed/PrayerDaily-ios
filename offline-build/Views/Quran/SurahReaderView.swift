@@ -16,6 +16,7 @@ struct SurahReaderView: View {
     @Environment(\.translationEnabled) private var translationEnabled
     @Environment(\.transliterationEnabled) private var transliterationEnabled
     @EnvironmentObject private var network: NetworkMonitor
+    @EnvironmentObject var localization: LocalizationManager
 
     private var showArabic: Bool { readingMode != .translationOnly }
     private var showTranslation: Bool {
@@ -67,7 +68,7 @@ struct SurahReaderView: View {
         VStack(spacing: 16) {
             Spacer()
             ProgressView().scaleEffect(1.2)
-            Text("Loading Surah…").font(.subheadline).foregroundStyle(.secondary)
+            Text(localization.t(.quranLoadingSurah)).font(.subheadline).foregroundStyle(.secondary)
             Spacer()
         }
     }
@@ -78,7 +79,7 @@ struct SurahReaderView: View {
             Image(systemName: "wifi.exclamationmark")
                 .font(.system(size: 44))
                 .foregroundStyle(Color.alehaAmber)
-            Text("Connection Issue")
+            Text(localization.t(.quranConnectionIssue))
                 .font(.headline.weight(.semibold))
             Text(msg)
                 .font(.subheadline)
@@ -89,7 +90,7 @@ struct SurahReaderView: View {
                 Button {
                     Task { await loadVerses() }
                 } label: {
-                    Label("Retry", systemImage: "arrow.clockwise")
+                    Label(localization.t(.quranRetry), systemImage: "arrow.clockwise")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.white)
                         .padding(.horizontal, 24)
@@ -154,14 +155,14 @@ struct SurahReaderView: View {
                         .multilineTextAlignment(.center)
 
                     if readingMode == .both || readingMode == .translationOnly {
-                        Text("In the name of Allah, the Most Gracious, the Most Merciful")
+                        Text(localization.t(.surahBismillahTranslation))
                             .font(.caption)
                             .foregroundStyle(isFocusMode ? .white.opacity(0.6) : .secondary)
                     }
 
                     HStack(spacing: 12) {
                         if isCached {
-                            Label("Offline", systemImage: "arrow.down.circle.fill")
+                            Label(localization.t(.quranOffline), systemImage: "arrow.down.circle.fill")
                                 .font(.caption2.weight(.semibold))
                                 .foregroundStyle(Color.alehaGreen)
                                 .padding(.horizontal, 8)
@@ -181,7 +182,7 @@ struct SurahReaderView: View {
     }
 
     private var surahTypeBadge: some View {
-        Text("\(surah.type) • \(surah.verses) Ayahs")
+        Text("\(surah.type) • \(surah.verses) \(localization.t(.quranAyahs))")
             .font(.caption2.weight(.medium))
             .foregroundStyle(.secondary)
             .padding(.horizontal, 8)
@@ -225,7 +226,7 @@ struct SurahReaderView: View {
     private var offlineBanner: some View {
         HStack(spacing: 8) {
             Image(systemName: "wifi.slash").font(.caption2.weight(.bold))
-            Text("You're offline — connect to load this surah")
+            Text(localization.t(.quranOfflineBanner))
                 .font(.caption2.weight(.medium))
         }
         .foregroundStyle(.white)
@@ -245,7 +246,7 @@ struct SurahReaderView: View {
             isCached = OfflineCacheService.shared.isSurahCached(surah.id)
             isLoading = false
         } catch {
-            errorMessage = "Unable to load verses.\nPlease check your internet connection."
+            errorMessage = localization.t(.quranUnableLoad)
             isLoading = false
         }
     }

@@ -3,6 +3,7 @@ import SwiftUI
 struct ReadingProgressCard: View {
     @StateObject private var store = QuranStore.shared
     @Environment(\.colorScheme) var cs
+    @EnvironmentObject var localization: LocalizationManager
     @State private var animateRing = false
 
     private var lastSurahName: String {
@@ -15,7 +16,7 @@ struct ReadingProgressCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Progress", systemImage: "book.fill")
+            Label(localization.t(.homeProgress), systemImage: "book.fill")
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             ZStack {

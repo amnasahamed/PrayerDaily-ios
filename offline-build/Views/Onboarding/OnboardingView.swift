@@ -10,6 +10,9 @@ private struct OnboardingPage {
     let accentColor: Color
     var isNotifications: Bool = false
     var isProfile: Bool = false
+    var isLanguage: Bool = false
+    var isAppearance: Bool = false
+    var isWelcome: Bool = false
 }
 
 // MARK: - Onboarding View
@@ -24,6 +27,8 @@ struct OnboardingView: View {
     @AppStorage("profileName")   private var profileName: String = "Muslim"
     @AppStorage("profileMadhab") private var profileMadhab: String = "Hanafi"
     @AppStorage("notificationsEnabled") private var notificationsEnabled: Bool = false
+    @AppStorage("appLanguage") private var appLanguage: String = "en"
+    @AppStorage("appearanceMode") private var appearanceMode: String = "system"
     @Environment(\.colorScheme) var cs: ColorScheme
 
     private let pages: [OnboardingPage] = [
@@ -32,7 +37,8 @@ struct OnboardingView: View {
             iconColors: [Color.alehaGreen, Color.alehaDarkGreen],
             title: "Welcome to PrayerDaily",
             subtitle: "Your companion for prayer, Quran, and daily remembrance — beautiful and always with you.",
-            accentColor: .alehaGreen
+            accentColor: .alehaGreen,
+            isWelcome: true
         ),
         OnboardingPage(
             icon: "clock.badge.checkmark.fill",
@@ -57,10 +63,26 @@ struct OnboardingView: View {
             isNotifications: true
         ),
         OnboardingPage(
+            icon: "character.book.closed.fill",
+            iconColors: [Color.alehaGreen, Color.alehaDarkGreen],
+            title: "Choose Your Language",
+            subtitle: "PrayerDaily works beautifully in English and Malayalam.",
+            accentColor: .alehaGreen,
+            isLanguage: true
+        ),
+        OnboardingPage(
+            icon: "paintpalette.fill",
+            iconColors: [Color.alehaAmber, Color.alehaDarkGreen],
+            title: "Pick Your Theme",
+            subtitle: "Light, dark, or follow your system settings.",
+            accentColor: .alehaAmber,
+            isAppearance: true
+        ),
+        OnboardingPage(
             icon: "person.crop.circle.fill",
             iconColors: [Color.alehaGreen, Color.alehaDarkGreen],
-            title: "Personalise for You",
-            subtitle: "Set your name and madhab so prayer times and Asr calculations are tailored to your practice.",
+            title: "Almost There",
+            subtitle: "Set your name and madhab to personalise your experience.",
             accentColor: .alehaGreen,
             isProfile: true
         ),
@@ -98,6 +120,8 @@ struct OnboardingView: View {
             iconBubble(page: page)
             textBlock(page: page)
             if page.isNotifications { notificationsPanel(page: page) }
+            if page.isLanguage      { languagePicker(page: page) }
+            if page.isAppearance    { appearancePicker(page: page) }
             if page.isProfile       { profileForm(page: page) }
             Spacer()
         }
@@ -105,24 +129,44 @@ struct OnboardingView: View {
     }
 
     // MARK: - Icon Bubble
+    @ViewBuilder
     private func iconBubble(page: OnboardingPage) -> some View {
-        let iconColors = adaptiveIconColors(for: page)
-        return ZStack {
-            Circle()
-                .fill(LinearGradient(colors: iconColors.map { $0.opacity(0.18) },
-                                     startPoint: .topLeading, endPoint: .bottomTrailing))
-                .frame(width: 130, height: 130)
-            Circle()
-                .fill(LinearGradient(colors: iconColors,
-                                     startPoint: .topLeading, endPoint: .bottomTrailing))
-                .frame(width: 96, height: 96)
-                .shadow(color: iconColors.first?.opacity(0.4) ?? .clear, radius: 20, y: 8)
-            Image(systemName: page.icon)
-                .font(.system(size: 42, weight: .semibold))
-                .foregroundStyle(.white)
+        if page.isWelcome {
+            // Show the app logo on the welcome page
+            ZStack {
+                Circle()
+                    .fill(LinearGradient(
+                        colors: [Color(red: 0.03, green: 0.25, blue: 0.15), Color(red: 0.02, green: 0.12, blue: 0.08)],
+                        startPoint: .topLeading, endPoint: .bottomTrailing
+                    ))
+                    .frame(width: 130, height: 130)
+                Image("AppLogo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 80, height: 80)
+                    .clipShape(Circle())
+            }
+            .scaleEffect(appeared ? 1 : 0.7)
+            .opacity(appeared ? 1 : 0)
+        } else {
+            let iconColors = adaptiveIconColors(for: page)
+            ZStack {
+                Circle()
+                    .fill(LinearGradient(colors: iconColors.map { $0.opacity(0.18) },
+                                         startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 130, height: 130)
+                Circle()
+                    .fill(LinearGradient(colors: iconColors,
+                                         startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 96, height: 96)
+                    .shadow(color: iconColors.first?.opacity(0.4) ?? .clear, radius: 20, y: 8)
+                Image(systemName: page.icon)
+                    .font(.system(size: 42, weight: .semibold))
+                    .foregroundStyle(.white)
+            }
+            .scaleEffect(appeared ? 1 : 0.7)
+            .opacity(appeared ? 1 : 0)
         }
-        .scaleEffect(appeared ? 1 : 0.7)
-        .opacity(appeared ? 1 : 0)
     }
 
     // MARK: - Adaptive Icon Colors
@@ -144,7 +188,15 @@ struct OnboardingView: View {
             return cs == .dark
                 ? [Color(red: 0.70, green: 0.30, blue: 0.95), Color(red: 0.45, green: 0.12, blue: 0.70)]
                 : [Color(red: 0.55, green: 0.20, blue: 0.88), Color(red: 0.30, green: 0.05, blue: 0.60)]
-        case 4: // Personalise - Green
+        case 4: // Language - Green
+            return cs == .dark
+                ? [Color(red: 0.15, green: 0.55, blue: 0.35), Color(red: 0.08, green: 0.30, blue: 0.18)]
+                : [Color.alehaGreen, Color.alehaDarkGreen]
+        case 5: // Appearance - Amber
+            return cs == .dark
+                ? [Color(red: 0.85, green: 0.55, blue: 0.15), Color(red: 0.60, green: 0.35, blue: 0.05)]
+                : [Color.alehaAmber, Color(red: 0.80, green: 0.45, blue: 0.05)]
+        case 6: // Profile - Green
             return cs == .dark
                 ? [Color(red: 0.15, green: 0.55, blue: 0.35), Color(red: 0.08, green: 0.30, blue: 0.18)]
                 : [Color.alehaGreen, Color.alehaDarkGreen]
@@ -218,6 +270,76 @@ struct OnboardingView: View {
         (icon: "book.closed.fill",   title: "Daily Verse",       subtitle: "A verse from the Quran every morning at 8 AM"),
         (icon: "moon.zzz.fill",      title: "Peaceful & Minimal", subtitle: "No marketing, no noise — only what matters"),
     ]}
+
+    // MARK: - Language Picker
+    @ViewBuilder
+    private func languagePicker(page: OnboardingPage) -> some View {
+        VStack(spacing: 12) {
+            ForEach([("English", "en", "🇬🇧"), ("മലയാളം", "ml", "🇮🇳")], id: \.1) { label, code, flag in
+                Button {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    appLanguage = code
+                } label: {
+                    HStack(spacing: 14) {
+                        Text(flag)
+                            .font(.title2)
+                        Text(label)
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(appLanguage == code ? .white : .primary)
+                        Spacer()
+                        if appLanguage == code {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.title3)
+                                .foregroundStyle(.white)
+                        }
+                    }
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 15)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(appLanguage == code ? Color.alehaGreen : Color(uiColor: .secondarySystemGroupedBackground))
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    // MARK: - Appearance Picker
+    @ViewBuilder
+    private func appearancePicker(page: OnboardingPage) -> some View {
+        VStack(spacing: 12) {
+            ForEach([("System", "system", "sparkles"), ("Light", "light", "sun.max.fill"), ("Dark", "dark", "moon.fill")], id: \.1) { label, mode, icon in
+                Button {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    appearanceMode = mode
+                } label: {
+                    HStack(spacing: 14) {
+                        Image(systemName: icon)
+                            .font(.title3)
+                            .foregroundStyle(appearanceMode == mode ? .white : .secondary)
+                            .frame(width: 28)
+                        Text(label)
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(appearanceMode == mode ? .white : .primary)
+                        Spacer()
+                        if appearanceMode == mode {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.title3)
+                                .foregroundStyle(.white)
+                        }
+                    }
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 15)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(appearanceMode == mode ? Color.alehaAmber : Color(uiColor: .secondarySystemGroupedBackground))
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
 
     // MARK: - Profile Form
     @ViewBuilder
@@ -382,6 +504,7 @@ struct OnboardingView: View {
             if !trimmed.isEmpty { profileName = trimmed }
             profileMadhab = madhab
             PrayerTimesService.shared.applyMadhab(madhab)
+            LocalizationManager.shared.currentLanguage = AppLanguage(rawValue: appLanguage) ?? .english
             withAnimation { hasCompletedOnboarding = true }
         } label: {
             Label("Get Started", systemImage: "arrow.right.circle.fill")

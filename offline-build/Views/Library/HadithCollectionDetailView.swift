@@ -16,7 +16,7 @@ struct HadithCollectionDetailView: View {
             .padding(.bottom, 120)
         }
         .background(Color(.systemBackground).ignoresSafeArea())
-        .navigationTitle(collection.name)
+        .navigationTitle(collection.localizedName(isMalayalam: localization.currentLanguage == .malayalam))
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color(.systemBackground), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
@@ -24,7 +24,8 @@ struct HadithCollectionDetailView: View {
 
     // MARK: - Header
     private var headerCard: some View {
-        VStack(spacing: 12) {
+        let isMalayalam = localization.currentLanguage == .malayalam
+        return VStack(spacing: 12) {
             ZStack {
                 Circle()
                     .fill(Color(collection.color).opacity(0.15))
@@ -36,12 +37,12 @@ struct HadithCollectionDetailView: View {
             Text(collection.arabicName)
                 .font(.title3)
                 .foregroundStyle(Color(collection.color))
-            Text(collection.name)
+            Text(collection.localizedName(isMalayalam: isMalayalam))
                 .font(.title2.weight(.bold))
-            Text(collection.author)
+            Text(collection.localizedAuthor(isMalayalam: isMalayalam))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-            Text(collection.description)
+            Text(collection.localizedDescription(isMalayalam: isMalayalam))
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -116,13 +117,14 @@ struct ChapterSection: View {
     }
 
     private var chapterHeader: some View {
-        Button(action: onTap) {
+        let isMalayalam = localization.currentLanguage == .malayalam
+        return Button(action: onTap) {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(chapter.arabicTitle)
                         .font(.caption)
                         .foregroundStyle(Color.alehaGreen)
-                    Text(chapter.title)
+                    Text(chapter.localizedTitle(isMalayalam: isMalayalam))
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.primary)
                     Text("\(chapter.hadiths.count) \(localization.t(.hadithTitle))")
@@ -145,6 +147,11 @@ struct HadithRowView: View {
     let hadith: HadithEntry
     @State private var showFull = false
     @AppStorage("bookmarkedHadiths") private var bookmarkedHadiths: String = ""
+    @EnvironmentObject var localization: LocalizationManager
+
+    private var isMalayalam: Bool {
+        localization.currentLanguage == .malayalam
+    }
 
     private var isBookmarked: Bool {
         bookmarkedHadiths.components(separatedBy: ",").contains(hadith.reference)
@@ -162,7 +169,7 @@ struct HadithRowView: View {
     }
 
     private func shareHadith() {
-        let text = "\(hadith.arabic)\n\n\(hadith.english)\n\n— \(hadith.reference)"
+        let text = "\(hadith.arabic)\n\n\(hadith.localizedText(isMalayalam: isMalayalam))\n\n— \(hadith.reference)"
         let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let root = scene.windows.first?.rootViewController {
@@ -190,12 +197,19 @@ struct HadithRowView: View {
                 .padding(.vertical, 3)
                 .background(Color.alehaGreen)
                 .clipShape(Capsule())
-            Text(hadith.narrator)
+            Text(formatNarrator(hadith.localizedNarrator(isMalayalam: isMalayalam)))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Spacer()
-            GradeBadge(grade: hadith.grade)
+            GradeBadge(grade: hadith.localizedGrade(isMalayalam: isMalayalam), isMalayalam: isMalayalam)
         }
+    }
+
+    private func formatNarrator(_ narrator: String) -> String {
+        if isMalayalam {
+            return narrator.replacingOccurrences(of: "(RA)", with: "(റഅ)")
+        }
+        return narrator
     }
 
     private var arabicText: some View {
@@ -208,7 +222,7 @@ struct HadithRowView: View {
     }
 
     private var englishText: some View {
-        Text(hadith.english)
+        Text(hadith.localizedText(isMalayalam: isMalayalam))
             .font(.subheadline)
             .foregroundStyle(.primary)
             .lineLimit(showFull ? nil : 3)
@@ -237,10 +251,11 @@ struct HadithRowView: View {
 // MARK: - Grade Badge
 struct GradeBadge: View {
     let grade: String
+    let isMalayalam: Bool
     private var color: Color {
         switch grade {
-        case "Sahih": return .green
-        case "Hasan": return .orange
+        case "Sahih", "സഹീഹ്": return .green
+        case "Hasan", "ഹസൻ": return .orange
         default: return .gray
         }
     }

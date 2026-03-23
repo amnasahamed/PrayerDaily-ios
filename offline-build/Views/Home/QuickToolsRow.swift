@@ -17,15 +17,15 @@ struct QuickToolsRow: View {
     }
 
     private func makeTools() -> [QuickTool] {[
-        QuickTool(id: "qibla",  icon: "location.north.fill",  label: "Qibla",
+        QuickTool(id: "qibla",  icon: "location.north.fill",  labelKey: .quickToolQibla,
                   accent: Color.alehaGreen,    subtitle: nil),
-        QuickTool(id: "hijri",  icon: "moon.stars.fill",      label: "Hijri Calendar",
+        QuickTool(id: "hijri",  icon: "moon.stars.fill",      labelKey: .quickToolHijriCalendar,
                   accent: Color(red: 0.42, green: 0.28, blue: 0.82), subtitle: service.hijriDateShort),
-        QuickTool(id: "dhikr",  icon: "hand.raised.fill",     label: "Dhikr Counter",
+        QuickTool(id: "dhikr",  icon: "hand.raised.fill",     labelKey: .quickToolDhikrCounter,
                   accent: Color.alehaAmber,    subtitle: nil),
-        QuickTool(id: "quran",  icon: "book.fill",            label: "Quran",
+        QuickTool(id: "quran",  icon: "book.fill",            labelKey: .quickToolQuran,
                   accent: Color(red: 0.18, green: 0.55, blue: 0.42), subtitle: nil),
-        QuickTool(id: "duas",   icon: "hands.sparkles.fill",  label: "Duas",
+        QuickTool(id: "duas",   icon: "hands.sparkles.fill",  labelKey: .quickToolDuas,
                   accent: Color(red: 0.82, green: 0.38, blue: 0.20), subtitle: nil),
     ]}
 }
@@ -34,7 +34,7 @@ struct QuickToolsRow: View {
 struct QuickTool: Identifiable {
     let id: String
     let icon: String
-    let label: String
+    let labelKey: LocalizedKey
     let accent: Color
     let subtitle: String?
 }
@@ -78,7 +78,7 @@ private struct ToolGridCard: View {
 
             // Labels
             VStack(alignment: .leading, spacing: 2) {
-                Text(tool.label)
+                Text(LocalizationManager.shared.t(tool.labelKey))
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundStyle(.primary)
@@ -131,11 +131,12 @@ private struct ToolGridCard: View {
 // MARK: - Dhikr Wrapper
 private struct DhikrSheetWrapper: View {
     @StateObject private var store = SalahStore()
+    @EnvironmentObject var localization: LocalizationManager
     var body: some View {
         NavigationStack {
             DhikrCounterView()
                 .environmentObject(store)
-                .navigationTitle("Dhikr")
+                .navigationTitle(localization.t(.dhikrTitle))
                 .navigationBarTitleDisplayMode(.inline)
                 .sheetDismissButton()
                 .toolbarBackground(.hidden, for: .navigationBar)
@@ -146,6 +147,7 @@ private struct DhikrSheetWrapper: View {
 // MARK: - Quran Quick Sheet
 private struct QuranQuickSheet: View {
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var localization: LocalizationManager
     private let featured = QuranData.allSurahs
 
     var body: some View {
@@ -174,7 +176,7 @@ private struct QuranQuickSheet: View {
                     }
                 }
             }
-            .navigationTitle("Quran")
+            .navigationTitle(localization.t(.quranTitle))
             .navigationBarTitleDisplayMode(.inline)
             .sheetDismissButton()
         }
@@ -185,6 +187,7 @@ private struct QuranQuickSheet: View {
 private struct HijriDateSheet: View {
     let hijriDate: String
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
         NavigationStack {
@@ -192,9 +195,9 @@ private struct HijriDateSheet: View {
                 Image(systemName: "moon.stars.fill")
                     .font(.system(size: 56, weight: .semibold))
                     .foregroundStyle(Color.alehaAmber)
-                Text("Hijri Date")
+                Text(localization.t(.hijriDate))
                     .font(.title2.weight(.bold))
-                Text(hijriDate.isEmpty ? "Loading…" : hijriDate)
+                Text(hijriDate.isEmpty ? localization.t(.hijriLoading) : hijriDate)
                     .font(.title3).foregroundStyle(Color.alehaGreen)
                     .multilineTextAlignment(.center).padding(.horizontal)
                 Text(gregorianDate)
@@ -202,7 +205,7 @@ private struct HijriDateSheet: View {
                 Spacer()
             }
             .padding(.top, 40)
-            .navigationTitle("Islamic Calendar")
+            .navigationTitle(localization.t(.libraryIslamicCalendar))
             .navigationBarTitleDisplayMode(.inline)
             .sheetDismissButton()
         }
@@ -217,6 +220,7 @@ private struct HijriDateSheet: View {
 struct DuasCategorySheet: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var cs
+    @EnvironmentObject var localization: LocalizationManager
     @State private var selectedCategory: DuaCategory? = nil
     private let categories = DuaDatabase.all
 
@@ -265,7 +269,7 @@ struct DuasCategorySheet: View {
             }
             .scrollBounceBehavior(.basedOnSize)
             .background(Color(.systemGroupedBackground))
-            .navigationTitle("Duas")
+            .navigationTitle(localization.t(.duaTitle))
             .navigationBarTitleDisplayMode(.inline)
             .modifier(AlehaNavStyle())
             .sheetDismissButton()

@@ -52,6 +52,7 @@ struct SurahListView: View {
                 $0.nameEnglish.localizedCaseInsensitiveContains(searchText) ||
                 $0.nameArabic.contains(searchText) ||
                 $0.nameTransliteration.localizedCaseInsensitiveContains(searchText) ||
+                $0.nameMalayalam.localizedCaseInsensitiveContains(searchText) ||
                 "\($0.id)" == searchText
             }
         }
@@ -102,7 +103,7 @@ struct SurahListView: View {
         let surahId = store.lastRead?.surahId ?? 1
         let verseNum = store.lastRead?.verse ?? 1
         let surahInfo = QuranData.allSurahs.first { $0.id == surahId }
-        let surahName = surahInfo?.nameEnglish ?? "Al-Fatihah"
+        let surahName = surahInfo?.localizedName(isMalayalam: localization.currentLanguage == .malayalam) ?? "Al-Fatihah"
         let totalVerses = surahInfo?.verses ?? 7
         let pct = store.progress(for: surahId)
         let overall = store.overallProgress
@@ -313,7 +314,7 @@ struct SurahRowView: View {
 
     private var surahInfo: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(surah.nameEnglish)
+            Text(surah.localizedName(isMalayalam: localization.currentLanguage == .malayalam))
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.primary)
             HStack(spacing: 5) {

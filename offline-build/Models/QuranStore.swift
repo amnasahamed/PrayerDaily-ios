@@ -13,6 +13,11 @@ struct SurahInfo: Identifiable, Hashable {
     let verses: Int
     let type: String
     let juz: Int
+    let nameMalayalam: String
+
+    func localizedName(isMalayalam: Bool) -> String {
+        isMalayalam ? nameMalayalam : nameEnglish
+    }
 }
 
 // MARK: - Verse

@@ -3,6 +3,11 @@ import SwiftUI
 struct HadithCollectionCard: View {
     let collection: HadithCollection
     @Environment(\.colorScheme) var cs
+    @EnvironmentObject var localization: LocalizationManager
+
+    private var isMalayalam: Bool {
+        localization.currentLanguage == .malayalam
+    }
 
     var body: some View {
         HStack(spacing: 14) {
@@ -33,11 +38,11 @@ struct HadithCollectionCard: View {
             Text(collection.arabicName)
                 .font(.caption)
                 .foregroundStyle(Color(collection.color))
-            Text(collection.name)
+            Text(collection.localizedName(isMalayalam: isMalayalam))
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.primary)
             HStack(spacing: 6) {
-                Text(collection.author)
+                Text(collection.localizedAuthor(isMalayalam: isMalayalam))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Text("•")
@@ -59,7 +64,7 @@ struct HadithCollectionCard: View {
     }
 
     private var previewLine: String? {
-        let first = collection.chapters.first?.hadiths.first?.english
+        let first = collection.chapters.first?.hadiths.first?.localizedText(isMalayalam: isMalayalam)
         guard let text = first else { return nil }
         let words = text.split(separator: " ").prefix(8).joined(separator: " ")
         return "\"\(words)…\""

@@ -63,7 +63,7 @@ struct LibraryView: View {
             selectedCollectionId = lastHadithCollectionId
         } label: {
             ContinueReadingCard(
-                collection: lastCollection?.name ?? "40 Hadith Nawawi",
+                collection: lastCollection,
                 hadithNumber: 1
             )
         }
@@ -181,13 +181,13 @@ struct LibraryView: View {
             }
             .buttonStyle(SpringPressStyle())
             NavigationLink(destination: EmergencyGuidesView()) {
-                LibraryGuideRow(icon: "person.fill.questionmark", title: "New Muslim Guide",
+                LibraryGuideRow(icon: "person.fill.questionmark", title: l10n.t(.libraryNewMuslimGuide),
                                 subtitle: l10n.t(.libraryNewMuslimGuideDesc),
                                 color: Color.alehaGreen)
             }
             .buttonStyle(SpringPressStyle())
             NavigationLink(destination: EmergencyGuidesView()) {
-                LibraryGuideRow(icon: "book.pages.fill", title: "Fiqh Basics",
+                LibraryGuideRow(icon: "book.pages.fill", title: l10n.t(.libraryFiqhBasics),
                                 subtitle: l10n.t(.libraryFiqhBasicsDesc),
                                 color: Color.alehaDarkGreen)
             }
@@ -210,10 +210,20 @@ struct LibraryView: View {
 
 // MARK: - Continue Reading Card
 struct ContinueReadingCard: View {
-    let collection: String
+    let collection: HadithCollection?
     let hadithNumber: Int
     @Environment(\.colorScheme) var cs
     @Environment(\.localization) var l10n
+    @EnvironmentObject var localization: LocalizationManager
+
+    private var isMalayalam: Bool {
+        localization.currentLanguage == .malayalam
+    }
+
+    private var collectionName: String {
+        guard let collection = collection else { return "40 Hadith Nawawi" }
+        return collection.localizedName(isMalayalam: isMalayalam)
+    }
 
     var body: some View {
         HStack(spacing: 14) {
@@ -229,7 +239,7 @@ struct ContinueReadingCard: View {
                 Text(l10n.t(.libraryContinueReading))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Color.alehaGreen)
-                Text("\(collection) #\(hadithNumber)")
+                Text("\(collectionName) #\(hadithNumber)")
                     .font(.subheadline.weight(.bold))
                 Text("\"Actions are judged by intentions...\"")
                     .font(.caption)

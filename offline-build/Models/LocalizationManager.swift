@@ -103,6 +103,13 @@ enum LocalizedKey {
     case libraryIslamicTools, libraryIslamicGuides, libraryQiblaDesc, libraryDhikrDesc
     case libraryHijriDesc, libraryPrayerTrackerDesc, libraryEmergencyGuidesDesc
     case libraryNewMuslimGuideDesc, libraryFiqhBasicsDesc
+    case libraryNewMuslimGuide, libraryFiqhBasics
+
+    // Quick Tools
+    case quickToolQibla, quickToolHijriCalendar, quickToolDhikrCounter, quickToolQuran, quickToolDuas
+
+    // Hijri Date
+    case hijriDate, hijriLoading
 
     // Qibla
     case qiblaTitle, qiblaDirection, qiblaFaceDirection, qiblaCalibrated
@@ -443,6 +450,19 @@ enum LocalizedKey {
         case .libraryEmergencyGuidesDesc: return "Janazah, Ruqyah & Nikah procedures"
         case .libraryNewMuslimGuideDesc: return "Essential knowledge for new Muslims"
         case .libraryFiqhBasicsDesc: return "Practical rulings for everyday life"
+        case .libraryNewMuslimGuide: return "New Muslim Guide"
+        case .libraryFiqhBasics: return "Fiqh Basics"
+
+        // Quick Tools
+        case .quickToolQibla: return "Qibla"
+        case .quickToolHijriCalendar: return "Hijri Calendar"
+        case .quickToolDhikrCounter: return "Dhikr Counter"
+        case .quickToolQuran: return "Quran"
+        case .quickToolDuas: return "Duas"
+
+        // Hijri Date
+        case .hijriDate: return "Hijri Date"
+        case .hijriLoading: return "Loading..."
 
         // Qibla
         case .qiblaTitle: return "Qibla"
@@ -1054,6 +1074,19 @@ enum LocalizedKey {
         case .libraryEmergencyGuidesDesc: return "ജനാസ, റുഖ്‌യ, നിക്കാഹ് നടപടിക്രമങ്ങൾ"
         case .libraryNewMuslimGuideDesc: return "പുതിയ മുസ്‌ലിംകൾക്കുള്ള അവശ്യ അറിവ്"
         case .libraryFiqhBasicsDesc: return "ദൈനംചില ജീവിതത്തിനുള്ള പരിശീലന വിധികൾ"
+        case .libraryNewMuslimGuide: return "പുതിയ മുസ്‌ലിം ഗൈഡ്"
+        case .libraryFiqhBasics: return "ഫിഖ്‌ഹ് അടിസ്ഥാനങ്ങൾ"
+
+        // Quick Tools
+        case .quickToolQibla: return "ഖിബ്‌ല"
+        case .quickToolHijriCalendar: return "ഹിജ്രി കലണ്ടർ"
+        case .quickToolDhikrCounter: return "സിക്ക് കൗണ്ടർ"
+        case .quickToolQuran: return "ഖുർആൻ"
+        case .quickToolDuas: return "ദുആ"
+
+        // Hijri Date
+        case .hijriDate: return "ഹിജ്രി തീയതി"
+        case .hijriLoading: return "ലോഡിംഗ്..."
 
         // Qibla
         case .qiblaTitle: return "ഖിബ്‌ല"

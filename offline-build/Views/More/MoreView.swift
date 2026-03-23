@@ -6,7 +6,6 @@ struct MoreView: View {
     @Environment(\.colorScheme) var cs
     @State private var showStreakHistory = false
     @State private var showDataExport = false
-    @State private var showShareApp = false
     @State private var showAbout = false
     @State private var showLanguagePicker = false
     @State private var showResetConfirm = false
@@ -17,7 +16,6 @@ struct MoreView: View {
                 VStack(spacing: 18) {
                     streakSnapshot
                     mainSection
-                    communitySection
                     footerSection
                 }
                 .padding(.horizontal, AppTheme.screenPadding)
@@ -31,7 +29,6 @@ struct MoreView: View {
             .modifier(AlehaNavStyle())
             .sheet(isPresented: $showStreakHistory) { StreakHistorySheet(store: store) }
             .sheet(isPresented: $showDataExport) { DataExportSheet(store: store) }
-            .sheet(isPresented: $showShareApp) { ShareAppSheet() }
             .sheet(isPresented: $showAbout) { AboutAlehaSheet() }
             .sheet(isPresented: $showLanguagePicker) { LanguagePickerSheet() }
         }
@@ -120,42 +117,6 @@ struct MoreView: View {
             .buttonStyle(.plain)
         }
         .groupedCard()
-    }
-
-    // MARK: - Community Section
-    private var communitySection: some View {
-        VStack(spacing: 0) {
-            sectionLabel(localization.t(.moreCommunity))
-            Button {
-                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                showShareApp = true
-            } label: {
-                MoreMenuRow(icon: "square.and.arrow.up", title: localization.t(.moreShare),
-                            subtitle: "Help others discover the app",
-                            color: Color.alehaGreen, showDivider: true)
-            }
-            .buttonStyle(.plain)
-
-            Button {
-                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                triggerInviteShare()
-            } label: {
-                MoreMenuRow(icon: "person.badge.plus", title: localization.t(.moreInvite),
-                            subtitle: "Send a personal invite to a friend",
-                            color: Color.alehaAmber, showDivider: false)
-            }
-            .buttonStyle(.plain)
-        }
-        .groupedCard()
-    }
-
-    private func triggerInviteShare() {
-        let msg = "Assalamu Alaikum! I've been using PrayerDaily for prayer tracking & Quran reading — it's beautiful and really helpful. Check it out!"
-        let av = UIActivityViewController(activityItems: [msg], applicationActivities: nil)
-        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let root = scene.windows.first?.rootViewController {
-            root.present(av, animated: true)
-        }
     }
 
     // MARK: - Footer

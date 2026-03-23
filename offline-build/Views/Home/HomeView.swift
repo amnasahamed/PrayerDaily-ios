@@ -4,34 +4,29 @@ struct HomeView: View {
     @StateObject private var prayerService = PrayerTimesService.shared
     @EnvironmentObject var salahStore: SalahStore
     @Environment(\.localization) var l10n
-    @State private var todayPrayers = SampleData.todayPrayers()
-    @State private var appeared = false
 
-    private var greetingTitle: String {
-        let h = Calendar.current.component(.hour, from: Date())
-        if h < 12 { return "Good Morning" }
-        if h < 17 { return "Good Afternoon" }
-        if h < 20 { return "Good Evening" }
-        return "Good Night"
-    }
+    @State private var todayPrayers = SampleData.todayPrayers()
 
     var body: some View {
         NavigationStack {
             ScrollView(.vertical, showsIndicators: false) {
-                LazyVStack(spacing: 20) {
-                    headerSection
-                    verseSection
+                LazyVStack(spacing: 28) {
                     prayerSection
+                    verseSection
                     quickToolsSection
                     guidesSection
                 }
                 .padding(.horizontal, AppTheme.screenPadding)
-                .padding(.top, 8)
                 .padding(.bottom, 100)
             }
-            .background(Color(.systemGroupedBackground).ignoresSafeArea())
+            .background(CalmingBackground())
             .navigationTitle("PrayerDaily")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showQibla) { NavigationStack { QiblaCompassView() } }
+            .sheet(isPresented: $showDhikr) { DhikrSheetWrapper() }
+            .sheet(isPresented: $showHijri) { NavigationStack { LibraryHijriView() } }
+            .sheet(isPresented: $showDuas) { DuasCategorySheet() }
+            .sheet(isPresented: $showQuran) { QuranQuickSheet() }
         }
         .onAppear {
             prayerService.requestLocation()
@@ -39,143 +34,13 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - Header Section
-    private var headerSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Greeting
-            VStack(alignment: .leading, spacing: 4) {
-                Text(greetingTitle)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.primary)
-                Text("السلام عليكم")
-                    .font(.title3)
-                    .fontWeight(.medium)
-                    .foregroundStyle(Color.alehaGreen)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            // Next prayer card
-            if let next = prayerService.nextPrayer {
-                nextPrayerBanner(next)
-            }
-
-            // Streak card
-            streakBanner
-        }
-        .padding(.top, 8)
-    }
-
-    private func nextPrayerBanner(_ next: PrayerTime) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: next.prayer.icon)
-                .font(.title2)
-                .foregroundStyle(Color.alehaGreen)
-                .frame(width: 50, height: 50)
-                .background(Color.alehaGreen.opacity(0.12))
-                .clipShape(Circle())
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Next Prayer")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Text(next.prayer.rawValue)
-                    .font(.headline)
-                    .fontWeight(.bold)
-                Text(next.timeString)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Spacer()
-
-            VStack(alignment: .trailing, spacing: 2) {
-                Text(next.time.timeIntervalSinceNow.formattedPrayerCountdown)
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundStyle(Color.alehaGreen)
-                Text("remaining")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(16)
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(Color.alehaGreen.opacity(0.2), lineWidth: 1)
-        )
-    }
-
-    private var streakBanner: some View {
-        HStack(spacing: 16) {
-            HStack(spacing: 8) {
-                Image(systemName: "flame.fill")
-                    .font(.title3)
-                    .foregroundStyle(Color.alehaAmber)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("\(salahStore.currentStreak)")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.primary)
-                    Text("Day Streak")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            Divider()
-                .frame(height: 40)
-
-            HStack(spacing: 8) {
-                Image(systemName: "calendar")
-                    .font(.title3)
-                    .foregroundStyle(Color.alehaGreen)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("\(weekTotal)/35")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.primary)
-                    Text("This Week")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            Spacer()
-
-            if qadaTotal > 0 {
-                HStack(spacing: 8) {
-                    Image(systemName: "moon.fill")
-                        .font(.title3)
-                        .foregroundStyle(Color.alehaSaffron)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("\(qadaTotal)")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .foregroundStyle(.primary)
-                        Text("Qada")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-        }
-        .padding(16)
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-    }
-
     // MARK: - Verse Section
     private var verseSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("Verse of the Day", systemImage: "sparkles")
-                .font(.headline)
-                .foregroundStyle(Color.alehaAmber)
+        VStack(alignment: .leading, spacing: 12) {
+            sectionHeader(icon: "sparkles", title: "Verse of the Day", color: .alehaAmber)
 
             let verse = DailyVerseService.shared.todaysVerse
-            return VerseShareCard(
+            VerseShareCard(
                 arabic: verse.arabic,
                 translation: verse.translation,
                 reference: verse.reference,
@@ -187,9 +52,7 @@ struct HomeView: View {
     // MARK: - Prayer Section
     private var prayerSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Today's Prayers", systemImage: "moon.stars.fill")
-                .font(.headline)
-                .foregroundStyle(Color.alehaGreen)
+            sectionHeader(icon: "moon.stars.fill", title: "Today's Prayers", color: .alehaGreen)
 
             PrayerTimelineCard(service: prayerService, prayers: $todayPrayers)
                 .environmentObject(salahStore)
@@ -199,20 +62,95 @@ struct HomeView: View {
     // MARK: - Quick Tools Section
     private var quickToolsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Quick Tools", systemImage: "bolt.fill")
-                .font(.headline)
-                .foregroundStyle(Color.alehaGreen)
+            sectionHeader(icon: "bolt.fill", title: "Quick Tools", color: .secondary)
 
-            QuickToolsRow(service: prayerService)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    ForEach(makeQuickTools()) { tool in
+                        QuickToolPill(tool: tool) {
+                            handleToolTap(tool)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private struct QuickToolPill: View {
+        let tool: QuickToolItem
+        let action: () -> Void
+        @State private var pressed = false
+
+        var body: some View {
+            Button(action: {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                action()
+            }) {
+                HStack(spacing: 7) {
+                    Image(systemName: tool.icon)
+                        .font(.system(size: 13, weight: .semibold))
+                    Text(tool.label)
+                        .font(.subheadline.weight(.medium))
+                }
+                .foregroundStyle(tool.accent)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(tool.accent.opacity(0.12))
+                .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .scaleEffect(pressed ? 0.94 : 1.0)
+            .animation(.spring(response: 0.22, dampingFraction: 0.62), value: pressed)
+        }
+    }
+
+    private struct QuickToolItem: Identifiable {
+        let id: String
+        let icon: String
+        let label: String
+        let accent: Color
+        let destination: QuickToolDestination
+    }
+
+    private enum QuickToolDestination {
+        case qibla, dhikr, hijri, duas, quran
+    }
+
+    private func makeQuickTools() -> [QuickToolItem] {
+        [
+            QuickToolItem(id: "qibla", icon: "location.north.fill", label: "Qibla",
+                          accent: .alehaGreen, destination: .qibla),
+            QuickToolItem(id: "hijri", icon: "moon.stars.fill", label: "Hijri",
+                          accent: .alehaAmber, destination: .hijri),
+            QuickToolItem(id: "dhikr", icon: "hand.raised.fill", label: "Dhikr",
+                          accent: .alehaSaffron, destination: .dhikr),
+            QuickToolItem(id: "quran", icon: "book.fill", label: "Quran",
+                          accent: .alehaGreen, destination: .quran),
+            QuickToolItem(id: "duas", icon: "hands.sparkles.fill", label: "Duas",
+                          accent: Color(red: 0.82, green: 0.38, blue: 0.20), destination: .duas),
+        ]
+    }
+
+    @State private var showQibla = false
+    @State private var showDhikr = false
+    @State private var showHijri = false
+    @State private var showDuas  = false
+    @State private var showQuran = false
+
+    private func handleToolTap(_ tool: QuickToolItem) {
+        switch tool.destination {
+        case .qibla:  showQibla = true
+        case .dhikr:  showDhikr = true
+        case .hijri:  showHijri = true
+        case .duas:   showDuas  = true
+        case .quran:  showQuran = true
         }
     }
 
     // MARK: - Guides Section
     private var guidesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Islamic Guides", systemImage: "book.closed.fill")
-                .font(.headline)
-                .foregroundStyle(Color.alehaGreen)
+            sectionHeader(icon: "book.closed.fill", title: "Islamic Guides", color: .secondary)
 
             IslamicGuidesSection()
         }
@@ -238,6 +176,67 @@ struct HomeView: View {
 
     private var qadaTotal: Int {
         salahStore.qadaEntries.reduce(0) { $0 + $1.count }
+    }
+
+    // MARK: - Section Header Helper
+    private func sectionHeader(icon: String, title: String, color: Color) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(color)
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(.secondary)
+            Spacer()
+        }
+    }
+
+    // MARK: - Quick Tool Sheet Wrappers
+    private struct DhikrSheetWrapper: View {
+        @StateObject private var store = SalahStore()
+        var body: some View {
+            NavigationStack {
+                DhikrCounterView()
+                    .environmentObject(store)
+                    .navigationTitle("Dhikr")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbarBackground(.hidden, for: .navigationBar)
+            }
+        }
+    }
+
+    private struct QuranQuickSheet: View {
+        private let featured = QuranData.allSurahs
+        var body: some View {
+            NavigationStack {
+                List(featured) { surah in
+                    NavigationLink(destination: SurahReaderView(surah: surah)) {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                    .fill(Color.alehaGreen.opacity(0.12))
+                                    .frame(width: 36, height: 36)
+                                Text("\(surah.id)")
+                                    .font(.system(size: 13, weight: .bold, design: .rounded))
+                                    .foregroundStyle(Color.alehaGreen)
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(surah.nameTransliteration)
+                                    .font(.subheadline.weight(.semibold))
+                                Text("\(surah.verses) verses · \(surah.type)")
+                                    .font(.caption).foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Text(surah.nameArabic)
+                                .font(.system(size: 17, design: .serif))
+                                .foregroundStyle(Color.alehaGreen)
+                        }
+                    }
+                }
+                .navigationTitle("Quran")
+                .navigationBarTitleDisplayMode(.inline)
+            }
+        }
     }
 }
 

@@ -37,7 +37,7 @@ struct HomeView: View {
     // MARK: - Verse Section
     private var verseSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(icon: "sparkles", title: "Verse of the Day", color: .alehaAmber)
+            sectionHeader(icon: "sparkles", title: LocalizationManager.shared.t(.homeVerseOfDay), color: .alehaAmber)
 
             let verse = DailyVerseService.shared.todaysVerse
             VerseShareCard(
@@ -52,7 +52,7 @@ struct HomeView: View {
     // MARK: - Prayer Section
     private var prayerSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(icon: "moon.stars.fill", title: "Today's Prayers", color: .alehaGreen)
+            sectionHeader(icon: "moon.stars.fill", title: LocalizationManager.shared.t(.homeTodayPrayers), color: .alehaGreen)
 
             PrayerTimelineCard(service: prayerService, prayers: $todayPrayers)
                 .environmentObject(salahStore)
@@ -62,7 +62,7 @@ struct HomeView: View {
     // MARK: - Quick Tools Section
     private var quickToolsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(icon: "bolt.fill", title: "Quick Tools", color: .secondary)
+            sectionHeader(icon: "bolt.fill", title: LocalizationManager.shared.t(.homeQuickTools), color: .secondary)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
@@ -150,7 +150,7 @@ struct HomeView: View {
     // MARK: - Guides Section
     private var guidesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(icon: "book.closed.fill", title: "Islamic Guides", color: .secondary)
+            sectionHeader(icon: "book.closed.fill", title: LocalizationManager.shared.t(.homeIslamicGuides), color: .secondary)
 
             IslamicGuidesSection()
         }

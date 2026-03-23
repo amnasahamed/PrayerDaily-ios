@@ -17,6 +17,8 @@ let guideIconAccentMap: [String: (icon: String, accent: Color)] = [
 
 // MARK: - Guide List
 struct EmergencyGuidesView: View {
+    @EnvironmentObject var localization: LocalizationManager
+
     var body: some View {
         ScrollView {
             VStack(spacing: 10) {
@@ -32,7 +34,7 @@ struct EmergencyGuidesView: View {
             .padding(.bottom, 120)
         }
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
-        .navigationTitle("Islamic Guides")
+        .navigationTitle(localization.t(.emergencyTitle))
         .navigationBarTitleDisplayMode(.large)
         .toolbarBackground(Color(.systemBackground), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
@@ -43,11 +45,13 @@ struct EmergencyGuidesView: View {
 struct GuideCard: View {
     let guide: EmergencyGuide
     @Environment(\.colorScheme) var cs
+    @EnvironmentObject var localization: LocalizationManager
 
     private var icon: String { guideIconAccentMap[guide.title]?.icon ?? guide.icon }
     private var accent: Color { guideIconAccentMap[guide.title]?.accent ?? .green }
     private var stepCount: Int { guide.sections.flatMap(\.steps).count }
     private var sectionCount: Int { guide.sections.count }
+    private var isMalayalam: Bool { localization.currentLanguage == .malayalam }
 
     var body: some View {
         HStack(spacing: 14) {
@@ -60,10 +64,10 @@ struct GuideCard: View {
                     .foregroundStyle(accent)
             }
             VStack(alignment: .leading, spacing: 3) {
-                Text(guide.title)
+                Text(guide.localizedTitle(isMalayalam: isMalayalam))
                     .font(.body.weight(.semibold))
                     .foregroundStyle(.primary)
-                Text(guide.subtitle)
+                Text(guide.localizedSubtitle(isMalayalam: isMalayalam))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)

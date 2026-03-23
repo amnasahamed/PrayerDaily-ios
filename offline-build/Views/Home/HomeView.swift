@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @StateObject private var prayerService = PrayerTimesService.shared
     @EnvironmentObject var salahStore: SalahStore
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.localization) var l10n
 
     @State private var todayPrayers = SampleData.todayPrayers()
@@ -37,7 +38,7 @@ struct HomeView: View {
     // MARK: - Verse Section
     private var verseSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(icon: "sparkles", title: LocalizationManager.shared.t(.homeVerseOfDay), color: .alehaAmber)
+            sectionHeader(icon: "sparkles", title: localization.t(.homeVerseOfDay), color: .alehaAmber)
 
             let verse = DailyVerseService.shared.todaysVerse
             VerseShareCard(
@@ -52,7 +53,7 @@ struct HomeView: View {
     // MARK: - Prayer Section
     private var prayerSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(icon: "moon.stars.fill", title: LocalizationManager.shared.t(.homeTodayPrayers), color: .alehaGreen)
+            sectionHeader(icon: "moon.stars.fill", title: localization.t(.homeTodayPrayers), color: .alehaGreen)
 
             PrayerTimelineCard(service: prayerService, prayers: $todayPrayers)
                 .environmentObject(salahStore)
@@ -62,12 +63,12 @@ struct HomeView: View {
     // MARK: - Quick Tools Section
     private var quickToolsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(icon: "bolt.fill", title: LocalizationManager.shared.t(.homeQuickTools), color: .secondary)
+            sectionHeader(icon: "bolt.fill", title: localization.t(.homeQuickTools), color: .secondary)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
                     ForEach(makeQuickTools()) { tool in
-                        QuickToolPill(tool: tool) {
+                        QuickToolPill(label: localization.t(tool.labelKey), icon: tool.icon, accent: tool.accent) {
                             handleToolTap(tool)
                         }
                     }
@@ -77,7 +78,9 @@ struct HomeView: View {
     }
 
     private struct QuickToolPill: View {
-        let tool: QuickToolItem
+        let label: String
+        let icon: String
+        let accent: Color
         let action: () -> Void
         @State private var pressed = false
 
@@ -87,15 +90,15 @@ struct HomeView: View {
                 action()
             }) {
                 HStack(spacing: 7) {
-                    Image(systemName: tool.icon)
+                    Image(systemName: icon)
                         .font(.system(size: 13, weight: .semibold))
-                    Text(tool.label)
+                    Text(label)
                         .font(.subheadline.weight(.medium))
                 }
-                .foregroundStyle(tool.accent)
+                .foregroundStyle(accent)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
-                .background(tool.accent.opacity(0.12))
+                .background(accent.opacity(0.12))
                 .clipShape(Capsule())
             }
             .buttonStyle(.plain)
@@ -107,7 +110,7 @@ struct HomeView: View {
     private struct QuickToolItem: Identifiable {
         let id: String
         let icon: String
-        let label: String
+        let labelKey: LocalizedKey
         let accent: Color
         let destination: QuickToolDestination
     }
@@ -118,15 +121,15 @@ struct HomeView: View {
 
     private func makeQuickTools() -> [QuickToolItem] {
         [
-            QuickToolItem(id: "qibla", icon: "location.north.fill", label: "Qibla",
+            QuickToolItem(id: "qibla", icon: "location.north.fill", labelKey: .quickToolQibla,
                           accent: .alehaGreen, destination: .qibla),
-            QuickToolItem(id: "hijri", icon: "moon.stars.fill", label: "Hijri",
+            QuickToolItem(id: "hijri", icon: "moon.stars.fill", labelKey: .quickToolHijriCalendar,
                           accent: .alehaAmber, destination: .hijri),
-            QuickToolItem(id: "dhikr", icon: "hand.raised.fill", label: "Dhikr",
+            QuickToolItem(id: "dhikr", icon: "hand.raised.fill", labelKey: .quickToolDhikrCounter,
                           accent: .alehaSaffron, destination: .dhikr),
-            QuickToolItem(id: "quran", icon: "book.fill", label: "Quran",
+            QuickToolItem(id: "quran", icon: "book.fill", labelKey: .quickToolQuran,
                           accent: .alehaGreen, destination: .quran),
-            QuickToolItem(id: "duas", icon: "hands.sparkles.fill", label: "Duas",
+            QuickToolItem(id: "duas", icon: "hands.sparkles.fill", labelKey: .quickToolDuas,
                           accent: Color(red: 0.82, green: 0.38, blue: 0.20), destination: .duas),
         ]
     }
@@ -150,7 +153,7 @@ struct HomeView: View {
     // MARK: - Guides Section
     private var guidesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(icon: "book.closed.fill", title: LocalizationManager.shared.t(.homeIslamicGuides), color: .secondary)
+            sectionHeader(icon: "book.closed.fill", title: localization.t(.homeIslamicGuides), color: .secondary)
 
             IslamicGuidesSection()
         }

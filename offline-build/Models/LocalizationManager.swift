@@ -107,6 +107,8 @@ enum LocalizedKey {
 
     // Quick Tools
     case quickToolQibla, quickToolHijriCalendar, quickToolDhikrCounter, quickToolQuran, quickToolDuas
+    case guideCategoryPurification, guideCategoryPrayer, guideCategoryWorship
+    case guideCategoryFinanceFiqh, guideCategorySupplications
 
     // Hijri Date
     case hijriDate, hijriLoading
@@ -459,6 +461,11 @@ enum LocalizedKey {
         case .quickToolDhikrCounter: return "Dhikr Counter"
         case .quickToolQuran: return "Quran"
         case .quickToolDuas: return "Duas"
+        case .guideCategoryPurification: return "PURIFICATION"
+        case .guideCategoryPrayer: return "PRAYER"
+        case .guideCategoryWorship: return "WORSHIP"
+        case .guideCategoryFinanceFiqh: return "FINANCE & FIQH"
+        case .guideCategorySupplications: return "SUPPLICATIONS"
 
         // Hijri Date
         case .hijriDate: return "Hijri Date"
@@ -1083,6 +1090,11 @@ enum LocalizedKey {
         case .quickToolDhikrCounter: return "സിക്ക് കൗണ്ടർ"
         case .quickToolQuran: return "ഖുർആൻ"
         case .quickToolDuas: return "ദുആ"
+        case .guideCategoryPurification: return "ശുദ്ധി"
+        case .guideCategoryPrayer: return "നമസ്കാരം"
+        case .guideCategoryWorship: return "ആരാധന"
+        case .guideCategoryFinanceFiqh: return "സാമ്പത്തികം & ഫിഖ്‌ഹ്"
+        case .guideCategorySupplications: return "ദുആ"
 
         // Hijri Date
         case .hijriDate: return "ഹിജ്രി തീയതി"

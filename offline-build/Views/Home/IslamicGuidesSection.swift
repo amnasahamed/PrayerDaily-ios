@@ -3,53 +3,66 @@ import SwiftUI
 // MARK: - Category Model
 private struct GuideCategory: Identifiable {
     let id: String
-    let title: String
+    let titleKey: LocalizedKey
     let guides: [EmergencyGuide]
 }
 
 // MARK: - Category assignment
-private let categoryMap: [String: String] = [
-    "Wudu (Ablution)":                "Purification",
-    "Ghusl (Ritual Bath)":            "Purification",
-    "Tayammum (Dry Ablution)":        "Purification",
-    "Salah (Prayer)":                 "Prayer",
-    "Janazah Prayer":                 "Prayer",
-    "Travel Prayer (Qasr)":           "Prayer",
-    "Ruqyah (Healing Recitation)":    "Supplications",
-    "Essential Duas":                 "Supplications",
-    "Fasting (Sawm)":                 "Worship",
-    "Zakat Calculation":              "Finance & Fiqh",
-    "Islamic Inheritance (Mirath)":   "Finance & Fiqh",
+private let categoryMap: [String: LocalizedKey] = [
+    "Wudu (Ablution)":                .guideCategoryPurification,
+    "Ghusl (Ritual Bath)":            .guideCategoryPurification,
+    "Tayammum (Dry Ablution)":        .guideCategoryPurification,
+    "Salah (Prayer)":                  .guideCategoryPrayer,
+    "Janazah Prayer":                  .guideCategoryPrayer,
+    "Travel Prayer (Qasr)":            .guideCategoryPrayer,
+    "Ruqyah (Healing Recitation)":    .guideCategorySupplications,
+    "Essential Duas":                  .guideCategorySupplications,
+    "Fasting (Sawm)":                  .guideCategoryWorship,
+    "Zakat Calculation":               .guideCategoryFinanceFiqh,
+    "Islamic Inheritance (Mirath)":    .guideCategoryFinanceFiqh,
 ]
 
-private let categoryOrder: [String] = ["Purification", "Prayer", "Worship", "Finance & Fiqh", "Supplications"]
+private let categoryOrder: [LocalizedKey] = [
+    .guideCategoryPurification,
+    .guideCategoryPrayer,
+    .guideCategoryWorship,
+    .guideCategoryFinanceFiqh,
+    .guideCategorySupplications,
+]
 
-private let categoryIcons: [String: String] = [
-    "Purification":    "drop.fill",
-    "Prayer":          "figure.stand",
-    "Worship":         "moon.stars.fill",
-    "Finance & Fiqh":  "banknote.fill",
-    "Supplications":   "hands.sparkles.fill",
+private let categoryIcons: [LocalizedKey: String] = [
+    .guideCategoryPurification:  "drop.fill",
+    .guideCategoryPrayer:        "figure.stand",
+    .guideCategoryWorship:       "moon.stars.fill",
+    .guideCategoryFinanceFiqh:  "banknote.fill",
+    .guideCategorySupplications: "hands.sparkles.fill",
 ]
 
 // MARK: - Main Section
 struct IslamicGuidesSection: View {
+    @EnvironmentObject var localization: LocalizationManager
+
     private var categories: [GuideCategory] {
-        var buckets: [String: [EmergencyGuide]] = [:]
+        var buckets: [LocalizedKey: [EmergencyGuide]] = [:]
         for guide in EmergencyGuideData.allGuides {
-            let cat = categoryMap[guide.title] ?? "Other"
+            let cat = categoryMap[guide.title] ?? .guideCategorySupplications
             buckets[cat, default: []].append(guide)
         }
-        return categoryOrder.compactMap { name in
-            guard let guides = buckets[name], !guides.isEmpty else { return nil }
-            return GuideCategory(id: name, title: name, guides: guides)
+        return categoryOrder.compactMap { key in
+            guard let guides = buckets[key], !guides.isEmpty else { return nil }
+            return GuideCategory(id: String(describing: key), titleKey: key, guides: guides)
         }
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             ForEach(categories) { category in
-                CategoryShelf(category: category)
+                CategoryShelf(
+                    category: category,
+                    categoryTitle: localization.t(category.titleKey),
+                    icon: categoryIcons[category.titleKey] ?? "book.fill",
+                    isMalayalam: localization.currentLanguage == .malayalam
+                )
             }
         }
     }
@@ -58,15 +71,18 @@ struct IslamicGuidesSection: View {
 // MARK: - Horizontal shelf per category
 private struct CategoryShelf: View {
     let category: GuideCategory
+    let categoryTitle: String
+    let icon: String
+    let isMalayalam: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 HStack(spacing: 6) {
-                    Image(systemName: categoryIcons[category.title] ?? "book.fill")
+                    Image(systemName: icon)
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(.secondary)
-                    Text(category.title.uppercased())
+                    Text(categoryTitle.uppercased())
                         .font(.system(size: 11, weight: .bold))
                         .kerning(0.8)
                         .foregroundStyle(.secondary)
@@ -79,7 +95,7 @@ private struct CategoryShelf: View {
                 HStack(spacing: 10) {
                     ForEach(category.guides) { guide in
                         NavigationLink(destination: GuideDetailView(guide: guide)) {
-                            GuideShelfCard(guide: guide)
+                            GuideShelfCard(guide: guide, isMalayalam: isMalayalam)
                         }
                         .buttonStyle(.plain)
                     }
@@ -95,6 +111,7 @@ private struct CategoryShelf: View {
 // MARK: - Individual guide card
 private struct GuideShelfCard: View {
     let guide: EmergencyGuide
+    let isMalayalam: Bool
     @Environment(\.colorScheme) var cs
 
     private var accent: Color { guideIconAccentMap[guide.title]?.accent ?? .green }
@@ -115,7 +132,7 @@ private struct GuideShelfCard: View {
             .padding(.bottom, 10)
 
             // Title
-            Text(guide.title)
+            Text(guide.localizedTitle(isMalayalam: isMalayalam))
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundStyle(.primary)

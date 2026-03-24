@@ -162,13 +162,22 @@ class QuranStore: ObservableObject {
         let item = AVPlayerItem(url: url)
         player = AVPlayer(playerItem: item)
 
+        // Track which verse this observer belongs to to prevent race conditions
+        let currentVerseKey = "\(surahId)-\(verseNum)"
+
         playerObserver = NotificationCenter.default.addObserver(
             forName: .AVPlayerItemDidPlayToEndTime,
             object: item,
             queue: .main
         ) { [weak self] _ in
             Task { @MainActor in
-                self?.audioState = .idle
+                // Only set to idle if we're still playing the same verse
+                // This prevents a stale notification from an old verse resetting state
+                guard let self = self else { return }
+                if case .playing(let s, let v) = self.audioState,
+                   "\(s)-\(v)" == currentVerseKey {
+                    self.audioState = .idle
+                }
             }
         }
 

@@ -3,12 +3,17 @@ import SwiftUI
 // MARK: - Dua List View
 struct DuaListView: View {
     let category: DuaCategory
-    @State private var favorites: Set<UUID> = []
+    @AppStorage("duaFavorites") private var favoritesData: String = ""
     @State private var appeared = false
     @State private var selectedDua: DuaEntry? = nil
     @Environment(\.colorScheme) var cs
     @Environment(\.localization) var l10n
     private var isMl: Bool { l10n.currentLanguage == .malayalam }
+
+    private var favorites: Set<UUID> {
+        guard !favoritesData.isEmpty else { return [] }
+        return Set(favoritesData.split(separator: ",").compactMap { UUID(uuidString: String($0)) })
+    }
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -81,7 +86,9 @@ struct DuaListView: View {
 
     private func toggleFavorite(_ id: UUID) {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        if favorites.contains(id) { favorites.remove(id) } else { favorites.insert(id) }
+        var current = favorites
+        if current.contains(id) { current.remove(id) } else { current.insert(id) }
+        favoritesData = current.map { $0.uuidString }.joined(separator: ",")
     }
 }
 
@@ -208,6 +215,7 @@ struct DuaDetailSheet: View {
                             Image(systemName: copied ? "checkmark" : "doc.on.doc")
                                 .font(.subheadline)
                                 .foregroundStyle(color)
+                                .accessibilityLabel(copied ? "Copied" : "Copy Arabic text")
                         }
                         Button(action: onFavorite) {
                             Image(systemName: isFavorite ? "heart.fill" : "heart")

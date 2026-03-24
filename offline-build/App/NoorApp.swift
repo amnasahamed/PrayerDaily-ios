@@ -75,6 +75,16 @@ struct AppRootView: View {
         }
         .animation(.easeInOut(duration: 0.4), value: hasCompletedOnboarding)
         .preferredColorScheme(preferredColorScheme)
+        .onReceive(NotificationCenter.default.publisher(for: .didTapPrayerNotification)) { note in
+            if let id = note.object as? String, id.hasPrefix("prayer_") {
+                selectedTab = .salah
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .didTapQuickAccess)) { note in
+            if let tab = note.object as? AppTab {
+                selectedTab = tab
+            }
+        }
     }
 
     private var mainApp: some View {
@@ -120,16 +130,6 @@ struct AppRootView: View {
         .environmentObject(networkMonitor)
         .onAppear {
             AppReviewManager.requestReviewIfAppropriate()
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .didTapPrayerNotification)) { note in
-            if let id = note.object as? String, id.hasPrefix("prayer_") {
-                selectedTab = .salah
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .didTapQuickAccess)) { note in
-            if let tab = note.object as? AppTab {
-                selectedTab = tab
-            }
         }
     }
 }

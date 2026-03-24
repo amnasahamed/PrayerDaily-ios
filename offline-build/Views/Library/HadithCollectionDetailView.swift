@@ -154,17 +154,19 @@ struct HadithRowView: View {
     }
 
     private var isBookmarked: Bool {
-        bookmarkedHadiths.components(separatedBy: ",").contains(hadith.reference)
+        let refs = bookmarkedHadiths.split(separator: "|||").map(String.init)
+        return refs.contains(String(hadith.id))
     }
 
     private func toggleBookmark() {
-        var ids = bookmarkedHadiths.isEmpty ? [] : bookmarkedHadiths.components(separatedBy: ",")
+        var ids = bookmarkedHadiths.isEmpty ? [] : bookmarkedHadiths.split(separator: "|||").map(String.init)
+        let idString = String(hadith.id)
         if isBookmarked {
-            ids.removeAll { $0 == hadith.reference }
+            ids.removeAll { $0 == idString }
         } else {
-            ids.append(hadith.reference)
+            ids.append(idString)
         }
-        bookmarkedHadiths = ids.joined(separator: ",")
+        bookmarkedHadiths = ids.joined(separator: "|||")
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 

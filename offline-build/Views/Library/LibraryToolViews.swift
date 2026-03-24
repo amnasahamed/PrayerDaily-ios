@@ -1,8 +1,8 @@
 import SwiftUI
 
-// MARK: - Library Dhikr View (wraps DhikrCounterView with its own store)
+// MARK: - Library Dhikr View (wraps DhikrCounterView with shared store)
 struct LibraryDhikrView: View {
-    @StateObject private var store = SalahStore()
+    @EnvironmentObject var store: SalahStore
     @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
@@ -321,7 +321,7 @@ private extension Array {
 
 // MARK: - Library Prayer Tracker View (wraps full Salah dashboard)
 struct LibraryPrayerTrackerView: View {
-    @StateObject private var store = SalahStore()
+    @EnvironmentObject var store: SalahStore
     @EnvironmentObject var localization: LocalizationManager
 
     var body: some View {
@@ -444,8 +444,10 @@ struct LibraryPrayerTrackerView: View {
         let days = ["M", "T", "W", "T", "F", "S", "S"]
         let cal = Calendar.current
         let weekday = cal.component(.weekday, from: Date()) - 2 // Monday = 0
-        let idx = ((weekday - (6 - offset)) + 7) % 7
-        return days[idx % 7]
+        // offset 0 = oldest day (6 days ago), offset 6 = today
+        // index should count backward from weekday
+        let idx = (weekday - offset + 7) % 7
+        return days[idx]
     }
 
     private func barColor(_ count: Int) -> Color {

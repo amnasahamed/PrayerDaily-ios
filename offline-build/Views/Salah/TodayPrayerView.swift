@@ -116,6 +116,7 @@ struct TodayPrayerView: View {
         .buttonStyle(.plain)
         .sheet(isPresented: $showShareProgress) {
             ShareProgressSheet(store: store)
+                .environmentObject(localization)
         }
     }
 

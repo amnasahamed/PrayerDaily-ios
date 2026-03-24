@@ -169,27 +169,29 @@ struct ProgressShareCard: View {
     }
 
     private var cardTop: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 6) {
-                HStack(spacing: 6) {
-                    CrescentShape()
-                        .fill(Color.alehaAmber)
-                        .frame(width: 16, height: 16)
-                    Text("aleha")
-                        .font(.system(size: 15, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white)
-                }
+        HStack(alignment: .top) {
+            // App icon - small and non-intrusive
+            Image("AppLogo")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 36, height: 36)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Aleha")
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
                 Text(dateString)
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(.white.opacity(0.5))
             }
             Spacer()
             ZStack {
                 Circle()
-                    .fill(.white.opacity(0.06))
-                    .frame(width: 48, height: 48)
+                    .fill(.white.opacity(0.08))
+                    .frame(width: 44, height: 44)
                 Image(systemName: allDone ? "star.fill" : "moon.stars.fill")
-                    .font(.system(size: 22))
+                    .font(.system(size: 20))
                     .foregroundStyle(allDone ? Color.alehaAmber : Color.alehaGreen)
             }
         }

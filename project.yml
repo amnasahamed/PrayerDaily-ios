@@ -5,8 +5,8 @@ options:
 
 settings:
   base:
-    PRODUCT_BUNDLE_IDENTIFIER: com.example.offlinebuild
-    PRODUCT_NAME: offline-build
+    PRODUCT_BUNDLE_IDENTIFIER: com.alehalearn.prayerdaily
+    PRODUCT_NAME: PrayerDaily
     SWIFT_VERSION: 5.0
     MARKETING_VERSION: 1.0
     CURRENT_PROJECT_VERSION: 1
@@ -43,9 +43,7 @@ targets:
         NSMicrophoneUsageDescription: "Aleha does not use the microphone."
         NSCameraUsageDescription: "Aleha does not use the camera."
         NSUserNotificationsUsageDescription: "Aleha sends prayer time reminders and a daily Quran verse."
-        UIBackgroundModes:
-          - fetch
-          - processing
+        UIBackgroundModes: []
         UIApplicationSupportsIndirectInputEvents: true
         UILaunchStoryboardName: LaunchScreen
         UIRequiredDeviceCapabilities: [arm64]

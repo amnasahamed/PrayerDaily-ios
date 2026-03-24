@@ -130,6 +130,13 @@ struct MoreView: View {
             }
             .buttonStyle(.plain)
 
+            NavigationLink(destination: PrivacyPolicyView()) {
+                MoreMenuRow(icon: "hand.raised.fill", title: localization.t(.morePrivacyPolicy),
+                            subtitle: "Learn how your data is handled",
+                            color: Color.alehaDarkGreen, showDivider: true)
+            }
+            .buttonStyle(.plain)
+
             Button {
                 UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
                 showResetConfirm = true

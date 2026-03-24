@@ -47,20 +47,41 @@ struct AlehaCardStyle: ViewModifier {
                 RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
                     .stroke(borderColor, lineWidth: 0.5)
             )
-            .shadow(color: .black.opacity(colorScheme == .dark ? 0.3 : 0.06), radius: 14, y: 5)
+            .shadow(color: .black.opacity(shadowOpacity), radius: shadowRadius, y: 5)
     }
+
+    private var shadowOpacity: Double {
+        if #available(iOS 26.0, *) {
+            return 0 // Liquid Glass handles its own depth
+        }
+        return colorScheme == .dark ? 0.18 : 0.05
+    }
+
+    private var shadowRadius: CGFloat {
+        if #available(iOS 26.0, *) {
+            return 0
+        }
+        return 10
+    }
+
     @ViewBuilder
     private var cardFill: some View {
-        if colorScheme == .dark {
+        if #available(iOS 26.0, *) {
             RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
                 .fill(.ultraThinMaterial)
+                .glassEffect(.regular.tint(Color.alehaGreen.opacity(0.025)).interactive(),
+                            in: RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
         } else {
             RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
                 .fill(.ultraThinMaterial)
         }
     }
+
     private var borderColor: Color {
-        colorScheme == .dark ? Color.white.opacity(0.12) : Color.alehaGreen.opacity(0.08)
+        if #available(iOS 26.0, *) {
+            return colorScheme == .dark ? Color.white.opacity(0.10) : Color.alehaGreen.opacity(0.06)
+        }
+        return colorScheme == .dark ? Color.white.opacity(0.12) : Color.alehaGreen.opacity(0.08)
     }
 }
 
@@ -217,10 +238,20 @@ struct CalmingBackground: View {
 
 // MARK: - Inline Toolbar Style
 struct AlehaNavStyle: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
     func body(content: Content) -> some View {
         content
-            .toolbarBackground(Color(.systemBackground), for: .navigationBar)
+            .toolbarBackground(backgroundContent, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+    }
+
+    private var backgroundContent: Color {
+        if #available(iOS 26.0, *) {
+            // iOS 26 nav bars use native Liquid Glass automatically
+            return .clear
+        } else {
+            return Color(.systemBackground).opacity(0.92)
+        }
     }
 }
 

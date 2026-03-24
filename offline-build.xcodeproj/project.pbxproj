@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0011D2A9A44DA9CEEDF790AB /* PrayerTrackerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F27A462BD711D77AA544F8EF /* PrayerTrackerCard.swift */; };
 		02230DC1CA3972C8E42906C5 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0602FE3772DF5E17342C27EB /* LibraryView.swift */; };
+		02C92748FB182950A82FF0C2 /* PrivacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0160931B3659A1B3DF03CAE6 /* PrivacyPolicyView.swift */; };
 		0B3F8709297C304B9C22758A /* EmergencyGuideData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7155F88738917606DBDD74FE /* EmergencyGuideData.swift */; };
 		109B178FA425DDFA18236ECE /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E7E12B21F080FF84202C7E /* NetworkMonitor.swift */; };
 		1231E2248728021C214FEEEA /* QuickAccessSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5FA503527474C0588A09DC5 /* QuickAccessSection.swift */; };
@@ -68,6 +69,7 @@
 		D98BA6024251F5BD78A6ED47 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A8F29FB289238100D0443E /* ProfileView.swift */; };
 		DC02D73E4AA6B20CB9232415 /* LibraryToolViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714D8D90C5223D5BB9A3B50C /* LibraryToolViews.swift */; };
 		DE30A327822C28032CC597D4 /* QiblaCompassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3A8B61402B21D268288B3F /* QiblaCompassView.swift */; };
+		DF7E682E50699D2C42D3EDE7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DC435B72E1BC5976791767D1 /* PrivacyInfo.xcprivacy */; };
 		EB3460926451074ABF1E6D1A /* ShareProgressSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A6721B171C921805F13508 /* ShareProgressSheet.swift */; };
 		EDBE28992C23AF95BC8CE0ED /* HadithCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A3835D843C7E9E129E12EF /* HadithCard.swift */; };
 		EFB3EF4F91FABF4982180BC0 /* QuranModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309FBEA35B61FDC914107C9D /* QuranModels.swift */; };
@@ -77,6 +79,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0160931B3659A1B3DF03CAE6 /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
 		03E7E55FF2BF05F28A7E3A2D /* CompactQiblaCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactQiblaCard.swift; sourceTree = "<group>"; };
 		0602FE3772DF5E17342C27EB /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
 		0899B9170F6BDE884758354F /* generate_icon.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = generate_icon.py; sourceTree = "<group>"; };
@@ -95,7 +98,7 @@
 		3D82984581CBD21324ECCC4D /* AnimationHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationHelpers.swift; sourceTree = "<group>"; };
 		411C2522A4F25739247AFA84 /* DuaListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuaListView.swift; sourceTree = "<group>"; };
 		427D7CC54EF12E139EE0BEB2 /* VerseRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseRowView.swift; sourceTree = "<group>"; };
-		45F44C9330F8AD73F9BE62E4 /* offline-build.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "offline-build.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		45F44C9330F8AD73F9BE62E4 /* offline-build.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "offline-build.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		461687FFCA99CF1CB0A6DC7B /* QuickToolsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickToolsRow.swift; sourceTree = "<group>"; };
 		4BFC9AD374C985312AB89D0F /* ReadingProgressCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingProgressCard.swift; sourceTree = "<group>"; };
 		508070D1F05B74A4EDA6AB01 /* LanguagePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguagePickerSheet.swift; sourceTree = "<group>"; };
@@ -134,6 +137,7 @@
 		D72465DDEA7D6011D81F3420 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		D82953705DD4A007FE12CA61 /* CompactDhikrCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactDhikrCard.swift; sourceTree = "<group>"; };
 		D9770DA743A6BD676FAFFF73 /* NoorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoorApp.swift; sourceTree = "<group>"; };
+		DC435B72E1BC5976791767D1 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		DF5B69ABF5416E44C909C59A /* SalahDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalahDashboard.swift; sourceTree = "<group>"; };
 		E14477478517FDC36813FCDE /* DuaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuaData.swift; sourceTree = "<group>"; };
 		E5FA503527474C0588A09DC5 /* QuickAccessSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAccessSection.swift; sourceTree = "<group>"; };
@@ -283,6 +287,7 @@
 				C0C1A1A793700A17FA3C9EB0 /* Assets.xcassets */,
 				0899B9170F6BDE884758354F /* generate_icon.py */,
 				FA5AA79AB276A40FBF501D79 /* Info.plist */,
+				DC435B72E1BC5976791767D1 /* PrivacyInfo.xcprivacy */,
 				573814724B0076E6CD7A4EA6 /* App */,
 				BECBD7E784FDB27DDA19174B /* LaunchScreen.storyboard */,
 				F260FB4A869B7C17CE5B116F /* Models */,
@@ -301,6 +306,7 @@
 				33D682C9F07C85BAD9FAD6AF /* MoreView.swift */,
 				62298697A5C78549C7D4F9ED /* OfflineContentView.swift */,
 				845269B2933C0CB461C8D555 /* PrayerSettingsView.swift */,
+				0160931B3659A1B3DF03CAE6 /* PrivacyPolicyView.swift */,
 				F6A8F29FB289238100D0443E /* ProfileView.swift */,
 			);
 			path = More;
@@ -366,6 +372,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = 7B391D8250AB01380BF40323 /* Build configuration list for PBXProject "offline-build" */;
 			developmentRegion = en;
@@ -393,6 +401,7 @@
 			files = (
 				C0194D6B5B7A4479C8C14757 /* Assets.xcassets in Resources */,
 				A10DED2B350D9B1479DC6DCA /* LaunchScreen.storyboard in Resources */,
+				DF7E682E50699D2C42D3EDE7 /* PrivacyInfo.xcprivacy in Resources */,
 				60C5707A6A1C1C1FE1AA176F /* generate_icon.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -445,6 +454,7 @@
 				9FFD64F830052B6B7E481B01 /* PrayerTimesCard.swift in Sources */,
 				FA55D6DA9608BEF9C7E713DF /* PrayerTimesService.swift in Sources */,
 				0011D2A9A44DA9CEEDF790AB /* PrayerTrackerCard.swift in Sources */,
+				02C92748FB182950A82FF0C2 /* PrivacyPolicyView.swift in Sources */,
 				D98BA6024251F5BD78A6ED47 /* ProfileView.swift in Sources */,
 				D59B8016E1E8EA090D9066A4 /* QadaTrackerView.swift in Sources */,
 				DE30A327822C28032CC597D4 /* QiblaCompassView.swift in Sources */,
@@ -491,7 +501,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = B5PMRXY8VD;
 				INFOPLIST_FILE = "offline-build/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -553,8 +562,8 @@
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.offlinebuild;
-				PRODUCT_NAME = "offline-build";
+				PRODUCT_BUNDLE_IDENTIFIER = com.alehalearn.prayerdaily;
+				PRODUCT_NAME = PrayerDaily;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -622,8 +631,8 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.offlinebuild;
-				PRODUCT_NAME = "offline-build";
+				PRODUCT_BUNDLE_IDENTIFIER = com.alehalearn.prayerdaily;
+				PRODUCT_NAME = PrayerDaily;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -639,7 +648,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = B5PMRXY8VD;
 				INFOPLIST_FILE = "offline-build/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
